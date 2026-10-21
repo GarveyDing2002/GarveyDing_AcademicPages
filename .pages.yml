@@ -2,7 +2,7 @@ media:
   - name: blog_images
     label: Blog images
     input: public/images/blog
-    output: /images/blog
+    output: /GarveyDing_AcademicPages/images/blog
     categories: [image]
     rename: safe
 

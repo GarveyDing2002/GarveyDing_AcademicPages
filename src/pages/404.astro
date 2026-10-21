@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import { template } from '@/settings'
 ---
 
 <Layout title="404 - Page Not Found">
@@ -12,7 +13,7 @@ import Layout from '@/layouts/Layout.astro'
       </p>
     <div class="flex gap-4">
       <a
-        href="/"
+        href={`${template.base}/`}
         class="btn btn-primary text-primary-content"
       >
         Go Home

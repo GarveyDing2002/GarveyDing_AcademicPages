@@ -1,5 +1,5 @@
 import rss from "@astrojs/rss";
-import { seo } from "../settings";
+import { seo, template } from "../settings";
 import { getCollection } from "astro:content";
 
 export async function GET(context) {
@@ -11,14 +11,14 @@ export async function GET(context) {
         description: seo.default_description,
         // Pull in your project "site" from the endpoint context
         // https://docs.astro.build/en/reference/api-reference/#site
-        site: context.site,
+        site: new URL(`${template.base}/`, context.site).href,
         // Array of `<item>`s in output xml
         // See "Generating items" section for examples using content collections and glob imports
         items: blog.map((post) => ({
             title: post.data.title,
             pubDate: post.data.date,
             description: post.data.excerpt,
-            link: `/blog/${post.id}`,
+            link: `${template.base}/blog/${post.id}`,
         })),
         // (optional) inject custom xml
         customData: `<language>en-us</language>`,

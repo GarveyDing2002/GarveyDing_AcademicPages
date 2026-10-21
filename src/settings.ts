@@ -34,18 +34,18 @@ export const social = {
 }
 
 export const template = {
-	website_url: 'https://garveyding.cn',
+	website_url: 'https://garveyding2002.github.io',
 	menu_left: false,
 	transitions: true,
 	lightTheme: 'light',
 	darkTheme: 'dark',
 	excerptLength: 200,
 	postPerPage: 5,
-	base: '/'
+	base: '/GarveyDing_AcademicPages'
 }
 
 export const seo = {
 	default_title: 'Jiawei Ding | Mixed-Signal IC Research',
 	default_description: 'Personal academic website of Jiawei Ding, a Ph.D. student working on ultra-high-speed ADCs and mixed-signal integrated circuits.',
-	default_image: '/images/profile.jpg',
+	default_image: `${template.base}/images/profile.jpg`,
 }
