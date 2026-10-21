@@ -1,0 +1,54 @@
+name: Update changelog
+
+on:
+  release:
+    types: [published, edited, deleted]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-changelog
+  cancel-in-progress: false
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const { renderChangelog } = await import(
+              `${process.env.GITHUB_WORKSPACE}/scripts/update-changelog.mjs`
+            );
+
+            const releases = await github.paginate(
+              github.rest.repos.listReleases,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              }
+            );
+
+            fs.writeFileSync(
+              'CHANGELOG.md',
+              renderChangelog(releases)
+            );
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-changelog
+          delete-branch: true
+          commit-message: "docs: update changelog from GitHub releases"
+          title: "docs: update changelog from GitHub releases"
+          body: "Generated from the current published GitHub releases."
+          add-paths: CHANGELOG.md

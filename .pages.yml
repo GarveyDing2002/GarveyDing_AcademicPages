@@ -1,0 +1,52 @@
+media:
+  - name: blog_images
+    label: Blog images
+    input: public/images/blog
+    output: /images/blog
+    categories: [image]
+    rename: safe
+
+content:
+  - name: blog
+    label: Blog posts
+    type: collection
+    path: src/content/BlogPosts
+    format: yaml-frontmatter
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+      fields: [title, date, tags]
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: excerpt
+        label: Excerpt
+        type: text
+        required: true
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+      - name: body
+        label: Body
+        type: rich-text
+        options:
+          format: markdown
+          media: blog_images
+          path: public/images/blog
+          rename: true
+          switcher: true

@@ -1,0 +1,69 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { profile } from "@/settings";
+import BetterIcon from "@/components/ui/BetterIcon.astro";
+import List from "@/components/ui/List.astro";
+import {RESEARCH_ICONS} from "@/data/researchIcons";
+
+const { research_areas } = profile;
+---
+
+<Layout title="Research | Jiawei Ding">
+  <div class="prose max-w-none">
+    <h1 class="text-3xl font-bold mb-8">Research Statement</h1>
+
+    <div class="mb-12">
+      <p class="text-lg mb-6">
+        My research focuses on ultra-high-speed analog-to-digital converters (ADCs) and mixed-signal integrated circuit design. I study architectures and circuit techniques that improve sampling bandwidth, conversion accuracy, energy efficiency, and calibration robustness.
+      </p>
+      <p class="text-lg mb-6">
+        Current interests include time-interleaved ADCs, pipeline/SAR architectures, high-speed input buffers, reference systems, dynamic comparators, and digital mismatch calibration.
+      </p>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-6">Research Areas</h2>
+    <div class="grid gap-8 mb-12">
+      {
+        research_areas.map((area) => (
+          <div class="flex gap-6 items-start">
+            <BetterIcon>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                class="size-6 stroke-accent"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d={RESEARCH_ICONS[area.field as keyof typeof RESEARCH_ICONS]?.path || RESEARCH_ICONS['computer-science'].path}
+                />
+              </svg>
+            </BetterIcon>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">{area.title}</h3>
+              <p class="text-base">{area.description}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <List listTitle="Current Topics" listItems={[
+      {
+        title: "Ultra-high-speed ADC architectures",
+        description: "Architecture and circuit co-design for high-bandwidth data converters."
+      },
+      {
+        title: "Calibration and system nonidealities",
+        description: "Behavioral modeling, time-skew estimation, and digital correction for time-interleaved converters."
+      }
+    ]} />
+
+    <h2 class="text-2xl font-bold mb-6">Research Approach</h2>
+    <p class="text-lg mb-6">
+      The work connects transistor-level circuit design with system-level modeling and verification, with an emphasis on reproducible analysis and practical implementation constraints.
+    </p>
+  </div>
+</Layout>
