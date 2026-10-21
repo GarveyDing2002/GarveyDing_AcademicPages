@@ -1,4 +1,6 @@
-# Garvey Academia Preview
+# GarveyDing Academic Pages
+
+Astro Academia personal academic website.
 
 This is an isolated Astro Academia preview for Jiawei Ding's academic website. The current public Jekyll site is not modified by this project.
 
