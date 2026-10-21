@@ -31,6 +31,14 @@ export const researchInterests = [
 
 export const publications = [
 	{
+		title: 'A 12-bit 78.8-dB SFDR 625-MS/s Two-step Pipelined-SAR ADC With Self-Adaptive Common-Mode Capacitor Multiplier',
+		authors: 'Zilin Jiang, Xuan Guo, Hanbo Jia, Jiawei Ding, Yulin Zhang, Kai Sun, Li Wang, Zunsong Yang, Franco Maloberti, and Xinyu Liu',
+		journal: 'IEEE Transactions on Circuits and Systems II: Express Briefs',
+		time: '2026',
+		link: 'https://doi.org/10.1109/TCSII.2026.3719296',
+		abstract: 'A 12-bit 625-MS/s two-step pipelined-SAR ADC with a self-adaptive common-mode capacitor multiplier, achieving 78.8-dB SFDR.',
+	},
+	{
 		title: 'A 14-GS/s 8-bit time-interleaved SAR ADC with multi-path bootstrapped switch and low-jitter sampling PLL in 28-nm CMOS',
 		authors: 'Jiawei Ding, Xuan Guo, Shan Lu, Qing Su, Tao Liu, Hanbo Jia, Yihan Li, and Xinyu Liu',
 		journal: 'Microelectronics Journal',

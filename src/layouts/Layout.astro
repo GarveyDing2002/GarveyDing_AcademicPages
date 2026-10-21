@@ -42,7 +42,7 @@ const {
             <div class='drawer-content bg-base-100'>
 				<div class='bg-base-100 z-50 text-base-content shadow-sm'>
 					<nav class='navbar'>
-						<div class='navbar-start'>
+						<div class='navbar-start w-auto shrink-0 lg:w-1/2'>
 							{template.menu_left &&
 								<ThemeSelector />
 							}
@@ -63,11 +63,11 @@ const {
 								</BetterIcon>
 							</label>
 						</div>
-						<div class='navbar-center lg:hidden text-lg font-black'>
+						<div class='navbar-center min-w-0 flex-1 px-2 text-center text-sm font-black break-words sm:text-lg lg:hidden'>
 							{profile.title}
 							{profile.fullName}
 						</div>
-						<div class='navbar-end gap-3 sm:gap-4'>
+						<div class='navbar-end w-auto shrink-0 gap-3 sm:gap-4 lg:w-1/2'>
 							<Search />
 							{!template.menu_left &&
 								<ThemeSelector />
