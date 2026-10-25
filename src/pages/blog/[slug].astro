@@ -1,5 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import BlogDiagrams from '@/components/BlogDiagrams.astro'
 import { getTagUrl } from '@/lib/utils'
 import {getCollection, render} from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
@@ -26,7 +27,8 @@ const { Content } = await render(post);
 ---
 
 <Layout title={title}>
-	<div class='max-w-4xl mx-auto'>
+	<BlogDiagrams />
+	<div class='blog-post min-w-0 w-full max-w-4xl mx-auto'>
 		<article
 			class='prose max-w-none prose-headings:text-base-content prose-p:text-base-content/80'
 		>
@@ -74,7 +76,7 @@ const { Content } = await render(post);
 
 			<!-- Post content -->
 			<div
-				class='prose mt-8 prose-h2:text-2xl prose-h2:font-bold prose-h2:mb-4
+				class='prose max-w-none mt-8 prose-h2:text-2xl prose-h2:font-bold prose-h2:mb-4
          prose-h3:text-xl prose-h3:font-semibold prose-h3:mb-3
          prose-p:mb-4 prose-p:leading-relaxed
          prose-strong:text-base-content prose-strong:font-bold
@@ -92,3 +94,16 @@ const { Content } = await render(post);
 		</article>
 	</div>
 </Layout>
+
+<style>
+  .blog-post { overflow-wrap: anywhere; }
+  .blog-post :global(h1) { font-size: 2rem; }
+  .blog-post :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+  .blog-post :global(th), .blog-post :global(td) { min-width: 7rem; }
+  .blog-post :global(.katex-display) { overflow-x: auto; overflow-y: hidden; padding-block: 0.5rem; }
+  .blog-post :global(pre) { max-width: 100%; overflow-x: auto; }
+  .blog-post :global(.mermaid-diagram) { background: white; color: #17202a; padding: 1rem; }
+  .blog-post :global(.mermaid-diagram svg) { display: block; margin-inline: auto; }
+  .blog-post :global(img) { max-width: 100%; height: auto; }
+  .blog-post :global(blockquote) { font-style: normal; }
+</style>

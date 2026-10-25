@@ -29,9 +29,17 @@ npm run dev
 
 The `.pages.yml` file defines the blog editor and the matching Astro frontmatter fields. CMS image uploads go to `public/images/blog/`.
 
-## Current review status
+## Imported learning notes
 
-Obsidian documents and their images are intentionally not included yet. Review the generated Obsidian article list in the Codex task output and approve the notes before migration. The academic CV and publication data were copied from the existing local Academic Pages project.
+The Blog includes 15 learning notes (including the reading index), 32 images and two reference attachments. Obsidian links resolve to published articles and assets. Source files remain unchanged; `content-import-manifest.json` records their relative paths and SHA-256 hashes.
+
+The importer defaults to a dry run. Pass the learning-notes folder as its argument and add `--write` to write the generated content. It refuses to overwrite differing existing files. It preserves formulas and fenced code, normalizes display-math delimiters, and removes machine-specific paths from the public figure provenance JSON.
+
+```sh
+node scripts/import-learning-notes.mjs "<learning-notes-folder>"
+```
+
+Mermaid diagrams render on article pages only. The build verification checks all imported article URLs, anchors, images, contact links and KaTeX output before deployment.
 
 ## Checks
 
@@ -40,4 +48,5 @@ npm run check
 npm test
 npm run lint
 npm run build
+npm run verify:blog
 ```

@@ -1,0 +1,19 @@
+<script>
+  async function renderDiagrams() {
+    const diagrams = [...document.querySelectorAll<HTMLElement>('.mermaid-diagram:not([data-processed])')];
+    if (!diagrams.length) return;
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'default', fontFamily: 'Arial, sans-serif' });
+    for (const diagram of diagrams) {
+      if (!diagram.isConnected || diagram.dataset.processed) continue;
+      try {
+        await mermaid.run({ nodes: [diagram] });
+      } catch (error) {
+        console.error('Diagram rendering failed:', error);
+      }
+    }
+  }
+  document.addEventListener('astro:page-load', () => {
+    void renderDiagrams().catch(error => console.error('Diagram rendering failed:', error));
+  });
+</script>

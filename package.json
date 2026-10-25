@@ -3,6 +3,7 @@
   "type": "module",
   "version": "2.0.0",
   "scripts": {
+    "verify:blog": "node scripts/verify-learning-notes.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:search": "node --test tests/search.test.mjs",
     "check": "astro check && tsc --noEmit",
@@ -23,14 +24,17 @@
     "astro": "^7.3.4",
     "katex": "^0.19.0",
     "mdast-util-to-string": "^4.0.0",
+    "mermaid": "^11.17.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
     "tailwindcss": "^4.3.3",
     "theme-change": "^3.0.4",
     "unified": "^11.0.5",
+    "unist-util-visit": "^5.2.0",
     "zbsearch": "^4.0.0"
   },
   "devDependencies": {
@@ -40,9 +44,12 @@
     "daisyui": "^5.7.43",
     "eslint": "^10.11.0",
     "eslint-plugin-astro": "^3.2.1",
+    "github-slugger": "^2.0.0",
     "globals": "^17.12.0",
+    "parse5": "^8.0.1",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.70.1"
+    "typescript-eslint": "^8.70.1",
+    "yaml": "^2.9.1"
   },
   "license": "MIT"
 }

@@ -21,7 +21,7 @@ export const profile: Profile = {
 }
 
 export const social = {
-	email: '1016387429@qq.com',
+	email: 'dingjiawei0616@gmail.com',
 	linkedin: '',
 	x: '',
 	bluesky: '',

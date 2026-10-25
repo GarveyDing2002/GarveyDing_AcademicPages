@@ -10,6 +10,7 @@ import { template } from "./src/settings";
 import sitemap from "@astrojs/sitemap";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import remarkDiagrams from "./src/lib/remark-diagrams.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,7 +22,7 @@ export default defineConfig({
     base: template.base,
     markdown: {
         processor: unified({
-            remarkPlugins: [remarkMath],
+            remarkPlugins: [remarkMath, remarkDiagrams],
             rehypePlugins: [rehypeKatex],
         }),
     },

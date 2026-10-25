@@ -31,6 +31,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Verify blog content and links
+        run: npm run verify:blog
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
