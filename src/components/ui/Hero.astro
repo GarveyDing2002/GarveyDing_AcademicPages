@@ -16,10 +16,10 @@ const {fullName, title, institute, profilePicture, summary} = Astro.props
     <SocialIcons />
   </div>
 </div>
-<div class='size-72 shrink-0 lg:block hidden'>
+<div class='w-72 shrink-0 lg:block hidden'>
   <Image
     src={profilePicture}
     alt={fullName}
-    class='block size-full object-cover object-top mask mask-circle'
+    class='block w-full h-auto object-contain'
   />
 </div>
