@@ -14,11 +14,11 @@ const {fullName, title} = profile
 		<div>
 			<div class='flex justify-center items-center flex-col'>
 				<Image
-					class='mask mask-circle size-44'
+					class='mask mask-circle size-44 shrink-0 object-cover object-top'
 					src={ProfilePictures}
 					alt={`Profile picture of ${fullName}`}
 				/>
-				<h1 class="text-lg font-black mt-8 hidden lg:block">{title} <span>{fullName}</span></h1>
+				<h1 class="text-lg font-black mt-8 hidden lg:block">{title} <span class="font-extrabold text-blue-600">{fullName}</span></h1>
 			</div>
 			<div class='mx-4 mt-16'>
 				<ul class='space-y-4 menu grow shrink menu-md overflow-y-auto'>
