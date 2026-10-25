@@ -6,7 +6,7 @@ export const education = [
 		time: '2024.09 - 2029.06',
 		degree: 'Ph.D. student in Integrated Circuit Science and Engineering',
 		location: 'Beijing, China',
-		description: 'GPA: 3.78/4.0; rank: top 10%. Research direction: ultra-high-speed ADC. Advisors: Xinyu Liu and Xuan Qiu.',
+		description: 'GPA: 3.78/4.0; rank: top 10%.\nResearch direction: ultra-high-speed ADC.\nAdvisors: Xinyu Liu and Xuan Guo.',
 	},
 	{
 		school: 'School of Physics and Microelectronics, Hunan University',
