@@ -1407,11 +1407,11 @@ $$T_k=\frac1N\sum_{m=0}^{N-1}\tau_m e^{-j2\pi km/N}.$$
 
 对单音输入，这些分量分别把 `f_in` 调制到 `k Fs/N ± f_in` 周围（最后按采样频谱折叠）。因此**相同 RMS skew 的两组芯片可能有完全不同的最坏 spur**；布局/时钟树优化不能只看通道间标准差，还应检查 skew 序列的模式。全部通道同时平移仅改变系统公共采样相位，不产生通道间失配 spur，因此只有 `N−1` 个独立相对 skew。
 
-![2026_05_专项机制图](/images/blog/learning-notes/ti-adc-time-skew/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/ti-adc-time-skew/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_时偏与频谱](/images/blog/learning-notes/ti-adc-time-skew/2026_01_时偏与频谱.svg)
+![2026_01_时偏与频谱](/GarveyDing_AcademicPages/images/blog/learning-notes/ti-adc-time-skew/2026_01_时偏与频谱.svg)
 
 ### T2. 为什么 THA / Sub-ADC 两级采样的时钟不能同等处理
 
@@ -1419,7 +1419,7 @@ $$T_k=\frac1N\sum_{m=0}^{N-1}\tau_m e^{-j2\pi km/N}.$$
 
 假定 THA 周期为 `400 ps`（2.5 GHz），子 ADC 单通道 `625 MHz`（1.6 ns），那么每一颗子 ADC 必须在对应 THA hold 周期内部采样。长走线延迟变化、PVT、buffer propagation skew 会消耗这段保护时间；优先保持 THA 高频采样边沿稳定，通过延迟抽头、可编程 duty-cycle 或更早关断子 ADC 采样开关去确保 **setup/hold 间隔**。同时应验证采样相位的上下边界，不仅是标称值的一个时刻。
 
-![2026_02_THA保持窗口](/images/blog/learning-notes/ti-adc-time-skew/2026_02_THA保持窗口.svg)
+![2026_02_THA保持窗口](/GarveyDing_AcademicPages/images/blog/learning-notes/ti-adc-time-skew/2026_02_THA保持窗口.svg)
 
 ### T3. DCDL 与数字 fractional-delay FIR 的系统分工
 
@@ -1436,7 +1436,7 @@ FIR 方法可用 `y_c(t_n)≈y(t_n)+Δt·dy/dt` 的一阶等效理解，但真�
 
 相邻通道方差/互相关/导数法在输入为窄带单音、DC、对称频谱或频率接近某些零点时，误差符号可观测性会恶化；参考 ADC 类方法可能在模拟入口增加时变负载；在前端统一注入 dither 的方案，可减轻输入统计假设，但仍须检验 dither 注入路径引入的本体干扰。一个完整比较表应同时写明：**可观测条件、更新方向、修正器范围、后处理延时、抗带宽失配能力、是否 truly background**。Cao 等 2024 年的 12 GS/s、12-bit TI ADC 以 global dither 和 linearized input buffer 为联合设计，是这条路线的代表案例。[T3]
 
-![2026_03_校准方法矩阵](/images/blog/learning-notes/ti-adc-time-skew/2026_03_校准方法矩阵.svg)
+![2026_03_校准方法矩阵](/GarveyDing_AcademicPages/images/blog/learning-notes/ti-adc-time-skew/2026_03_校准方法矩阵.svg)
 
 ### T5. 仿真验收模板（20 GS/s TI 系统）
 
@@ -1452,7 +1452,7 @@ FIR 方法可用 `y_c(t_n)≈y(t_n)+Δt·dy/dt` 的一阶等效理解，但真�
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/ti-adc-time-skew/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/ti-adc-time-skew/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

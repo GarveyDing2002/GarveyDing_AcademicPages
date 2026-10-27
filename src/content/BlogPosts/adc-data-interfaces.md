@@ -58,7 +58,7 @@ tags:
 
 ## 1. 接口基础：作用、吞吐量与总体分类
 
-![01_adc_data_output_link](/images/blog/learning-notes/adc-data-interfaces/01_adc_data_output_link.svg)
+![01_adc_data_output_link](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/01_adc_data_output_link.svg)
 
 *图：ADC 量化结果经数据组织和接口链路送至 FPGA/ASIC；时钟、帧与同步信号需按所选协议确定。*
 
@@ -1388,11 +1388,11 @@ $$R_{\rm payload}=M\times F_s\times N'.$$
 
 假定一颗 `20 GS/s × 12 bit` ADC，若每样本运输为 16 bit，则 `R_payload=320 Gb/s`；若采用 8 个 JESD204C 64b/66b lanes，不计其它 overhead，理论 `R_lane≈41.25 Gb/s`，已超出许多常规收发器或特定 JESD204C 实现的能力，说明**从一开始就必须引入更多 lanes、片上筛选/降采样、数据分时输出或更高代际 PHY**。这是预算示例，非某芯片已实现规格。
 
-![2026_05_专项机制图](/images/blog/learning-notes/adc-data-interfaces/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_接口分层](/images/blog/learning-notes/adc-data-interfaces/2026_01_接口分层.svg)
+![2026_01_接口分层](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/2026_01_接口分层.svg)
 
 ### I2. 片上 SRAM Capture、降采样和全速输出三选一吗？
 
@@ -1406,7 +1406,7 @@ $$R_{\rm payload}=M\times F_s\times N'.$$
 
 对片上 capture，设置 32 个子 ADC、每路 625 MS/s，每次记录 `K` 个样本，则 `Memory_bits=32×K×N_out`。如 `K=256, N_out=12`，需 `98,304 bit` 纯 payload；如果包含校准旁路码、时间标志、触发元数据和冗余位，则需额外预算。注意采样相位对齐、写地址映射与重构顺序必须清楚，否则即使单通道各自正确，合并后也会出现周期性 spur。
 
-![2026_02_三种数据采集](/images/blog/learning-notes/adc-data-interfaces/2026_02_三种数据采集.svg)
+![2026_02_三种数据采集](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/2026_02_三种数据采集.svg)
 
 ### I3. JESD204B/C Subclass 1 的同步不是“所有 lane 同时到达”
 
@@ -1419,7 +1419,7 @@ $$R_{\rm payload}=M\times F_s\times N'.$$
 3. 电源完整性：同时翻转的 CMOS bus/pad drive 会导致 supply bounce、衬底耦合，需在芯片顶层加真实 IO model 并对比输出 PHY on/off 下的模拟 FFT。
 4. 封装：高速差分线的 return path、DC blocking、AC coupling、ESD/封装寄生与 100 Ω 差分端接均须按所用器件接口文档，不可由 “CML” 一词推断实际电压幅度或阻抗。
 
-![2026_03_接口验证链](/images/blog/learning-notes/adc-data-interfaces/2026_03_接口验证链.svg)
+![2026_03_接口验证链](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/2026_03_接口验证链.svg)
 
 ### I5. 标准/厂商文档（新增并更新版本）
 
@@ -1434,7 +1434,7 @@ $$R_{\rm payload}=M\times F_s\times N'.$$
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/adc-data-interfaces/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-data-interfaces/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

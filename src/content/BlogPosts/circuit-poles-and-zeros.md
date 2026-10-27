@@ -2997,17 +2997,17 @@ $$H(s)=\frac{1+s/\omega_z}{(1+s/\omega_{p1})(1+s/\omega_{p2})},\qquad \omega_z\a
 
 在理想的 LTI 频域若 `ω_z=ω_p2` 可代数抵消，然而硬件里寄生、PVT 和电容失配使两者略微不等，产生幅值很小但时间常数大的“慢尾”。如果 FFT 的谐波尚可，而 step response 在最后几十皮秒总是接近精度边界，考虑记录**瞬态残差的对数幅度图**，放大尾部而不只观察 10–90% 上升时间。CMFB 的 slow pole、bias settling、被寄生弱耦合的高阻节点是常见来源。
 
-![2026_05_专项机制图](/images/blog/learning-notes/circuit-poles-and-zeros/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-poles-and-zeros/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_慢尾双重态](/images/blog/learning-notes/circuit-poles-and-zeros/2026_01_慢尾双重态.svg)
+![2026_01_慢尾双重态](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-poles-and-zeros/2026_01_慢尾双重态.svg)
 
 ### P3. STB 断环位置：需要保留 DC 工作点和实际加载
 
 Spectre `stb/iprobe` 的目标是给定 DC 或周期工作点下的环路返回比；不要像手算那样直接切断导线导致偏置消失。选择断点时要求：保留实际负载、保持关键节点电压/共模；注入点覆盖要分析的整个环路；检查可能的多重反馈路径是否跨过断点造成环路遗漏。对 fully differential OTA，要分别测量 **DMFB（差模主反馈）和 CMFB（共模反馈）**，并在不同的输出共模及负载点检查稳定性。对带采样相位的 SC 放大器，静态 STB 只是某一固定开关状态的近似；应结合真实时钟 transient，并在可行时使用 periodic stability 方法。
 
-![2026_02_反馈环路与断点](/images/blog/learning-notes/circuit-poles-and-zeros/2026_02_反馈环路与断点.svg)
+![2026_02_反馈环路与断点](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-poles-and-zeros/2026_02_反馈环路与断点.svg)
 
 ### P4. RHP 零点不是补偿用的“正向相位超前”
 
@@ -3017,7 +3017,7 @@ Spectre `stb/iprobe` 的目标是给定 DC 或周期工作点下的环路返回�
 
 RingAmp、动态比较器及高速 MDAC 的工作点常经历启动、过驱动、限幅和末段小信号线性建立。其动态阶段并无单一固定的 `A(s)`。一种可执行的方法是：记录 `Vout(t)`、关键内部节点/每级电流；在输出距离终值较远、中等、接近 LSB 处分别估计局部衰减斜率；扫描输入幅值和共模，识别是否出现供电饱和或跨导退化。若 transient error 呈双指数，说明不能用一个 UGB 解释全过程。
 
-![2026_03_稳定性验证流程](/images/blog/learning-notes/circuit-poles-and-zeros/2026_03_稳定性验证流程.svg)
+![2026_03_稳定性验证流程](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-poles-and-zeros/2026_03_稳定性验证流程.svg)
 
 ### P6. 推荐参照文献与教材
 
@@ -3031,7 +3031,7 @@ RingAmp、动态比较器及高速 MDAC 的工作点常经历启动、过驱动�
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/circuit-poles-and-zeros/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-poles-and-zeros/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

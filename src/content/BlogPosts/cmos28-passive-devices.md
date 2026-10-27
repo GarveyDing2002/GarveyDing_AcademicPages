@@ -1121,11 +1121,11 @@ $$
 
 片上电阻不仅有 `R_sh·L/W`，还包含接触电阻、温度系数、寄生到衬底电容和分布式 RC；高频时一段长 Poly 不再是理想集总电阻。MOM 的边缘场电容依赖相邻金属、fill 和布线环境，MIM 更接近平板近似但仍有底板/边缘寄生；MOSCAP 的强非线性源于器件工作状态以及 C-V 曲线。螺旋电感可以采用简化 `L_s、R_s、C_ox、R_sub/C_sub` 模型，但提取 L/Q/自谐振频率时应从完整二端口 `Z/Y/S` 和 port 参考平面出发。[R1][R2][R3]
 
-![2026_05_专项机制图](/images/blog/learning-notes/cmos28-passive-devices/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/cmos28-passive-devices/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_寄生网络](/images/blog/learning-notes/cmos28-passive-devices/2026_01_寄生网络.svg)
+![2026_01_寄生网络](/GarveyDing_AcademicPages/images/blog/learning-notes/cmos28-passive-devices/2026_01_寄生网络.svg)
 
 ### R2. 采样 CDAC 重点：匹配、寄生和寄生的**可校准性**
 
@@ -1139,7 +1139,7 @@ $$
 
 使用 `S11/S21` 判断输入匹配和传输损耗，需**明确 50 Ω 为端口参考阻抗，不等于每一段链路都应采用 50 Ω 物理特征阻抗**。对负载为 THA 采样网络的长线，应把实际切换电容与时变输入阻抗加入 EM/SP 联合仿真。差分偶/奇模、de-embedding 与金属填充对 port 的影响在验证记录中不可省略。
 
-![2026_02_高速互连模型](/images/blog/learning-notes/cmos28-passive-devices/2026_02_高速互连模型.svg)
+![2026_02_高速互连模型](/GarveyDing_AcademicPages/images/blog/learning-notes/cmos28-passive-devices/2026_02_高速互连模型.svg)
 
 ### R4. 电感的 Q、SRF 与等效 L 不是独立可随意指定的指标
 
@@ -1155,7 +1155,7 @@ $$
 
 不能简单认为 “Calibre View 一定比 DSPF 精确”；二者可能来自同一提取数据，差异来自网表结构、寄生简化、端口、模型绑定和仿真选项。若要得到高频长线性能，应将 EM/SNP 子网络嵌入 Spectre，与真实电路、buffer output impedance 和 sampling kickback 联合。
 
-![2026_03_EM协同流程](/images/blog/learning-notes/cmos28-passive-devices/2026_03_EM协同流程.svg)
+![2026_03_EM协同流程](/GarveyDing_AcademicPages/images/blog/learning-notes/cmos28-passive-devices/2026_03_EM协同流程.svg)
 
 ### R6. 经典参考文献与教材
 
@@ -1170,7 +1170,7 @@ $$
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/cmos28-passive-devices/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/cmos28-passive-devices/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

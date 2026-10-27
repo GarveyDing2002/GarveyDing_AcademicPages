@@ -62,11 +62,11 @@ $$
 
 若同时保持 $V_{TH}$、迁移率、寄生电容不变，则 $R_{ON}$ 近似为常数。但真实 MOS 的**体效应、浮动节点寄生、驱动滞后、源漏交换、漏结非线性、瞬态电荷再分配**依然会引入失真，不能把“恒定 $V_{GS}$”等同于“恒定 $R_{ON}$”。2025 年 Ma 等的系统分析正是建立在这些二阶因素之上。[R12]
 
-![自行绘制的自举采样原理示意](/images/blog/learning-notes/adc-bootstrapped-switch/schematic_bootstrap_principle.svg)
+![自行绘制的自举采样原理示意](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/schematic_bootstrap_principle.svg)
 
 *图 1：自绘概念图。预充的 $C_B$ 在 track 期间使栅极随输入信号抬升；实际电路另需复位、关断、隔离以及可靠性保护。*
 
-![源 PDF：自举开关理想结构及实现](/images/blog/learning-notes/adc-bootstrapped-switch/p02_basic_bootstrap.png)
+![源 PDF：自举开关理想结构及实现](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p02_basic_bootstrap.png)
 
 *图 2：源 PDF 第 2 页的自举原理与一类晶体管级实现，适合与 [R04] Razavi 2021 对照阅读。*
 
@@ -93,7 +93,7 @@ $$
 
 ### 2.2 基本晶体管级调参顺序（对应源 PDF 第 6 页）
 
-![源 PDF：晶体管级自举电路](/images/blog/learning-notes/adc-bootstrapped-switch/p06_transistor_schematic.png)
+![源 PDF：晶体管级自举电路](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p06_transistor_schematic.png)
 
 *图 3：原 PDF 第 6 页，辅助器件、预充路径与关断路径的具体连线以该页实际原图为准；不同文献 M1/M2 命名可能不相同。*
 
@@ -105,7 +105,7 @@ $$
 
 ## 3. 采样时序：上极板、下极板与电荷注入
 
-![源 PDF：采样拓扑与沟道电荷](/images/blog/learning-notes/adc-bootstrapped-switch/p03_top_bottom_sampling.png)
+![源 PDF：采样拓扑与沟道电荷](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p03_top_bottom_sampling.png)
 
 *图 4：源 PDF 第 3 页。注意“上/下极板采样”在不同 SAR/CDAC 论文中的命名和参照节点可能不同，分析时须画出真实电容两端和开关关闭顺序。*
 
@@ -155,7 +155,7 @@ $$
 
 随着输入变化，$V_{TH}$ 仍变化；source/drain 角色随瞬态电流、采样电容残余电压切换，更增强非对称性。解决思路包括：允许时将 body/well 跟随适当信号、使用对称版图/适当器件、引入互补通道或校正寄生负载，**但体端不能任意接输入：必须先检查井结的正反偏和 PDK 限值**。
 
-![自行推导的示意性 Ron 曲线](/images/blog/learning-notes/adc-bootstrapped-switch/theory_ron_vs_vin.png)
+![自行推导的示意性 Ron 曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/theory_ron_vs_vin.png)
 
 *图 5：自绘、非 PDK 数据，仅用长沟道模型示意“普通开关 → 理想自举 → 理想自举并减小体效应”的改善趋势。横纵轴曲线不可用于尺寸签核。*
 
@@ -177,11 +177,11 @@ $$
 
 这是便于定尺寸的**保守近似**：忽略了输入源阻抗、金属 RC、非线性 $R_{ON}(t)$、可用采样窗的死区、自举启动延迟及多极点。若已给其他误差预留 budget，还应收紧界限。
 
-![源 PDF：指数建立公式](/images/blog/learning-notes/adc-bootstrapped-switch/p05_settling_model.png)
+![源 PDF：指数建立公式](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p05_settling_model.png)
 
 *图 6：原 PDF 第 5 页所用的 14-bit、$C_S=1.6$ pF、$T_{track}\simeq200$ ps、$R_{ON}<12\,\Omega$ 的估算。注意其脉冲时间是特定示例，不可直接用于任意 ADC。*
 
-![自绘：RC 常数和 14 bit 半 LSB 阶跃准则](/images/blog/learning-notes/adc-bootstrapped-switch/theory_settling.png)
+![自绘：RC 常数和 14 bit 半 LSB 阶跃准则](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/theory_settling.png)
 
 *图 7：用一阶指数建立模型生成的理论曲线；这里 $\tau=RC$。*
 
@@ -207,7 +207,7 @@ $$
 
 ## 6. 理论三：寄生电容分压与自举电压误差
 
-![原 PDF：Ma 等寄生等效与三项主要非理想性](/images/blog/learning-notes/adc-bootstrapped-switch/p04_three_nonidealities.png)
+![原 PDF：Ma 等寄生等效与三项主要非理想性](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p04_three_nonidealities.png)
 
 *图 8：源 PDF 第 4 页，来自 [R12] 的研究思路：源漏交换、寄生电容分压、charge redistribution。*
 
@@ -263,7 +263,7 @@ $$
 
 ### 7.3 Floating well / dynamic deep N-well
 
-![原 PDF：浮阱优化电路对比](/images/blog/learning-notes/adc-bootstrapped-switch/p07_floating_well.png)
+![原 PDF：浮阱优化电路对比](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p07_floating_well.png)
 
 *图 9：源 PDF 第 7 页，Zheng 等提出的寄生优化方案，参见 [R07] 及对应的 2016 年 S/H 专题 [R23]。*
 
@@ -316,7 +316,7 @@ $$
 3. 在理想全差分结构中 HD2 可抵消，但 HD3 不会因差分对称自动消失。
 4. 公式不覆盖源漏交换、分压、结电容、记忆效应和 track→hold 的采样误差，这些须额外建模。[R12]
 
-![自绘：弱非线性模型的 HD2/HD3 随输入频率趋势](/images/blog/learning-notes/adc-bootstrapped-switch/theory_harmonics_scaling.png)
+![自绘：弱非线性模型的 HD2/HD3 随输入频率趋势](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/theory_harmonics_scaling.png)
 
 *图 10：采用人为设定的 $\tau=8$ ps、$A=0.4$ V、$a_1=0.22\,\mathrm{V^{-1}}$、$a_2=0.48\,\mathrm{V^{-2}}$ 计算，只验证推导的趋势，不是 28 nm 的性能预测；当 $\omega\tau$ 不再很小时近似失效。*
 
@@ -427,7 +427,7 @@ $$
 
 对高速 TI-ADC，负责**第一次定义模拟采样时刻**的 THA 边沿直接影响输入信号 jitter；而对保持后近乎 DC 的电压进行子 ADC 采样，时钟抖动的敏感性大幅降低，但**子 ADC 时钟仍必须严格落在 THA 有效保持窗内部**。
 
-![自行绘制：THA 和子 ADC 采样窗口关系](/images/blog/learning-notes/adc-bootstrapped-switch/schematic_sample_window.svg)
+![自行绘制：THA 和子 ADC 采样窗口关系](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/schematic_sample_window.svg)
 
 *图 11：自绘概念时序图，并非任何具体芯片的实际波形。给子 ADC 压缩 track 脉宽时必须保留 hold guard band。*
 
@@ -446,13 +446,13 @@ $$
 
 ### 12.2 [B] 浮阱/寄生优化：2016 Zheng
 
-![源 PDF：浮阱与常规 BS 对比](/images/blog/learning-notes/adc-bootstrapped-switch/p07_floating_well.png)
+![源 PDF：浮阱与常规 BS 对比](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p07_floating_well.png)
 
 抑制自举主路径非线性 junction loading；对于 IF/高频采样特别重要。源 PDF 描述 400 MHz 输入处 SFDR 改善约 8 dB，应理解为论文所报告**具体比较条件**而不是任意工艺适用的增益。完整 ADC 测量包括 250 MS/s 下 400 MHz 输入仍获得超过 84 dB SFDR。[R07,R23]
 
 ### 12.3 [C] 快速导通 / Accelerated bootstrapping：Devarajan 2017
 
-![源 PDF：快速导通支路](/images/blog/learning-notes/adc-bootstrapped-switch/p08_fast_turnon.png)
+![源 PDF：快速导通支路](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p08_fast_turnon.png)
 
 传统驱动从时钟切换至辅助节点再到 PMOS 开关有串行延迟；增加加速支路直接控制关键 PMOS 栅极，缩短 $t_{start}$，更适合短 track 窗。原 PDF 第 8 页以 120 ps→100 ps 为论文讨论的示例，不能简单等同于同一颗 ADC 的最高采样率或所有输入频率下的保证。[R06]
 
@@ -460,25 +460,25 @@ $$
 
 ### 12.4 [D] Dual-path：Swindlehurst 2021 JSSC
 
-![源 PDF：双路径结构](/images/blog/learning-notes/adc-bootstrapped-switch/p09_dual_path.png)
+![源 PDF：双路径结构](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p09_dual_path.png)
 
 关键动机不是简单增加两条信号输入线，而是把影响关键 bootstrap gate 的**PMOS N-well 非线性寄生**转移/隔离到辅助电路路径。原 PDF 引用约 **7:1** 的主辅尺寸/电容比例，是某个设计的具体优化点，不是数学定律；设计时仍需扫比例并看应力、启动、SFDR、面积。[R08]
 
 ### 12.5 [E] Dual-loop：Ramkaj 2020 JSSC
 
-![源 PDF：双环路和时间波形](/images/blog/learning-notes/adc-bootstrapped-switch/p10_dual_loop.png)
+![源 PDF：双环路和时间波形](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p10_dual_loop.png)
 
 引入多个相互配合的自举控制节点，使关键串联开关快速且较同步地进入强导通状态，减小动态栅压误差和部分大寄生。原 PDF 提到 $R_{ON}\approx10\,\Omega$、一定频率范围内变化小、HD2 低于 −80 dB，这些都是**该文实现及测试条件的报告数值**，需回到 Fig. 4 和实验条件核对。[R09]
 
 ### 12.6 [F] 进一步分离辅助支路：2025 ISSCC 72 GS/s
 
-![源 PDF：改进 dual-path 和 dummy BS](/images/blog/learning-notes/adc-bootstrapped-switch/p11_improved_dual_path.png)
+![源 PDF：改进 dual-path 和 dummy BS](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p11_improved_dual_path.png)
 
 Zhang 等报道 **72 GS/s、9-bit TI Pipeline-SAR ADC（16 nm FinFET）**。源 PDF 总结关键点为主/辅支路更严格分离、虚拟 BS 以抑制馈通，以及较短跟踪延迟和更高 boost。其“+5.2 ps、+150 mV、+6 dB SFDR”需理解为**论文特定对比基线**；这不是独立 BS 通用指标。[R10]
 
 ### 12.7 [G] 多路径：Ding et al. 2025
 
-![源 PDF：多路径结构](/images/blog/learning-notes/adc-bootstrapped-switch/p12_multi_path.png)
+![源 PDF：多路径结构](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-bootstrapped-switch/p12_multi_path.png)
 
 将**主信号自举、非线性寄生隔离、控制开启、快速导通**分为多条功能不同的路径，突破“大尺寸单路径承载所有需求”的矛盾。源 PDF 提到主辅约 7:1、额外控制 M5–M7 和加速 M4；论文报道的整机规格是 **14 GS/s、8-bit TI-SAR、28 nm**，应从该文完整测量/仿真条件评估各改进贡献。[R11]
 

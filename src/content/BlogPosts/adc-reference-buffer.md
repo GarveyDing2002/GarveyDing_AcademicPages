@@ -87,7 +87,7 @@ tags:
 - **LDO：负责“供电稳”**——生成干净的 AVDD/DVDD。
 - **RVB：负责“把准确的 reference 变硬”**——在 CDAC 瞬态抽取/回灌电荷时仍维持 VREFP/VREFN。
 
-![01_reference_system_overview](/images/blog/learning-notes/adc-reference-buffer/01_reference_system_overview.svg)
+![01_reference_system_overview](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/01_reference_system_overview.svg)
 
 因此，RVB 与 LDO 在电路拓扑上可能非常相似：二者都可能含误差放大器、功率/输出晶体管、局部反馈、Class-AB、FVF、补偿与输出电容；但**设计对象不同**：
 
@@ -236,7 +236,7 @@ $$
 
 ### 1.4 三种时间尺度：CDEC、Local Loop 与 Global Loop
 
-![03_charge_timescales](/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.svg)
+![03_charge_timescales](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.svg)
 
 高速 reference system 最好按时间尺度理解。
 
@@ -294,7 +294,7 @@ $$
 
 ### 1.5 从电荷守恒推导参考误差与码相关非线性（新增）
 
-![09_reference_network_impedance](/images/blog/learning-notes/adc-reference-buffer/09_reference_network_impedance.svg)
+![09_reference_network_impedance](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/09_reference_network_impedance.svg)
 
 #### 1.5.1 单次 CDAC 切换究竟从参考端抽走多少电荷？
 
@@ -659,7 +659,7 @@ $$
 
 ### 2.3 将 ADC 精度分配到参考动态误差预算（新增）
 
-![10_refp_refn_common_mode](/images/blog/learning-notes/adc-reference-buffer/10_refp_refn_common_mode.svg)
+![10_refp_refn_common_mode](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/10_refp_refn_common_mode.svg)
 
 #### 2.3.1 先区分 ADC LSB 和 reference 电压允许偏移
 
@@ -689,7 +689,7 @@ $$
 
 #### 2.3.3 把 settling spec 写在锁存时刻
 
-![11_sar_bitcycle](/images/blog/learning-notes/adc-reference-buffer/11_sar_bitcycle.svg)
+![11_sar_bitcycle](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/11_sar_bitcycle.svg)
 
 对每一次比较器 latch，定义 $t_{k,lat}$：
 
@@ -703,7 +703,7 @@ $$
 
 ### 3.1 架构总览
 
-![02_rvb_architecture_tree](/images/blog/learning-notes/adc-reference-buffer/02_rvb_architecture_tree.svg)
+![02_rvb_architecture_tree](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/02_rvb_architecture_tree.svg)
 
 从工程角度，可以将经典 RVB 分为以下几族：
 
@@ -958,7 +958,7 @@ CDAC 高频瞬态发生时，全局环路可能尚未建立修正电流。
 
 ### 3.5 SF、SSF、FVF 的信号路径与输出阻抗辨析（新增）
 
-![06_sf_ssf_fvf](/images/blog/learning-notes/adc-reference-buffer/06_sf_ssf_fvf.svg)
+![06_sf_ssf_fvf](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/06_sf_ssf_fvf.svg)
 
 - **SF**：普通共漏跟随器，输出端的器件局部作用已经给出 $\sim 1/(g_m+g_{mb})$ 的阻抗；并非“完全没有反馈”。
 - **SSF**：通过辅助晶体管/放大路径增强调节，通常在内部节点构成 local negative feedback，改善输出阻抗和速度。名称应以论文原理图为准。
@@ -1097,7 +1097,7 @@ $$
 
 ### 4.3 双向瞬态能力与 Class-AB 实测论文（新增）
 
-![07_classab_source_sink](/images/blog/learning-notes/adc-reference-buffer/07_classab_source_sink.svg)
+![07_classab_source_sink](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/07_classab_source_sink.svg)
 
 #### 4.3.1 为什么输出级“强 source”不代表“强 sink”？
 
@@ -1132,7 +1132,7 @@ L. Zeng, M. Wang, R. Yin, Y. Gu, Y. Zhang, Z. Tang, “A Class-AB Reference Volt
 
 FVF 是高速 RVB 和 fast-transient LDO 中最重要的经典结构之一。
 
-![04_fvf_local_feedback](/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.svg)
+![04_fvf_local_feedback](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.svg)
 
 ---
 
@@ -1375,7 +1375,7 @@ SSF、regulated follower、FVF 都属于利用局部环路增强 follower 的设
 
 ### 5.5 FVF 环路极性、小信号推导与稳定性（新增，重点）
 
-![04_fvf_local_feedback](/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.svg)
+![04_fvf_local_feedback](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.svg)
 
 #### 5.5.1 如何判断负反馈？先定主 pass 管的类型
 
@@ -1390,7 +1390,7 @@ SSF、regulated follower、FVF 都属于利用局部环路增强 follower 的设
 
 #### 5.5.2 用输出端注入 $i_t$ 推导 $Z_{out}$
 
-![13_fvf_small_signal](/images/blog/learning-notes/adc-reference-buffer/13_fvf_small_signal.svg)
+![13_fvf_small_signal](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/13_fvf_small_signal.svg)
 
 给出一个清晰可验证的简化模型：输出 NMOS 的 $g_{mp},g_{mb},g_{dsp}$，负载等效电导 $g_L$；将 sense stage 的增益写成 $\delta v_g=-A_s\delta v_o$（反相信号路径，$A_s>0$）。以 $i_t$ 为注入输出节点的测试电流，忽略寄生电容时：
 
@@ -1680,7 +1680,7 @@ $$
 
 ### 6.5 外接 C 与 Capless 的主极点、补偿和真实网络阻抗（新增）
 
-![08_cap_vs_capless_poles](/images/blog/learning-notes/adc-reference-buffer/08_cap_vs_capless_poles.svg)
+![08_cap_vs_capless_poles](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/08_cap_vs_capless_poles.svg)
 
 #### 6.5.1 传统外接大 $C_{OUT}$ 的 LDO / RVB
 
@@ -1727,7 +1727,7 @@ $$
 
 ### 7.1 Global + Local / Hierarchical RVB
 
-![05_hierarchical_reference_distribution](/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.svg)
+![05_hierarchical_reference_distribution](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.svg)
 
 对多通道/TI ADC，如果所有子 ADC 直接挂在同一个 reference 节点：
 
@@ -1844,7 +1844,7 @@ $$
 
 ### 7.3 20 GS/s、32 路 TI-ADC 的参考分配案例（新增）
 
-![05_hierarchical_reference_distribution](/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.svg)
+![05_hierarchical_reference_distribution](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.svg)
 
 对 20 GS/s、12-bit、32 路子 ADC（每路 625 MS/s）的层次化交织系统，可把 RVB 作为与 Clock/IBF/THA 同级的重要系统网络考虑。以下为**设计推导与备选方案**，并非某篇论文直接验证了这张图。
 
@@ -2180,7 +2180,7 @@ $$
 
 ### 8.6 按 CDAC 时序构建可执行的验证计划（新增）
 
-![12_simulation_matrix](/images/blog/learning-notes/adc-reference-buffer/12_simulation_matrix.svg)
+![12_simulation_matrix](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/12_simulation_matrix.svg)
 
 #### Phase 0：用行为电流源抽象 CDAC
 
@@ -2370,7 +2370,7 @@ $$
 
 ### 9.4 代表性文献与进一步阅读（更新：核验 DOI 和原始出处）
 
-![14_rvb_reading_map](/images/blog/learning-notes/adc-reference-buffer/14_rvb_reading_map.svg)
+![14_rvb_reading_map](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-reference-buffer/14_rvb_reading_map.svg)
 
 > [!info] 阅读与核验规则
 > **A 类**：直接涉及 SAR / Pipeline ADC reference error 或 RVB；**B 类**：FVF/LDO/Capless 方法论文，迁移到 RVB 需要重新验证 CDAC 负载；**C 类**：商用 ADC reference 应用笔记。已尽量补全可核验 DOI；不把 LDO 通用论文误称为已在 ADC 中验证的 Reference Buffer。

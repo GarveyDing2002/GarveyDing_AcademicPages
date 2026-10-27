@@ -32,7 +32,7 @@ tags:
 
 ## 1. 架构分类与总体框架
 
-![01_adc_architecture_map](/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.svg)
+![01_adc_architecture_map](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.svg)
 
 *图：ADC 架构选择应同时考虑速度、精度、功耗和输入场景。*
 
@@ -203,11 +203,11 @@ tags:
 
 现代架构选型至少具有六个独立维度：**带内信号带宽**、**采样率与 OSR**、**目标 SNDR / SFDR**、**输入频率与模拟前端带宽**、**允许的转换延迟**、**功耗/面积与工艺供电约束**。对高速 ADC，`Fs=20 GS/s` 并不代表可在 `Fin=10 GHz` 保持同一 ENOB；在未给出输入频率时，不应比较两个高速 ADC 的“最佳 SNDR”。另外，多路 TI 是**系统并行组织方式**，可与 SAR、pipeline、flash、NS-SAR 等叠加，而不是与这些转换机制互斥的一类。
 
-![2026_05_专项机制图](/images/blog/learning-notes/adc-architectures/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_多维架构地图](/images/blog/learning-notes/adc-architectures/2026_01_多维架构地图.svg)
+![2026_01_多维架构地图](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/2026_01_多维架构地图.svg)
 
 从采样保持的角度，至少应建立如下预算：
 
@@ -233,7 +233,7 @@ $$\widehat V_{\rm in}=V_{\rm DAC1}+\frac{\widehat V_{\rm res}}{G_{\rm est}}.$$
 
 两者共有的数学目标是：通过环路或误差反馈把量化噪声的传递函数 `NTF(z)` 在信号带内压低。典型一阶误差反馈写为 `Y(z)=X(z)+(1−z^{-1})E(z)`；若环路实现改变，这并不自动成立。**NS-SAR**常用 SAR CDAC/比较器同时完成多位量化与误差提取，集成在逐次逼近周期中；**ΔΣ**主要依靠持续时间域或离散时间积分器的高 OSR 闭环调制。两者可以组合，也不能仅根据“使用积分器”或“有噪声整形”一词断定 ADC 类型。设计时要检查环路状态摆幅、延迟、非理想 NTF、比较器残余噪声及 out-of-band noise。详见 Pavan、Schreier、Temes 的系统教材。[R4]
 
-![2026_02_量化与误差整形](/images/blog/learning-notes/adc-architectures/2026_02_量化与误差整形.svg)
+![2026_02_量化与误差整形](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/2026_02_量化与误差整形.svg)
 
 ### A4. 读论文和筛选架构时必须统一的指标
 
@@ -242,7 +242,7 @@ $$\widehat V_{\rm in}=V_{\rm DAC1}+\frac{\widehat V_{\rm res}}{G_{\rm est}}.$$
 3. **系统开销**：对 TI 架构，将 PLL/MPCG、前端 buffer/THA、数字后台校准、输出 PHY 逐项计入；很多论文的核 ADC 功耗与整个系统功耗边界不相同。
 4. **验证边界**：分别列出 schematic/post-layout、测试芯片实测和计算值；标出 `FSR` 是单端还是差分峰峰值。
 
-![2026_03_架构决策流程](/images/blog/learning-notes/adc-architectures/2026_03_架构决策流程.svg)
+![2026_03_架构决策流程](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/2026_03_架构决策流程.svg)
 
 **研究追问**：选定目标为高速 12-bit 时，先做系统噪声/非线性/抖动预算，再据此反推 ① 每级位数与冗余 ② 余差增益与建立时间 ③ 时钟层级与 skew ④ 片上数字输出/采集方式。避免“先选最前沿结构，再寻找指标”造成不必要的结构复杂度。
 
@@ -261,7 +261,7 @@ $$\widehat V_{\rm in}=V_{\rm DAC1}+\frac{\widehat V_{\rm res}}{G_{\rm est}}.$$
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/adc-architectures/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-architectures/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

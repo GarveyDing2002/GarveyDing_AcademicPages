@@ -1427,11 +1427,11 @@ $$\frac{1}{I_D}\frac{d I_D}{dT}\approx\frac{1}{\mu}\frac{d\mu}{dT}-\frac{2}{V_{o
 
 第一项通常为负（迁移率随温度升高下降）；若 `dVTH/dT<0`，第二项为正（升温降低门槛，增加 overdrive），二者竞争决定电流温度系数。低温 `VTH` 提升导致电流降低在**固定 VGS、低压/near-threshold**设计中很重要；而在恒定漏电流偏置、强反型条件下，随着低温迁移率提高，有效 `g_m` 反而可能增大。短沟道速度饱和、DIBL、源漏串联电阻、自热与工艺模型会进一步偏离平方律。
 
-![2026_05_专项机制图](/images/blog/learning-notes/mos-pvt/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/mos-pvt/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_温度竞争机制](/images/blog/learning-notes/mos-pvt/2026_01_温度竞争机制.svg)
+![2026_01_温度竞争机制](/GarveyDing_AcademicPages/images/blog/learning-notes/mos-pvt/2026_01_温度竞争机制.svg)
 
 ### V2. 器件参数如何映射到 ADC 功能模块
 
@@ -1453,7 +1453,7 @@ $$\frac{1}{I_D}\frac{d I_D}{dT}\approx\frac{1}{\mu}\frac{d\mu}{dT}-\frac{2}{V_{o
 - **时钟路径 PVT**：逻辑门传播延时、边沿上升/下降不对称、金属 RC 与 buffer loading 协同变化，若 THA 近时钟源而 Sub-ADC 远在另一侧，需要**相对相位而非单门延时**的联合 corner sweep。
 - **Monte Carlo 统计量**：分别报告均值、标准差、最坏/分位数及违反规格的样本数；少量试验“没有 fail”并不等于可承诺高良率。
 
-![2026_02_PVT与失配分层](/images/blog/learning-notes/mos-pvt/2026_02_PVT与失配分层.svg)
+![2026_02_PVT与失配分层](/GarveyDing_AcademicPages/images/blog/learning-notes/mos-pvt/2026_02_PVT与失配分层.svg)
 
 ### V4. 625 MS/s 单通道与 20 GS/s TI 阵列的验证矩阵
 
@@ -1461,7 +1461,7 @@ $$\frac{1}{I_D}\frac{d I_D}{dT}\approx\frac{1}{\mu}\frac{d\mu}{dT}-\frac{2}{V_{o
 
 建议 Monte Carlo 分两组：`process only`（工艺全局）与 `mismatch only`（局部），再组合；每轮保留 random seed、corner、model lib、temp、VDD、layout view、PEX 版本。对所有 edge-sensitive 元件额外存下降沿的 duty/hold window，不只是上升沿 propagation delay。
 
-![2026_03_Corner验证矩阵](/images/blog/learning-notes/mos-pvt/2026_03_Corner验证矩阵.svg)
+![2026_03_Corner验证矩阵](/GarveyDing_AcademicPages/images/blog/learning-notes/mos-pvt/2026_03_Corner验证矩阵.svg)
 
 ### V5. 重点参考文献与模型资料
 
@@ -1475,7 +1475,7 @@ $$\frac{1}{I_D}\frac{d I_D}{dT}\approx\frac{1}{\mu}\frac{d\mu}{dT}-\frac{2}{V_{o
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/mos-pvt/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/mos-pvt/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

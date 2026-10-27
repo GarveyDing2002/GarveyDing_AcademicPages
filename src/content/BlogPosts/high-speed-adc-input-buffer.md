@@ -79,7 +79,7 @@ ADC 的开关电容输入不是恒定电阻，也不是单纯的固定电容。�
 
 Buffer 用低输出阻抗及电源提供的驱动电流，让外部信号源主要面对较可控的输入导纳，同时承受内部采样网络的充放电需求。它可以降低反向扰动，但输入输出寄生耦合、供电及衬底耦合仍然存在，不能把“隔离”理解成完全单向。
 
-![14_fanout](/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png)
+![14_fanout](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png)
 
 *图 1：Huang 等，2022，原 Fig. 1，PDF 第 2 页。左图把封装、ESD、匹配、buffer、走线与采样阵列放在同一链路；右图表明实际扇出是一张分布网络。[论文 DOI](https://doi.org/10.1109/TCSII.2022.3188534)，Zotero：`B5HLXYYN`。*
 
@@ -417,7 +417,7 @@ VDD → Ib → x → M1(D→S) → Vout → M2(D→S) → VSS
              ↑ gate=Vin             ↑ gate=x
 ```
 
-![01_fvf_comparison](/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png)
+![01_fvf_comparison](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png)
 
 *图 2：Huang 等，2022，原 Fig. 2，PDF 第 2 页。(a) 为 SF 加前馈补偿，不是裸 SF；(b) 为经典 FVF；(c) 为 AC 耦合扩展。对照电流源位置及反馈支路阅读。[论文 DOI](https://doi.org/10.1109/TCSII.2022.3188534)，Zotero：`B5HLXYYN`。*
 
@@ -488,7 +488,7 @@ $$
 
 SSF 通常指加入局部增益和主动输出支路的 super source follower。不同文献会称改进形式为 enhanced SSF、Class-AB SSF 或 AC-coupled SSF；部分机制与 FVF 重叠。分类时应记录：**谁感测误差、哪个节点提供增益、哪只管给负载供电、DC 偏置如何设置**，而不只看缩写。
 
-![02_ssf_essf](/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png)
+![02_ssf_essf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png)
 
 *图 3：Guo 等，2025，原 Fig. 1，PDF 第 1 页，左为传统 SSF，右为加入共栅级的 ESSF。原文结果属于后仿。该图用于识别结构，不代表 SSF 最早提出时间。[论文 DOI](https://doi.org/10.1109/ICTA68203.2025.11329604)，Zotero：`DLDWSRMX`。*
 
@@ -512,7 +512,7 @@ $$
 
 传统 SSF 某个方向仍可能受固定电流源限制。Class-AB 扩展将误差信号同时送往供电和吸电流支路，在静态功耗较低时提供更大的瞬态电流。AC 耦合允许 DC 电流由偏置网络设置，而交流动态驱动由内部节点控制。
 
-![03_differential_ssf](/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png)
+![03_differential_ssf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png)
 
 *图 4：Shifman 等，2019，原 Fig. 4，PDF 第 2 页。(a) 为 Class-AB SSF，(b) 为差分改进结构。红色、绿色、橙色及蓝色线路对应原文的支路修改，阅读时同时追踪 bias、共模调节与交叉补偿。[论文 DOI](https://doi.org/10.1109/A-SSCC47793.2019.9056969)，Zotero：`MQDUICAW`。*
 
@@ -610,7 +610,7 @@ $$
 
 ### 7.7 带 drain bootstrap 的 PPSF
 
-![04_ppsf_bootstrap](/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png)
+![04_ppsf_bootstrap](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png)
 
 *图 5：Devarajan 等，2017，原 Fig. 11，PDF 第 7 页／期刊第 3210 页。输出最近的互补跟随管外还有两层 cascode／bootstrap；右侧给出 level shifter。这里展示的是 input buffer，不是同页的 MDAC 放大器。[论文 DOI](https://doi.org/10.1109/JSSC.2017.2747758)，Zotero：`JI8G84VA`。*
 
@@ -793,7 +793,7 @@ $$
 
 ### 10.4 两级 cascade complementary SF
 
-![06_ccsf](/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png)
+![06_ccsf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png)
 
 *图 6：Li 等，2024，原 Fig. 2，PDF 第 2 页／期刊第 963 页。左为 PMOS SF 级，右为 NMOS SF 级，并包含 drain 跟随、补偿电容和辅助运放。[论文 DOI](https://doi.org/10.1109/TVLSI.2024.3349564)，Zotero：`IZ8STV8W`。*
 
@@ -805,7 +805,7 @@ $$
 
 消除 $V_{SB}$ 变化并未消除 body 到 deep well／substrate 的寄生电容。若 body 与输出相连，这些非线性结电容直接加载输出。它们可能比主负载小得多，却主导高频 HD3。
 
-![05_body_buffer](/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png)
+![05_body_buffer](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png)
 
 *图 7：Scaletti 等，2023，原 Fig. 3，PDF 第 3 页。辅助 follower 驱动主输出管 body，承担相应非线性寄生电容电流。[论文 DOI](https://doi.org/10.1109/NEWCAS57931.2023.10198057)，Zotero：`PKP4WR5K`。*
 
@@ -815,13 +815,13 @@ $$
 
 交叉连接可以利用差分或互补节点的相关运动，调整 $V_{SB}$、输出电阻或寄生电容电流。必须依据实际节点的 AC 极性、DC 偏置和结结构判断。正负支路在差模下反相，互补堆栈上某些等效节点却可能同相；“交叉”不代表统一的补偿方向。
 
-![11_body_cross_coupling](/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png)
+![11_body_cross_coupling](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png)
 
 *图 8：Li 等，2025，原 Fig. 6，PDF 第 4 页。该结构在尾电流源等处引入交叉衬底补偿，不能与图 7 的主输出管 body-buffer 当成同一技术。[论文 DOI](https://doi.org/10.1587/elex.22.20250092)，Zotero：`RNRP3VQM`。*
 
 ### 10.7 SACC：补偿电流而非继续增加堆栈
 
-![07_sacc](/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png)
+![07_sacc](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png)
 
 *图 9：Cao 等，2024，原 Figs. 13–14，PDF 第 7 页／期刊第 4217 页。小尺寸补偿单元利用相反相位的输入产生补偿电流；曲线是静态仿真。[论文 DOI](https://doi.org/10.1109/JSSC.2024.3482567)，Zotero：`AMZFXGAJ`。*
 
@@ -1012,7 +1012,7 @@ PSRR 可定义为 $20\log_{10}|v_{supply}/v_{out}|$，也有按信号增益归�
 
 ### 13.3 浮置保持节点的反向耦合
 
-![13_hold_kickback](/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png)
+![13_hold_kickback](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png)
 
 *图 10：Shifman 等，2019，原 Fig. 3，PDF 第 2 页。前级进入 hold 后，后级 buffer 输出继续移动，通过输入输出寄生电容改变已保持输入。[论文 DOI](https://doi.org/10.1109/A-SSCC47793.2019.9056969)，Zotero：`MQDUICAW`。*
 
@@ -1032,11 +1032,11 @@ $$
 
 ### 13.5 动态 buffer 与预开启
 
-![09_hierarchy_interface](/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png)
+![09_hierarchy_interface](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png)
 
 *图 11：Markulić 等，2024，原 Fig. 2，PDF 第 2 页。分裂采样电容、电平设置、动态 PP-SF 和后级采样协同工作。[论文 DOI](https://doi.org/10.1109/VLSITechnologyandCir46783.2024.10631521)，Zotero：`GHM37WIL`。*
 
-![08_hierarchy_timing](/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png)
+![08_hierarchy_timing](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png)
 
 *图 12：同文原 Fig. 3，PDF 第 2 页。时钟、分布电容及布局共同决定实际 charge transfer 时间。图 11 与图 12 配合阅读。*
 
@@ -1082,7 +1082,7 @@ Hold 时输入仍继续变化，经 $C_{off}$ 或开关寄生耦合到采样节�
 
 ### 14.5 有源 bootstrap：主信号与 gate 驱动同时跟踪
 
-![10_active_bootstrap](/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png)
+![10_active_bootstrap](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png)
 
 *图 13：Heel 等，2025，原 Fig. 9，PDF 第 7 页。主 buffer 驱动被采样信号，辅助 buffer 驱动 gate 跟踪路径，通过不同供电／偏置设置近似恒定的开关 $V_{GS}$。[论文 DOI](https://doi.org/10.1109/JSSC.2025.3598874)，Zotero：`62CPDB27`。*
 
@@ -1288,7 +1288,7 @@ Monte Carlo 至少区分 global process variation 与 local mismatch，按工艺
 
 若 $n$ 次独立样本零失败，失败概率的约 95% 单边上界可粗估为 $3/n$。例如 200 次零失败仍只支持约 1.5% 的失败率上界量级，不能宣布 ppm 级良率；此外模型本身和覆盖条件也限制结论。
 
-![12_pvt_mc](/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png)
+![12_pvt_mc](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png)
 
 *图 14：Li 等，2025，原 Figs. 12–13，PDF 第 5 页，包含 PVT 与 200 次 Monte Carlo。该图展示报告形式和特定条件下的分布，不是本文运行的仿真，也不是芯片良率证明。[论文 DOI](https://doi.org/10.1587/elex.22.20250092)，Zotero：`RNRP3VQM`。*
 

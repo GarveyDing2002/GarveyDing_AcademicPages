@@ -139,7 +139,7 @@ flowchart TD
 > [!tip] 架构选型直觉
 > 下图只是用于建立“速度/能效”和“精度/低噪声”的相对直觉，不代表统一 FoM 或绝对性能排名。
 
-![fig_architecture_tradeoff](/images/blog/learning-notes/adc-comparators/fig_architecture_tradeoff.svg)
+![fig_architecture_tradeoff](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_architecture_tradeoff.svg)
 
 ---
 
@@ -302,7 +302,7 @@ flowchart LR
     LAT --> OUT[Digital Output]
 ```
 
-![fig_strongarm](/images/blog/learning-notes/adc-comparators/fig_strongarm.svg)
+![fig_strongarm](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_strongarm.svg)
 
 > [!note] 结构理解
 > StrongARM 的核心是“输入感知与正反馈再生高度耦合”。其命名源于 DEC StrongARM 处理器中的应用，而基本拓扑更早已有类似实现。Razavi 的 2015 年综述是理解其工作相位、失调和再生过程的经典入口。[R2]
@@ -369,7 +369,7 @@ flowchart LR
     CLK --> LAT
 ```
 
-![fig_double_tail](/images/blog/learning-notes/adc-comparators/fig_double_tail.svg)
+![fig_double_tail](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_double_tail.svg)
 
 > [!note] 经典来源
 > Schinkel 等人在 ISSCC 2007 的经典工作通过“输入级与交叉耦合再生级分离”实现 double-tail sense amplifier，并报告了 90 nm CMOS、1.2 V 下约 92 fJ/decision、1.5 mV input-equivalent noise、8 mV 的 1σ offset 和 18 ps setup+hold time。这里的数字只用于理解该架构的历史定位，不应直接拿来作为先进工艺的设计目标。[R3]
@@ -466,7 +466,7 @@ $$
 
 FIA 为 Floating Inverter Amplifier，利用 CMOS inverter 的 NMOS 与 PMOS 同时提供跨导。
 
-![fig_fia_latch](/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg)
+![fig_fia_latch](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg)
 
 #### 2.8.2 工作原理
 
@@ -868,7 +868,7 @@ $$
 
 设计目标通常是让第一级成为主要噪声源，后级贡献被前置增益充分压低。
 
-![fig_noise_budget](/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg)
+![fig_noise_budget](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg)
 
 > [!note] 非平稳噪声
 > Dynamic comparator 的噪声发生在 reset、积分和再生等瞬态过程中，严格来说不是简单的稳态宽平稳噪声问题。Sepke 等人的工作是理解 comparator-based circuits 非平稳噪声分析的经典参考。[R7]
@@ -1135,7 +1135,7 @@ $$
 
 ### 6.7 IOS：Input Offset Storage
 
-![fig_offset_cancellation](/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg)
+![fig_offset_cancellation](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg)
 
 在输入侧 capacitor 存储 input-referred offset：
 
@@ -1368,7 +1368,7 @@ $$
 
 而不是只看平均 delay。
 
-![fig_metastability_delay](/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg)
+![fig_metastability_delay](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg)
 
 > [!warning] 读图方式
 > 图中曲线只是由再生模型生成的概念示意。真正的 $t_{cmp}(V_{in})$ 必须用目标 PVT、真实输入共模、负载和 clock slew 进行 transient / Monte Carlo 提取。
@@ -1830,7 +1830,7 @@ Comparator 最终是否“够好”应通过 ADC 指标验证：
 
 ### 14.1 从 ADC 系统指标反推 Comparator Spec
 
-![fig_design_flow](/images/blog/learning-notes/adc-comparators/fig_design_flow.svg)
+![fig_design_flow](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_design_flow.svg)
 
 先确定：
 

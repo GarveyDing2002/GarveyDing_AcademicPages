@@ -422,11 +422,11 @@ $$G_{\rm cl}=\frac{A_0}{1+A_0\beta},\qquad\frac{G_{\rm ideal}-G_{\rm cl}}{G_{\rm
 
 这意味着对 `G=16` 的余差放大器，如果反馈因子近似 `β=1/16`，即使 `A0=100`（40 dB），环路增益只有 6.25，静态相对误差约 `13.8%`，绝非“40 dB 已足以做 12-bit”——**这里纯粹是未补偿的简单闭环估算**，没有包括寄生反馈因子与校准。为得到高精度，通常需要更高有效环路增益、CLS 误差抵消、数字级间增益校准，或它们组合。实际 `β` 由 `C_F`、CDAC 和寄生决定，不能简单由标称 G 倒推。
 
-![2026_05_专项机制图](/images/blog/learning-notes/correlated-level-shifting/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/correlated-level-shifting/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_CLS误差路径](/images/blog/learning-notes/correlated-level-shifting/2026_01_CLS误差路径.svg)
+![2026_01_CLS误差路径](/GarveyDing_AcademicPages/images/blog/learning-notes/correlated-level-shifting/2026_01_CLS误差路径.svg)
 
 ### C2. 两相位为何能消误差，也为何可能拖慢建立
 
@@ -446,7 +446,7 @@ $$e_{\rm total}=e_{\rm finite\ gain}+e_{\rm settling}+e_{\rm charge\ injection}+
 |DACLS|分布式平均、多次 level-shifting，可不额外加载输出 CLS 电容|拓扑复杂度与切换瞬态|Wang/Kuo 2022 [C4]|
 |CLS+RingAmp|以动态 RingAmp 替代传统 OTA，利用误差抑制|重启、过冲、PVT、自激/死区、CMFB|Hershberg 2012 [C1]|
 
-![2026_02_CLS变种比较](/images/blog/learning-notes/correlated-level-shifting/2026_02_CLS变种比较.svg)
+![2026_02_CLS变种比较](/GarveyDing_AcademicPages/images/blog/learning-notes/correlated-level-shifting/2026_02_CLS变种比较.svg)
 
 ### C4. 面向 625 MS/s 余差放大的时序检查
 
@@ -460,7 +460,7 @@ $$e_{\rm total}=e_{\rm finite\ gain}+e_{\rm settling}+e_{\rm charge\ injection}+
 - TT/SS/FF、`VDD_min/max`、高低温下分别检查 startup 与终态，避免只测 27°C；
 - 对电容注入进行 Monte Carlo、pex/Calibre View、输出走线寄生与 clock feedthrough 检验。
 
-![2026_03_625M建立窗口](/images/blog/learning-notes/correlated-level-shifting/2026_03_625M建立窗口.svg)
+![2026_03_625M建立窗口](/GarveyDing_AcademicPages/images/blog/learning-notes/correlated-level-shifting/2026_03_625M建立窗口.svg)
 
 ### C5. 仿真判据、反例与参考文献
 
@@ -477,7 +477,7 @@ $$e_{\rm total}=e_{\rm finite\ gain}+e_{\rm settling}+e_{\rm charge\ injection}+
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/correlated-level-shifting/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/correlated-level-shifting/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

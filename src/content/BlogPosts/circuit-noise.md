@@ -1800,11 +1800,11 @@ $$v_{n,in,eq}^2=\int_0^\infty \frac{S_{v,out}(f)}{|H_{sig}(f)|^2}\,df\quad\text{
 
 在实际设计中更稳妥的方式是按最终采样量，将每个源的 `S_i(f)` 乘其**输出传函** `|H_i(f)|²`，求输出均方噪声，再统一折算回输入端。对不相关噪声可加均方值，不可直接把 RMS 电压线性相加；对于同一器件经多条路径产生的相关噪声，应保留相关项。
 
-![2026_05_专项机制图](/images/blog/learning-notes/circuit-noise/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-noise/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_噪声传递路径](/images/blog/learning-notes/circuit-noise/2026_01_噪声传递路径.svg)
+![2026_01_噪声传递路径](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-noise/2026_01_噪声传递路径.svg)
 
 ### N2. kT/C 不是所有采样相位中唯一的噪声
 
@@ -1823,7 +1823,7 @@ $$v_{n,in,eq}^2=\int_0^\infty \frac{S_{v,out}(f)}{|H_{sig}(f)|^2}\,df\quad\text{
 
 小抖动下 `δv≈(dv/dt)δt`；对正弦输入 `A sin 2πft`，产生 `SNR_j=−20log10(2πfσ_t)`。例如假设 `f_in=10 GHz`、`σ_t=50 fs`，则计算得到约 **50.1 dB**，对应即使其他噪声理想，也远不能获得 12-bit 理想 `74 dB` SNR。该算例说明输入频率远比子 ADC 的内部运算时钟频率对真正**输入 aperture jitter**更敏感，不能把 THA 和后级只采样近似 DC 的逻辑等同。
 
-![2026_02_噪声与jitter分类](/images/blog/learning-notes/circuit-noise/2026_02_噪声与jitter分类.svg)
+![2026_02_噪声与jitter分类](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-noise/2026_02_噪声与jitter分类.svg)
 
 ### N4. Spectre 仿真检查清单：选择正确噪声模型
 
@@ -1837,7 +1837,7 @@ $$v_{n,in,eq}^2=\int_0^\infty \frac{S_{v,out}(f)}{|H_{sig}(f)|^2}\,df\quad\text{
 
 对采样电路的 PNOISE 结果，应明确报告 `sampled` 观测时间、噪声 sidebands 截断收敛曲线和哪些边沿产生噪声；否则只报一个积分 RMS 没有可复现性。若 FFT 的低频 spur 随仿真采样时间变化，应先排查数字周期/时钟相位/非相干泄漏，而不是一律归因 1/f noise。
 
-![2026_03_噪声仿真矩阵](/images/blog/learning-notes/circuit-noise/2026_03_噪声仿真矩阵.svg)
+![2026_03_噪声仿真矩阵](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-noise/2026_03_噪声仿真矩阵.svg)
 
 ### N5. 面向两级 Pipeline-SAR 的最小噪声设计流程
 
@@ -1856,7 +1856,7 @@ $$v_{n,in,eq}^2=\int_0^\infty \frac{S_{v,out}(f)}{|H_{sig}(f)|^2}\,df\quad\text{
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/circuit-noise/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/circuit-noise/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 

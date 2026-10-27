@@ -428,11 +428,11 @@ $$E\{y[n]p[n]\}=\theta a E\{p^2[n]\}+E\{s[n]p[n]\}+E\{v[n]p[n]\}=\theta a.$$
 
 因此 `θ_hat=(1/(aN))Σ y[n]p[n]` 是简单的无偏估计，**但仅在输入独立、注入增益已知、没有码相关裁切/饱和、且正确样本对齐时成立**。若目标是消除级间增益误差，必须考虑数字后减的 PN 重构项、实际残差增益、冗余范围与级间延时，而不仅是“PN 与输出相乘平均”。
 
-![2026_05_专项机制图](/images/blog/learning-notes/dither-calibration/2026_05_专项机制图.svg)
+![2026_05_专项机制图](/GarveyDing_AcademicPages/images/blog/learning-notes/dither-calibration/2026_05_专项机制图.svg)
 
 *原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
 
-![2026_01_dither观测链](/images/blog/learning-notes/dither-calibration/2026_01_dither观测链.svg)
+![2026_01_dither观测链](/GarveyDing_AcademicPages/images/blog/learning-notes/dither-calibration/2026_01_dither观测链.svg)
 
 ### D2. 什么因素会形成无法通过延长平均消除的系统偏差
 
@@ -457,7 +457,7 @@ $$E\{y[n]p[n]\}=\theta a E\{p^2[n]\}+E\{s[n]p[n]\}+E\{v[n]p[n]\}=\theta a.$$
 
 双点注入并非必然优于单点。若比较器阈值 dither 仅在特定输入区间有效，先检查有效样本选择是否**无偏**；只有同时考虑码冗余、DNL 和 PN 通路失配，才能比较收敛率和输入扰动。对于已有 PN+LMS 单点校准，最直接的试验是比较“开/关阈值注入”和“有/无窗口”的四种组合在多频输入下的偏置和收敛速度。
 
-![2026_02_注入位置比较](/images/blog/learning-notes/dither-calibration/2026_02_注入位置比较.svg)
+![2026_02_注入位置比较](/GarveyDing_AcademicPages/images/blog/learning-notes/dither-calibration/2026_02_注入位置比较.svg)
 
 ### D4. 一套最小可复现实验：MATLAB/Verilog-A/RTL 三层
 
@@ -467,7 +467,7 @@ $$E\{y[n]p[n]\}=\theta a E\{p^2[n]\}+E\{s[n]p[n]\}+E\{v[n]p[n]\}=\theta a.$$
 
 **RTL/顶层**：保留 PN generator 与 ADC 码的关联 ID，在 pipelining 后统一打拍，验证每一路 `p[n]` 对准的是哪一次 `y[n]`；检验 `W_PN` 正负选择、输出数字扣除、有限位宽舍入/饱和，并随机化数字 delay 模拟 CDC 缺陷。
 
-![2026_03_LMS收敛验证](/images/blog/learning-notes/dither-calibration/2026_03_LMS收敛验证.svg)
+![2026_03_LMS收敛验证](/GarveyDing_AcademicPages/images/blog/learning-notes/dither-calibration/2026_03_LMS收敛验证.svg)
 
 ### D5. 从论文阅读走向结构创新：可比较的研究假设
 
@@ -486,7 +486,7 @@ $$E\{y[n]p[n]\}=\theta a E\{p^2[n]\}+E\{s[n]p[n]\}+E\{v[n]p[n]\}=\theta a.$$
 
 ### 定量分析图（理论/指定参数示意）
 
-![2026_04_理论参数曲线](/images/blog/learning-notes/dither-calibration/2026_04_理论参数曲线.png)
+![2026_04_理论参数曲线](/GarveyDing_AcademicPages/images/blog/learning-notes/dither-calibration/2026_04_理论参数曲线.png)
 
 > 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
 
