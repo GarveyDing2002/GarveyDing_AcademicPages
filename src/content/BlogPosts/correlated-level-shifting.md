@@ -1,15 +1,17 @@
 ---
 title: CLS 技术：原理、变种与设计
-date: 2026-06-19
+date: '2026-10-26'
 excerpt: 梳理 Correlated Level Shifting 的基本原理、主流变种、设计权衡及其在 Pipeline-SAR 中的应用。
 tags:
-  - 学习记录
-  - adc
-  - cls
-  - residue-amplifier
+- 学习记录
+- adc
+- cls
+- residue-amplifier
 ---
 
-> **核心定位**
+# CLS 技术：原理、变种与设计
+
+> [!abstract] 核心定位
 > 梳理 Correlated Level Shifting 的基本原理、主流变种、设计权衡及其在 Pipeline-SAR 中的应用。
 
 ---
@@ -21,10 +23,12 @@ tags:
 > 3. Wang and Kuo, "A 72-dB SNDR 130-MS/s 0.8-mW Pipelined-SAR ADC Using a Distributed Averaging Correlated Level Shifting Ring Amplifier," JSSC 2022.
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **5 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. CLS 的问题背景与基本原理
    - 1.1 CLS 要解决什么问题
@@ -43,6 +47,17 @@ tags:
    - 5.3 参考文献
 
 ## 1. CLS 的问题背景与基本原理
+
+```mermaid
+flowchart LR
+    A[采样当前输入与残差信号] --> B[保留相关参考量]
+    B --> C[按时序进行电平移位]
+    C --> D[放大有效残差]
+    D --> E[传递到后级并检查误差]
+```
+
+*图：CLS 的通用机制示意；具体相位与电荷关系取决于实现变种。*
+
 
 ### 1.1 CLS 要解决什么问题
 
@@ -408,8 +423,76 @@ CLS 的本质是用开关电容记忆和电平移位，把“放大器必须一�
 15. Liang et al., "A peak-injection CLS technique for PVT-robust switched-capacitor amplifier," 2025.
 16. Liang et al., "A 16 kHz-BW 93.1 dB-SNDR DT 2-1 MASH delta-sigma ADC with cascading-CLS technique for accelerometer measurement applications," 2025.
 
+## 2026 深化：CLS、ACLS、WACLS、DACLS 的误差分析与高速适用性（新增）
 
-## 相关笔记
+> [!info] 本节与原笔记关系
+> 原笔记列举了不同 CLS 衍生技术。本节将 **有限环路增益误差、引入的第二相位、噪声/电容负载、RingAmp 复位特性**合并进行工程推导。推导系理想线性近似；实际 CLS 电荷关系由开关接法决定，不能把某个文献的二阶消除结果套到所有变种。
 
-- [Dither-Based Calibration：原理、架构与建模](/GarveyDing_AcademicPages/blog/dither-calibration/)
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
+### C1. 先用反馈因子而非只用放大器 DC 增益表征误差
+
+设闭环理想增益为 `1/β`，放大器 DC 增益为 `A0`，忽略其他误差时：
+
+$$G_{\rm cl}=\frac{A_0}{1+A_0\beta},\qquad\frac{G_{\rm ideal}-G_{\rm cl}}{G_{\rm ideal}}=\frac{1}{1+A_0\beta}.$$
+
+这意味着对 `G=16` 的余差放大器，如果反馈因子近似 `β=1/16`，即使 `A0=100`（40 dB），环路增益只有 6.25，静态相对误差约 `13.8%`，绝非“40 dB 已足以做 12-bit”——**这里纯粹是未补偿的简单闭环估算**，没有包括寄生反馈因子与校准。为得到高精度，通常需要更高有效环路增益、CLS 误差抵消、数字级间增益校准，或它们组合。实际 `β` 由 `C_F`、CDAC 和寄生决定，不能简单由标称 G 倒推。
+
+![2026_05_专项机制图](/images/blog/learning-notes/correlated-level-shifting/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_CLS误差路径](/images/blog/learning-notes/correlated-level-shifting/2026_01_CLS误差路径.svg)
+
+### C2. 两相位为何能消误差，也为何可能拖慢建立
+
+普通闭环 settling 可以用 `e(t)≈e_0 exp(−t/τ_cl)+e_static` 近似。典型 CLS 第一放大相位先产生带静态有限增益误差的输出，同时在 CLS 电容上采样一个**与误差相关的校正量**；第二相位重新连接电容，实现放大器输出工作点移位或误差平均，使其不必再为完整大输出摆幅提供相同程度的有效增益。理想情况下残余误差可能由一阶变为高阶，但还需计入：
+
+$$e_{\rm total}=e_{\rm finite\ gain}+e_{\rm settling}+e_{\rm charge\ injection}+e_{\rm mismatch}+e_{\rm noise}+e_{\rm timing}.$$
+
+第二相位占用真实时间，并非免费的精度。若第一相位末未充分采样，第二相位修正的是**不准确的先验误差**，可能出现共模跃变、额外环路模式和慢尾。增加 CLS 电容还可能抬升放大器输出负载 `C_L`，减小 UGB，产生“静态更准、动态更差”的反常现象。各论文 WACLS、DACLS 即围绕电容负载、平均方式与多次 level shift 做改进。[C2][C3][C4]
+
+### C3. 主流 CLS 分支：对准哪个痛点
+
+|方法|核心处理|主要代价/失败机制|必看论文|
+|---|---|---|---|
+|CLS|第一相位估计、第二相位移位|相位长度和额外电容负载|早期 CLS 基础文献，需结合具体电路核验|
+|ACLS|两个放大相位的误差有意形成相反极性并平均|平均权重、相位不对称、热噪声相关性|Hung/Kuo 2019 [C2]|
+|WACLS|加权平均，缓和额外 `C_LS` 限速|权重比与失配、环路动态|Wang/Hung/Kuo 2020 [C3]|
+|DACLS|分布式平均、多次 level-shifting，可不额外加载输出 CLS 电容|拓扑复杂度与切换瞬态|Wang/Kuo 2022 [C4]|
+|CLS+RingAmp|以动态 RingAmp 替代传统 OTA，利用误差抑制|重启、过冲、PVT、自激/死区、CMFB|Hershberg 2012 [C1]|
+
+![2026_02_CLS变种比较](/images/blog/learning-notes/correlated-level-shifting/2026_02_CLS变种比较.svg)
+
+### C4. 面向 625 MS/s 余差放大的时序检查
+
+以 `Fs=625 MS/s` 为例，`T_s=1.6 ns`。如果设计只给 MDAC 约 1/4 周期，即约 `400 ps`，需要完整列出：① SAR 最末位决策完成 ② CDAC 底板/顶板状态锁定 ③ amplifier enable 与 output common-mode precharge ④ 第一相位建立 ⑤ CLS 切换的非重叠与注入 ⑥ 第二相位收敛 ⑦ 下一级采样孔径。**400 ps 不是全部可用线性建立时间**：扣除 reset、edge skew、switch transition、采样孔径保护后才是有效窗口。
+
+建议独立跑下列仿真而不是只看 FFT：
+
+- 每个输入码与残差极值处的 `e_diff(t)=V_out(t)−V_ideal`，并把 `e_CM(t)` 同时画出；
+- gain error 随 `Vin` 的曲线，比较 CLS on/off，检查 HD2/HD3 与偶次失真；
+- 扫 `C_LS`、两相位比例、放大器偏置/级间拆分、输出负载，找到真正约束；
+- TT/SS/FF、`VDD_min/max`、高低温下分别检查 startup 与终态，避免只测 27°C；
+- 对电容注入进行 Monte Carlo、pex/Calibre View、输出走线寄生与 clock feedthrough 检验。
+
+![2026_03_625M建立窗口](/images/blog/learning-notes/correlated-level-shifting/2026_03_625M建立窗口.svg)
+
+### C5. 仿真判据、反例与参考文献
+
+如果 `CLS on` 之后 gain error 下降、但 SFDR 不升反降，优先排查残差曲线中的**周期性误差**与第二相位未建立，而非继续无脑扩大 `C_LS`。如果 ACLS/WACLS 的推导假设两个误差完全反相关，实际版图对称、开关电荷注入、输出负载的差别会破坏这一假设。RingAmp 具有时间变化的等效工作点，用单一 LTI 相位裕度来断言全工作过程稳定是不够的，应结合 transient、PSS/PSTB（适用时）与时域最坏轨迹。
+
+- [C1] B. P. Hershberg et al., “Ring Amplifiers for Switched-Capacitor Circuits,” *ISSCC*, 2012. [DOI:10.1109/ISSCC.2012.6177090](https://doi.org/10.1109/ISSCC.2012.6177090)。
+- [C2] T.-C. Hung and T.-H. Kuo, “A 75.3-dB SNDR 24-MS/s Ring Amplifier-Based Pipelined ADC Using Averaging Correlated Level Shifting and Reference Swapping…,” *IEEE JSSC*, 2019. [DOI:10.1109/JSSC.2019.2891650](https://doi.org/10.1109/JSSC.2019.2891650)。
+- [C3] J.-C. Wang, T.-C. Hung, and T.-H. Kuo, “A Calibration-Free 14-b 0.7-mW 100-MS/s Pipelined-SAR ADC Using a Weighted-Averaging Correlated Level Shifting Technique,” *IEEE JSSC*, 2020. [DOI:10.1109/JSSC.2020.3015863](https://doi.org/10.1109/JSSC.2020.3015863)。
+- [C4] J.-C. Wang and T.-H. Kuo, “A 72-dB SNDR 130-MS/s 0.8-mW Pipelined-SAR ADC Using a Distributed Averaging Correlated Level Shifting Ring Amplifier,” *IEEE JSSC*, 2022. [DOI:10.1109/JSSC.2022.3196743](https://doi.org/10.1109/JSSC.2022.3196743)。
+- [C5] C. C. Enz and G. C. Temes, “Circuit Techniques for Reducing the Effects of Op-Amp Imperfections: Autozeroing, Correlated Double Sampling, and Chopper Stabilization,” *Proceedings of the IEEE*, 1996. [DOI:10.1109/5.542410](https://doi.org/10.1109/5.542410)。
+- [C6] K. Bult and G. J. G. M. Geelen, “A Fast-Settling CMOS Op Amp for SC Circuits With 90-dB DC Gain,” *IEEE JSSC*, 1990. [DOI:10.1109/4.62165](https://doi.org/10.1109/4.62165)。
+
+**论文配图索引（需合法获取原文）**：C2 的 ACLS/RS 开关相位；C3 的 WACLS 电容重接方式及相位时序；C4 的 DACLS 和 RingAmp 实现。这里的三幅插图是为解释统一模型原创重绘，不宣称与原作者晶体管图完全一致。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/correlated-level-shifting/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

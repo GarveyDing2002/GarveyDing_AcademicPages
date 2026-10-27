@@ -1,31 +1,61 @@
 ---
 title: Bandgap 基准源：架构与设计
-date: 2026-06-10
+date: '2026-10-26'
 excerpt: 从 CTAT/PTAT 原理到经典、低压、曲率补偿和先进工艺架构，建立 Bandgap 设计与选型框架。
 tags:
-  - 学习记录
-  - 模拟集成电路
-  - analog-ic
-  - bandgap
-  - voltage-reference
-  - adc
+- 学习记录
+- 模拟集成电路
+- analog-ic
+- bandgap
+- voltage-reference
+- adc
 ---
 
-> **核心定位**
+# Bandgap 基准源：架构与设计
+
+> [!abstract] 核心定位
 > 从 CTAT/PTAT 原理到经典、低压、曲率补偿和先进工艺架构，建立 Bandgap 设计与选型框架。
 
 ---
 
-> **笔记结构**
-> 主体按架构谱系组织；附录保留原笔记中独有的发展脉络、Song–Gray 曲率补偿、可流片检查项，以及面向 28 nm 高速 ADC 的选型建议。
+> [!info] 笔记结构
+> 2026-10-26 更新：在原笔记架构谱系与工程附录上，扩展四种经典拓扑的原始论文对照、Banba 逐支路 KCL、VBE 曲率推导、sub-1-V 供电与低压输出的区别、2021–2026 JSSC 动态基准/校准进展、28 nm Virtuoso 仿真清单；图均提供本地离线版本。
 
 > 本文面向模拟/混合信号 IC 设计学习，重点梳理 bandgap reference 的主要结构谱系：从经典 Widlar/Kuijk/Brokaw 电压模结构，到 Banba 电流模低压结构，再到曲率补偿、MOS-only、resistorless、time-domain、FinFET 先进工艺结构，以及高速 ADC 中的 reference 系统实现。
 
 ---
 
 
-> **层次化结构**
-> 本版将原来 27 个并列章节重构为 **8 个主章节 → 主题小节 → 具体架构/推导/指标**。技术内容保持不变，只调整阅读层级。
+> [!info] 层次化结构
+> 原笔记采用 **8 个主章节 + 工程附录** 的层级；此次在对应专题内部深化，不改变原先的 Obsidian 双链和知识组织方式。
+
+
+
+> [!important] 本次修订（2026-10-26）重点
+> - 经典结构从“名称罗列”升级为 **Widlar / Kuijk / Brokaw / Banba 的结构识别—电流路径—反馈—公式—误差** 分析。
+> - **原始拓扑与简化功能框图分开**：本文配图为教学示意，仿真复现务必与论文相应 Fig. 对照；附原始论文 PDF 入口。
+> - 区分 **sub-bandgap output（低输出）** 与 **sub-1-V supply（低电源）**；后者必须检查 PNP、OTA、PMOS 及 startup 的最差余量。
+> - 新增 **2024–2026 JSSC 文献对照**，区分 Current-Mode、Digital Trim、PTAT-Offset、Dynamic BGR 与自加热补偿。
+> - 新增 **18 张自绘图**（9 张由旧专题迁入，9 张按本次对话补充）；支持离线 Obsidian 和普通 Markdown 阅读。
+
+### 读图说明与原论文入口
+
+补充入门图解：[知乎《几种带隙基准源的结构对比》](https://zhuanlan.zhihu.com/p/15045104543)（仅供辅助阅读，电路与定量结论以原论文为准）。
+
+
+所有插图均为**自行绘制的功能图、等效连接图或模型曲线**；不是从 IEEE 论文中未经标识地复制的晶体管级图。下述来源用于核对完整拓扑：
+
+| 架构 | 原论文／可靠阅读入口 | 优先看什么 |
+|---|---|---|
+| Widlar | [Razavi, *The Bandgap Reference* (2016) PDF](https://www.seas.ucla.edu/brweb/papers/Journals/BRSummer16Bandgap.pdf) | Fig. 1：经典三 BJT 单元 |
+| Kuijk | [Kuijk 1973 DOI](https://doi.org/10.1109/JSSC.1973.1050378)；[Razavi 2016](https://www.seas.ucla.edu/brweb/papers/Journals/BRSummer16Bandgap.pdf) | 运放反馈式参考、节点关系；不同论文的 Kuijk-like 电路并不完全同图 |
+| Brokaw | [Brokaw 1974 原论文 PDF](https://class.ece.iastate.edu/djchen/ee501/2013/bandgaprefpaperbypaulbrokawjssc1974.pdf) | Fig. 2/3：two-transistor cell 与 collector current sensing；Fig. 4 完整芯片 |
+| Banba | [Banba 1999 原论文 PDF](https://people.eecs.berkeley.edu/~pister/140sp16/resources/LowVoltageBG.pdf) | **Fig. 2、Eq. (5)–(13)**：低压电流模和实物偏置；Fig. 3 低压 SPICE 仿真 |
+
+![电压模与电流模的求和位置](attachment/17_voltage_current_sum.png)
+
+> [!warning] 一个容易误解的分类
+> Widlar、Kuijk、Brokaw 常归入**传统电压模**，Banba 常归入**低压电流模**。但“电压模/电流模”描述 CTAT/PTAT 的组合实现，**不是说电压模不允许有电流镜**。此外，Kuijk-like、Brokaw-like 是结构族，不应把 Razavi 所有带运放的 CMOS 图都不加区分地当成 Kuijk 原始电路。
 
 ## 目录
 
@@ -84,13 +114,11 @@ Bandgap 的典型应用包括：
 
 Bandgap 的核心思想不是“做一个 1.2 V 电压源”，而是：
 
-
 $$
 \boxed{
 \text{CTAT} + \text{PTAT} \rightarrow \text{近似零温度系数}
 }
 $$
-
 
 其中：
 
@@ -99,25 +127,19 @@ $$
 
 传统 BJT bandgap 用的是：
 
-
 $$
 V_{BE} \quad \text{作为 CTAT}
 $$
-
-
 
 $$
 \Delta V_{BE}=V_T\ln N \quad \text{作为 PTAT}
 $$
 
-
 然后构造：
-
 
 $$
 V_{REF}=V_{BE}+K\Delta V_{BE}
 $$
-
 
 当 $K$ 选得合适时，一阶温度系数可以抵消。
 
@@ -130,35 +152,27 @@ $$
 
 BJT 的集电极电流近似为：
 
-
 $$
 I_C=I_S\exp\left(\frac{V_{BE}}{V_T}\right)
 $$
 
-
 其中：
-
 
 $$
 V_T=\frac{kT}{q}
 $$
 
-
 所以：
-
 
 $$
 V_{BE}=V_T\ln\left(\frac{I_C}{I_S}\right)
 $$
 
-
 虽然 $V_T$ 随温度升高而增加，但 $I_S$ 随温度上升增加得更快，所以在固定电流下，$V_{BE}$ 总体随温度升高而下降。室温附近常见斜率为：
-
 
 $$
 \frac{\partial V_{BE}}{\partial T}\approx -1.5\sim -2.2\ \text{mV}/^\circ\text{C}
 $$
-
 
 因此 $V_{BE}$ 是一个 CTAT 电压。
 
@@ -166,22 +180,17 @@ $$
 
 两个 BJT 具有不同电流密度：
 
-
 $$
 J_1,\quad J_2
 $$
 
-
 其 $V_{BE}$ 差值为：
-
 
 $$
 \Delta V_{BE}=V_T\ln\left(\frac{J_1}{J_2}\right)
 $$
 
-
 若电流密度比为 $N$，则：
-
 
 $$
 \boxed{
@@ -189,21 +198,17 @@ $$
 }
 $$
 
-
 因为 $V_T$ 与绝对温度 $T$ 成正比，所以 $\Delta V_{BE}$ 是 PTAT 电压。
 
 #### 一阶温度补偿
 
 构造：
 
-
 $$
 V_{REF}=V_{BE}+K\Delta V_{BE}
 $$
 
-
 温度系数为：
-
 
 $$
 \frac{dV_{REF}}{dT}
@@ -213,17 +218,13 @@ $$
 K\frac{d\Delta V_{BE}}{dT}
 $$
 
-
 令其为零：
-
 
 $$
 \frac{dV_{REF}}{dT}=0
 $$
 
-
 得到：
-
 
 $$
 K
@@ -232,9 +233,7 @@ K
 {d\Delta V_{BE}/dT}
 $$
 
-
 由于：
-
 
 $$
 \frac{d\Delta V_{BE}}{dT}
@@ -242,9 +241,7 @@ $$
 \frac{k}{q}\ln N
 $$
 
-
 所以：
-
 
 $$
 K=
@@ -252,9 +249,7 @@ K=
 {(k/q)\ln N}
 $$
 
-
 例如 $N=8$ 时：
-
 
 $$
 \frac{k}{q}\ln 8
@@ -262,22 +257,17 @@ $$
 \approx 179\ \mu\text{V}/K
 $$
 
-
 若：
-
 
 $$
 \frac{dV_{BE}}{dT}\approx -1.8\ \text{mV}/K
 $$
 
-
 则：
-
 
 $$
 K\approx 10
 $$
-
 
 这就是传统 bandgap 中 PTAT 项需要被放大约 8–12 倍的原因。
 
@@ -285,32 +275,25 @@ $$
 
 室温附近：
 
-
 $$
 V_{BE}\approx 0.65\sim0.75\ \text{V}
 $$
 
-
 而：
-
 
 $$
 K\Delta V_{BE}\approx0.45\sim0.55\ \text{V}
 $$
 
-
 所以：
-
 
 $$
 V_{REF}\approx1.2\sim1.25\ \text{V}
 $$
 
-
 这个数值接近硅的 bandgap voltage，因此称为 bandgap reference。
 
 但要注意：
-
 
 $$
 \boxed{
@@ -318,23 +301,53 @@ $$
 }
 $$
 
-
 低压 current-mode BGR、fractional BGR、MOS-only reference 都可以输出低于 1.2 V 的参考电压。
 
 #### CTAT/PTAT 补偿示意图
 
-![02_ctat_ptat_compensation](/GarveyDing_AcademicPages/images/blog/learning-notes/bandgap-reference/02_ctat_ptat_compensation.png)
+![示意图](attachment/02_ctat_ptat.png)
 
 图中可以看到，$V_{BE}$ 随温度下降，放大后的 $\Delta V_{BE}$ 随温度上升，两者相加后得到近似平坦的 $V_{REF}$。实际电路中，最终曲线不会完全平坦，因为 $V_{BE}(T)$ 存在二阶和高阶曲率。
 
 ---
 
 
+
+
+#### 进阶：从饱和电流推导实际 VBE 温度曲率
+
+原笔记的线性温度系数是室温附近的近似。对理想正向有源 BJT：
+
+$$
+I_C(T)=I_S(T)\exp\left(\frac{V_{BE}(T)}{V_T}\right),\quad V_T=\frac{kT}{q}
+$$
+
+工艺相关的简化饱和电流模型：
+
+$$
+I_S(T)\simeq C T^{\eta}\exp\left(-\frac{qV_{G0}}{kT}\right)
+$$
+
+若偏置电流的温度规律可以局部近似为 $I_C(T)=I_C(T_0)(T/T_0)^{\alpha}$，则：
+
+$$
+\boxed{V_{BE}(T)=V_{G0}-[V_{G0}-V_{BE}(T_0)]\frac{T}{T_0}-(\eta-\alpha)\frac{kT}{q}\ln\frac{T}{T_0}}
+$$
+
+- 第一项和线性 $T$ 项：可以通过 PTAT 权重在指定温度附近取消一阶斜率。
+- **$T\ln(T/T_0)$ 项**：传统 $\Delta V_{BE}=V_T\ln N$ 在固定电流密度比时严格正比 $T$，不能用常数倍 PTAT 抵消它的二阶导数。
+- 若 $\eta>\alpha$，则在此近似模型下 $d^2 V_{BE}/dT^2=-(\eta-\alpha)k/(qT)<0$。
+
+![VBE 非线性模型](attachment/16_vbe_nonlinear_model.png)
+
+> [!note] 模型边界
+> $V_{G0}$ 是与禁带外推相关的模型参数，不等于直接量得的任意温度下硅禁带电压。$\eta$ 与 $\alpha$ 均依赖器件和偏置，不是所有 PDK 通用的常数。实际需要从 Spectre 的 $V_{BE}(T)$、$\Delta V_{BE}(T)$ 拟合并检查 leakage 与有限 $\beta$。
+
 ### 1.3 架构谱系总览
 
 Bandgap / voltage reference 的结构谱系可以概括如下：
 
-![01_bandgap_architecture_taxonomy](/GarveyDing_AcademicPages/images/blog/learning-notes/bandgap-reference/01_bandgap_architecture_taxonomy.png)
+![示意图](attachment/01_taxonomy.png)
 
 从图中可以看到，bandgap 的主线大致分为：
 
@@ -356,11 +369,9 @@ Bandgap / voltage reference 的结构谱系可以概括如下：
 
 经典电压模 bandgap 直接在电压域实现：
 
-
 $$
 V_{REF}=V_{BE}+K\Delta V_{BE}
 $$
-
 
 其中：
 
@@ -430,11 +441,9 @@ $$
 
 Widlar 型是 bandgap reference 的早期原型。它的重要性在于提出并实践了：
 
-
 $$
 V_{BE}+K\Delta V_{BE}
 $$
-
 
 这一基本补偿思想。
 
@@ -486,31 +495,23 @@ Kuijk 型是经典的 **op-amp feedback voltage reference**。它比早期结构
 
 #### 关键关系
 
-
 $$
 \Delta V_{BE}=V_T\ln N
 $$
-
-
 
 $$
 I_{PTAT}=\frac{\Delta V_{BE}}{R_1}
 $$
 
-
-
 $$
 V_{REF}=V_{BE}+I_{PTAT}R_2
 $$
 
-
 所以：
-
 
 $$
 V_{REF}=V_{BE}+\frac{R_2}{R_1}\Delta V_{BE}
 $$
-
 
 #### 优点
 
@@ -547,11 +548,9 @@ $$
 
 Brokaw cell 是最经典、最常被工业界使用的人名 bandgap 架构之一，也常被称为：
 
-
 $$
 \text{two-transistor bandgap reference}
 $$
-
 
 它是高精度电压模 bandgap 的代表。
 
@@ -568,37 +567,29 @@ Brokaw cell 通常包含：
 
 两个 BJT 工作在不同电流密度下，产生：
 
-
 $$
 \Delta V_{BE}=V_T\ln N
 $$
 
-
 这个差值通过电阻产生 PTAT 电流：
-
 
 $$
 I_{PTAT}=\frac{\Delta V_{BE}}{R_1}
 $$
 
-
 然后叠加到某个 $V_{BE}$ 上：
-
 
 $$
 V_{REF}=V_{BE}+I_{PTAT}R_2
 $$
 
-
 最终得到：
-
 
 $$
 \boxed{
 V_{REF}=V_{BE}+\frac{R_2}{R_1}\Delta V_{BE}
 }
 $$
-
 
 #### Brokaw Cell 的核心优势
 
@@ -621,21 +612,17 @@ $$
 
 面积比偏差导致：
 
-
 $$
 \Delta V_{BE}=V_T\ln N
 $$
-
 
 中的 $N$ 偏差，从而改变 PTAT 权重。
 
 #### 电阻比误差
 
-
 $$
 \frac{R_2}{R_1}
 $$
-
 
 直接决定 PTAT 放大倍数，电阻 mismatch 会导致一阶温度系数偏差。
 
@@ -680,6 +667,51 @@ Brokaw cell 非常适合：
 ---
 
 
+
+
+### 2.5 四种经典拓扑怎样从晶体管级识别？
+
+**判断架构时应该先看三个问题：** (1) $\Delta V_{BE}$ 由哪个电阻承受；(2) 哪个节点（或支路）被反馈强制相等；(3) 最终输出是 PN 结电压与 PTAT 电压直接相加，还是两种电流先汇合后由电阻转换。
+
+![Widlar 功能关系](attachment/03_widlar_principle.png)
+
+#### 2.5.1 Widlar：无需独立误差放大器的三 BJT 基准原型
+
+Widlar 1971 的经典单元中，Q1/Q2 处于不同电流密度，产生 $\Delta V_{BE}$；其中一个 BJT 的结电压代表 CTAT，另一晶体管/电阻支路提供 $\Delta V_{BE}$ 的倍乘项。Razavi 2016 Fig.1 画出了三晶体管原型。学习时应将 **BJT 偏置支路与输出检测晶体管区分**，不要将其简单概括成一个开环的电压加法器。代表公式 $V_{REF}=V_{BE}+K\Delta V_{BE}$，但各电阻标号和 $K$ 取决于原图。
+
+#### 2.5.2 Kuijk：放大器反馈建立电流密度比
+
+![Kuijk 反馈思想](attachment/04_kuijk_principle.png)
+
+- 运放通过负反馈使检测节点近似相等；在设计的电阻上建立 $\Delta V_{BE}$。
+- 相应 $I_{PTAT}=\Delta V_{BE}/R_P$，最终由电阻权重形成 $V_{REF}=V_{BE}+K\Delta V_{BE}$。
+- 运放 offset 可以等效为反馈节点不再严格相等；有限增益引起残余差模误差；CMRR/PSRR 及偏置输出摆幅均进入精度预算。
+- **Kuijk 原始论文强调精密参考输出，不应把其原始完整拓扑等同于任一 CMOS 教材中的两 PNP+PMOS 图**；可将后者称 Kuijk-like 反馈型实现。
+
+#### 2.5.3 Brokaw：Collector Current Sensing + 两 BJT cell
+
+![Brokaw cell 功能关系](attachment/05_brokaw_principle.png)
+
+Brokaw 1974 的真正贡献不在于更换 $V_{BE}+K\Delta V_{BE}$ 公式，而在于 **双 BJT、集电极电流检测以及温漂和输出幅度的分开控制**。原论文特别讨论 base-current error correction、工作点灵敏度、frequency response、startup 和完整三端参考。
+
+- 在传统三晶体管单元中，基极电流通过电阻会形成额外误差；Brokaw 的电流检测降低了这一问题。
+- 应分别分析 collector 与 emitter 两侧电流、BJT $\beta$、镜像精度以及共模偏置；**不能把“有两个 BJT + 一个 OTA”都称 Brokaw cell**。
+- 原 1974 论文的成品是 2.5 V 三端参考，说明 **核心 bandgap 电压与最终输出电压可以不同**。
+
+#### 2.5.4 Banba：输出位置由电压叠加改为电流叠加
+
+Banba 等 1999 JSSC 的低压结构通过 **共同的 PMOS 镜像电流 + 运放反馈 + R1/R2/R3 电阻网络** 形成 $I_{CTAT}$ 和 $I_{PTAT}$；随后 p3 将总电流复制到 R4。详见 §3.2 后面的完整 KCL 推导。与传统 1.2 V 电压叠加相比，输出 $V_{REF}=R_4(I_{CTAT}+I_{PTAT})$ 可以通过电阻比降低。
+
+| 比较维度 | Widlar | Kuijk | Brokaw | Banba |
+|---|---|---|---|---|
+| 历史定位 | 早期三 BJT 原型 | 精密反馈型 | 双 BJT 精密单元 | 经典低压电流模 |
+| PTAT 建立 | 不同电流密度、局部电阻 | 运放反馈 | 双 BJT 电流检测反馈 | OTA + PMOS 镜像支路 |
+| 输出信号组合 | 电压等效求和 | 电压等效求和 | 电压等效求和 | 电流求和→电阻电压 |
+| 典型输出 | 约 1.2 V | 常见 1.2 V（成品可放大） | 带隙核心约 1.2 V（可缓冲放大） | 可 0.5 V 左右 |
+| 应重视的非理想性 | 三 BJT 偏置误差 | OTA offset/有限增益 | BJT 基极电流、环路稳定性 | 失调放大、镜像 $r_o$、低压余量 |
+
+---
+
 ## 3. 低压与电流模 Bandgap：Banba、Sub-Bandgap 与 Low-Voltage CMOS
 
 ### 3.1 电流模 Bandgap 的统一思想
@@ -688,99 +720,77 @@ Brokaw cell 非常适合：
 
 电流模 bandgap 的核心思想是：
 
-
 $$
 \boxed{
 \text{先把 CTAT/PTAT 电压转换成电流，再在电流域相加}
 }
 $$
 
-
 它不再直接输出：
-
 
 $$
 V_{BE}+K\Delta V_{BE}
 $$
 
-
 而是生成：
-
 
 $$
 I_{CTAT}=\frac{V_{BE}}{R_C}
 $$
 
-
-
 $$
 I_{PTAT}=\frac{\Delta V_{BE}}{R_P}
 $$
 
-
 然后：
-
 
 $$
 I_{REF}=I_{CTAT}+I_{PTAT}
 $$
 
-
 最后：
-
 
 $$
 V_{REF}=I_{REF}R_O
 $$
 
-
 #### 电压模与电流模对比
 
-![03_voltage_mode_vs_current_mode](/GarveyDing_AcademicPages/images/blog/learning-notes/bandgap-reference/03_voltage_mode_vs_current_mode.png)
+![示意图](attachment/17_voltage_current_sum.png)
 
 #### 电流模的核心优势
 
 传统电压模：
 
-
 $$
 V_{REF}\approx1.2\ \text{V}
 $$
 
-
 电流模：
-
 
 $$
 V_{REF}=R_O(I_{CTAT}+I_{PTAT})
 $$
 
-
 通过选择：
-
 
 $$
 R_O/R_C,\quad R_O/R_P
 $$
 
-
 可以得到低于 1.2 V 的输出。
 
 例如：
-
 
 $$
 V_{REF}=0.5\ \text{V}
 $$
 
-
 或者：
-
 
 $$
 V_{REF}=0.6\ \text{V}
 $$
-
 
 #### 典型代表
 
@@ -820,18 +830,15 @@ $$
 
 Banba 型是最经典的 **sub-1-V current-mode bandgap**。它的核心目标是解决：
 
-
 $$
 V_{REF}\approx1.2\ \text{V}
 $$
-
 
 导致传统 bandgap 无法在低于 1.2 V 的电源下工作的矛盾。
 
 #### 基本公式
 
 Banba 型可以写成：
-
 
 $$
 V_{REF}
@@ -844,22 +851,17 @@ R_4
 \right)
 $$
 
-
 其中：
-
 
 $$
 \frac{V_{BE}}{R_2}
 $$
 
-
 是 CTAT 电流；
-
 
 $$
 \frac{\Delta V_{BE}}{R_3}
 $$
-
 
 是 PTAT 电流。
 
@@ -869,27 +871,21 @@ $$
 
 传统电压模：
 
-
 $$
 V_{REF}=V_{BE}+K\Delta V_{BE}
 $$
 
-
 Banba 电流模：
-
 
 $$
 V_{REF}=R_4\left(\frac{V_{BE}}{R_2}+\frac{\Delta V_{BE}}{R_3}\right)
 $$
 
-
 如果设：
-
 
 $$
 \frac{R_4}{R_2}<1
 $$
-
 
 则输出可以被压低。
 
@@ -897,29 +893,23 @@ $$
 
 传统结构在输出节点上直接堆叠：
 
-
 $$
 V_{BE}+K\Delta V_{BE}
 $$
-
 
 所以输出自然接近 1.2 V。
 
 Banba 型在内部生成电流，再由输出电阻转换：
 
-
 $$
 V_{REF}=I_{SUM}R_4
 $$
 
-
 所以 $V_{REF}$ 可以通过电阻比缩放。输出可以是：
-
 
 $$
 0.4\ \text{V},\quad 0.5\ \text{V},\quad 0.6\ \text{V}
 $$
-
 
 这使它很适合低压 CMOS。
 
@@ -952,16 +942,126 @@ Banba 型设计中需要特别关注：
 
 对于 ADC，Banba 型可以生成低压 reference core，例如：
 
-
 $$
 0.5\ \text{V}
 $$
-
 
 但它通常仍然不直接驱动 ADC CDAC，而是作为 reference buffer 或 reference LDO 的输入基准。
 
 ---
 
+
+
+
+#### 逐支路原理：原论文 Fig. 2 的完整 KCL
+
+![Banba 两个核心支路与输出电阻](attachment/10_banba_branch_schematic.png)
+
+> 自绘教学用等效连接图；p1/p2/p3 的晶体管符号经过简化，**严格器件连接、OPA 输入正负端与原论文 Eq. (5)–(13) 以 [Banba 原始 PDF](https://people.eecs.berkeley.edu/~pister/140sp16/resources/LowVoltageBG.pdf) Fig. 2 为准**。
+
+对 p1、p2、p3 尺寸相同的理想电流镜，假设它们均处于饱和、忽略 $\lambda$ 与失配。原论文指定 $R_1=R_2$，且负反馈在目标工作点建立 $V_a\simeq V_b$，于是：
+
+$$
+I_1=I_2=I_3,\quad I_{1b}=\frac{V_a}{R_1},\quad I_{2b}=\frac{V_b}{R_2}
+$$
+
+因 $V_a=V_b$ 且 $R_1=R_2$，得 $I_{1b}=I_{2b}$。由两支路 KCL，
+
+$$
+I_1=I_{1a}+I_{1b},\quad I_2=I_{2a}+I_{2b}
+$$
+
+可得 $I_{1a}=I_{2a}$。Q1 一个 PN 结与 Q2 中 N 个并联 PN 结具有相同**总电流**，但电流密度相差 N 倍：
+
+$$
+\boxed{\Delta V_f=V_{f1}-V_{f2}=V_T\ln N}
+$$
+
+节点 $V_a=V_{f1}$，而 $V_b=V_{f2}+I_{2a}R_3$，因此：
+
+$$
+I_{2a}=\frac{\Delta V_f}{R_3}=I_{PTAT},\quad I_{2b}=\frac{V_{f1}}{R_2}=I_{CTAT}
+$$
+
+p3 复制 p2 的总电流：
+
+$$
+I_3=I_2=I_{2a}+I_{2b}
+$$
+
+最终：
+
+$$
+\boxed{V_{REF}=R_4\left(\frac{V_{f1}}{R_2}+\frac{\Delta V_f}{R_3}\right)
+=\frac{R_4}{R_2}\left[V_{f1}+\frac{R_2}{R_3}\Delta V_f\right]}
+$$
+
+定义 $A=R_4/R_2$ 为**输出缩放系数**，$K=R_2/R_3$ 为**一阶 PTAT 权重**。在各电阻比例无温漂的一阶模型下，目标温度 $T_0$ 的补偿条件为：
+
+$$
+\boxed{K=-\frac{\partial V_{f1}/\partial T}{(k/q)\ln N}}
+$$
+
+> [!warning] 常见推导错误
+> Q2 的 N 个并联二极管每个的电流是 $I_{2a}/N$；比较的是 Q1 与 **Q2 并联组的总电流**，不能错误设成每个二极管的电流都等于 Q1。$R_1=R_2$ 对原始结构的等流推导是关键，若镜像比例或电阻比改动，必须重新列 KCL。
+
+#### 原论文实际参数复算
+
+原论文实验电路的代表参数：$R_1=R_2=2063\ \mathrm{k\Omega}$、$R_3=393\ \mathrm{k\Omega}$、$R_4=884\ \mathrm{k\Omega}$、$N=100$。
+
+$$
+\frac{R_2}{R_3}=5.249,\qquad \frac{R_4}{R_2}=0.4285
+$$
+
+室温附近 $V_T\ln100\approx119\ \mathrm{mV}$；若以 **示例** $V_{f1}=0.58\ \mathrm V$ 代入，则 $V_{REF}\approx0.516\ \mathrm V$。其中 $V_{f1}=0.58\ \mathrm V$ 是用于展示的近似假设，**不是原论文逐管测得的数据**。论文的 23 颗样片输出测量约为 $518\pm15\ \mathrm{mV}$（3σ）。
+
+#### 运放 Offset 的传递与量化
+
+定义某一特定极性的等效输入失调 $V_{OS}$，Banba 原文推导得到的近似形式可写成：
+
+$$
+\Delta V_{REF}\approx-\frac{R_4}{R_2}\left(1+\frac{R_2}{R_3}\right)V_{OS}
+$$
+
+*符号取决于 $V_{OS}$ 的定义，设计时更重要的是增益大小*。例如 $R_2/R_3=10$，$R_4/R_2=0.4$，则 $|\Delta V_{REF}/V_{OS}|\simeq4.4$；1 mV 失调导致约 4.4 mV 输出误差，约占 0.5 V 的 0.88%。
+
+![Banba 失调放大路径](attachment/12_banba_offset_path.png)
+
+运放的 **offset drift**（$dV_{OS}/dT$）还会进入 TC。不能仅依靠提高 OTA DC gain 来消除固有 offset；可以使用匹配、适当尺寸、trim、chopping/auto-zero 或专门的 PTAT-offset 架构，但每一种都需要衡量功耗、纹波与系统复杂度。
+
+#### 最低供电：分别核对三条支路
+
+![Banba 逐支路供电余量](attachment/11_low_voltage_headroom.png)
+
+低输出电压仅表示 $V_{REF}<1.2\ \mathrm V$；真正的低电源设计必须满足：
+
+$$
+V_{DD,\min}\gtrsim\max\{V_{f1}+V_{SDsat,p1},\ V_b+V_{SDsat,p2},\ V_{REF}+V_{SDsat,p3},\ V_{DD,\min,OTA},\ V_{DD,\min,startup}\}
+$$
+
+上式为**工程余量检查清单形式**，不是一个可通用于所有具体 OTA 的严格解析式。真实操作还要检查电压等级、低温 $V_f$ 升高、SS 角偏置、电流镜工作区与启动状态。
+
+特别注意原论文：**0.84 V 最低供电是经 MOS 阈值优化后在 −10 °C 的 SPICE 仿真值**；实际测试芯片由于使用较高阈值 MOS 的 OTA，测得的最低工作电压约为 2.1 V。不能把两者当成同一个实测指标。
+
+#### 电流镜及输出电阻非理想
+
+原始理想推导 $I_3=I_2$ 忽略了沟道长度调制。当 $V_b\approx V_{f1}\sim0.7\ \mathrm V$ 而 $V_{REF}\sim0.5\ \mathrm V$，p2、p3 的 $V_{SD}$ 不同，导致 $I_3/I_2$ 偏离 1。简单一阶模型：
+
+$$
+\frac{I_3}{I_2}\approx\frac{1+\lambda V_{SD3}}{1+\lambda V_{SD2}}
+$$
+
+它会同时引起输出幅度误差、line sensitivity 与 AC PSRR 退化。增大 PMOS $L$ 往往有帮助，但会增加面积和低压下的驱动需求；级联镜像也会损失 headroom，不能无条件使用。
+
+#### 设计误区
+
+1. **R4 主要控制输出电压，R2/R3 主要控制 TC**：只在电阻比例温度特性相近、理想镜像情况下近似独立；TCR mismatch 会使二者相互耦合。
+2. $V_{REF}=0.5\ \mathrm V$ **不意味着 $V_{DD}=0.5\ \mathrm V$**；结压加 PMOS 压降通常更高。
+3. MOS 尺寸相同 **不意味着** $I_3=I_2$；需检查漏端电压、$r_o$、布局和 PEX。
+4. **电流模并非 Banba 1999 独家发明**：Rincón-Mora–Allen 1998 已发表 current-mode + piecewise-linear curvature correction。
+5. 一阶校准 **不自动消除曲率**：PN 结 $V_f(T)$ 的非线性仍在。
+
+---
 
 ### 3.3 Sub-bandgap / Fractional Bandgap
 
@@ -969,11 +1069,9 @@ $$
 
 Sub-bandgap 指输出低于传统硅 bandgap 电压的参考源：
 
-
 $$
 V_{REF}<1.2\ \text{V}
 $$
-
 
 它不一定是一种独立拓扑，而是一类输出策略。
 
@@ -983,47 +1081,37 @@ $$
 
 即 Banba 思路：
 
-
 $$
 V_{REF}=R_O(I_{CTAT}+I_{PTAT})
 $$
-
 
 #### Fractional scaling
 
 先产生：
 
-
 $$
 V_{BG}\approx1.2\ \text{V}
 $$
 
-
 再通过比例缩放：
-
 
 $$
 V_{REF}=\alpha V_{BG}
 $$
 
-
 其中：
-
 
 $$
 0<\alpha<1
 $$
 
-
 #### Multi-output bandgap
 
 在一个 bandgap 中同时产生：
 
-
 $$
 1.2\ \text{V},\quad0.8\ \text{V},\quad0.6\ \text{V},\quad0.4\ \text{V}
 $$
-
 
 #### Low-current-density BJT
 
@@ -1108,35 +1196,29 @@ $$
 
 一阶 bandgap 只抵消：
 
-
 $$
 \frac{dV_{REF}}{dT}
 $$
 
-
 但 $V_{BE}(T)$ 并不是严格线性。更准确地说，$V_{BE}(T)$ 包含：
-
 
 $$
 T\ln T
 $$
 
-
 以及其他高阶项。
 
 所以：
-
 
 $$
 V_{BE}+K\Delta V_{BE}
 $$
 
-
 只能做到一阶斜率抵消，输出曲线仍然会弯曲。
 
 #### 曲率示意图
 
-![04_curvature_compensation](/GarveyDing_AcademicPages/images/blog/learning-notes/bandgap-reference/04_curvature_compensation.png)
+![示意图](attachment/07_curvature_model.png)
 
 图中第一条曲线表示一阶补偿后残余误差仍然存在；曲率补偿后，输出误差可以在更宽温度范围内减小。
 
@@ -1146,11 +1228,9 @@ $$
 
 生成近似二阶温度项：
 
-
 $$
 I_{PTAT2}\propto T^2
 $$
-
 
 用于抵消 $V_{BE}$ 的二阶曲率。
 
@@ -1158,11 +1238,9 @@ $$
 
 针对 $V_{BE}$ 模型中的：
 
-
 $$
 T\ln T
 $$
-
 
 项，生成反向补偿。
 
@@ -1170,11 +1248,9 @@ $$
 
 在某些温度区间打开额外补偿电流：
 
-
 $$
 I_{COMP}(T)
 $$
-
 
 例如：
 
@@ -1186,11 +1262,9 @@ $$
 
 利用不同电阻的温度系数，使电阻比随温度变化：
 
-
 $$
 \frac{R_2(T)}{R_1(T)}
 $$
-
 
 从而实现高阶补偿。
 
@@ -1225,6 +1299,44 @@ $$
 ---
 
 
+
+
+#### 由 $T\ln T$ 导出的剩余曲率（从公式到曲线）
+
+若在 $T_0$ 使 $dV_{REF}/dT=0$ 且假设 $N$ 和电阻比不随温度变化，则经过一阶补偿的偏差可写为：
+
+$$
+\boxed{\Delta V_{REF}(T)=-(\eta-\alpha)\frac{k}{q}\left[T\ln\left(\frac{T}{T_0}\right)-(T-T_0)\right]}
+$$
+
+该式对应未缩放的传统 BGR 核心。在 Banba 的**固定缩放系数 A** 下，残余偏差还应乘以 $A=R_4/R_2$。由该式：
+
+$$
+\left.\frac{d\Delta V_{REF}}{dT}\right|_{T_0}=0,\qquad
+\frac{d^2\Delta V_{REF}}{dT^2}=-(\eta-\alpha)\frac{k}{qT}\ne0
+$$
+
+这解释了曲线出现中温峰值、两端较低的常见形态；不同工艺、偏置指数、电阻 TCR 和 offset drift 会造成峰值移动甚至转为单调曲线。
+
+![一阶补偿 vs 曲率补偿](attachment/13_first_vs_curvature_trim.png)
+
+**如何在 Virtuoso 定位曲率来源：** 分别保存 $V_{BE}(T)$、$\Delta V_{BE}(T)$、$I_{PTAT}(T)$、$I_{CTAT}(T)$、$R_i(T)$ 与最终 $V_{REF}(T)$，先锁定理想运放/镜像，后逐步放开 offset、镜像 $r_o$ 和寄生，明确哪些是“PN 结内禀曲率”，哪些是“电路实现附加曲率”。
+
+#### 曲率补偿架构的五类可实现方法
+
+| 方案 | 如何构造 $V_{COMP}(T)$ | 代表文献 | 典型代价 |
+|---|---|---|---|
+| $T\ln T$ 型 | 弱反型 MOS 或 BJT 差分结构复现非线性项 | Song–Gray 1983；Malcovati 2001 | 工艺模型、复杂性 |
+| 二阶 $T^2$ 型 | 电流平方/乘法器等近似二阶温度项 | 各类 Second-Order BGR | 器件数与失配 |
+| Piecewise-linear | 低温与高温区分别切入补偿电流 | Rincón-Mora–Allen 1998 | 转折温度漂移 |
+| Temperature-dependent resistor ratio | poly/diffusion 电阻组合使 $R_2/R_1$ 随 T 变化 | Leung–Mok–Leung 2003 | TCR 模型/追踪 |
+| 数字或混合域校准 | IDAC/电阻 DAC/LUT，多点拟合 | U et al. JSSC 2024 | 测试与数字开销 |
+
+> [!note] 不能只追求 TC 一个数字
+> BGR 论文的 TC 常用 **box method** $\mathrm{TC}=\frac{V_{max}-V_{min}}{V_{nom}(T_{max}-T_{min})}10^6\ \mathrm{ppm}/^\circ\mathrm C$；它不等同于局部一阶导数，也无法独立反映温区、初始精度和输出噪声。比较文献时要并列标注温区、trim 条件、样本数、供电与功耗。
+
+---
+
 ### 4.2 Rincón-Mora–Allen 分段曲率补偿
 
 #### 定位
@@ -1233,29 +1345,23 @@ Rincón-Mora–Allen 结构是低压 current-mode bandgap 与分段线性曲率�
 
 它的核心思想是：
 
-
 $$
 \text{current-mode BGR}
 +
 \text{piecewise-linear curvature correction}
 $$
 
-
 #### 基本思想
 
 一阶补偿后，输出在高温或低温端仍然会偏离目标值。因此可以在特定温度区间引入额外电流：
-
 
 $$
 I_{COMP,L}(T)
 $$
 
-
-
 $$
 I_{COMP,H}(T)
 $$
-
 
 分别补偿低温和高温曲率。
 
@@ -1314,7 +1420,6 @@ Leung-Mok 结构强调：
 
 这些结构通常具有：
 
-
 $$
 \text{low-voltage}
 +
@@ -1324,7 +1429,6 @@ $$
 +
 \text{careful startup}
 $$
-
 
 #### 主要设计难点
 
@@ -1443,19 +1547,15 @@ $$
 
 MOS-only reference 严格来说不一定是传统 BJT bandgap，而是：
 
-
 $$
 \text{MOSFET-based voltage reference}
 $$
 
-
 或：
-
 
 $$
 \text{bandgap-like reference}
 $$
-
 
 它利用 MOSFET 的温度特性替代 BJT 的 $V_{BE}$ 和 $\Delta V_{BE}$。
 
@@ -1463,21 +1563,17 @@ $$
 
 弱反型 MOS 电流近似为：
 
-
 $$
 I_D
 \propto
 \exp\left(\frac{V_{GS}-V_{TH}}{nV_T}\right)
 $$
 
-
 这个形式与 BJT 指数关系类似。因此可以构造类似：
-
 
 $$
 \Delta V_{GS}\propto V_T\ln N
 $$
-
 
 的 PTAT 信号。
 
@@ -1485,11 +1581,9 @@ $$
 
 MOS 阈值电压：
 
-
 $$
 V_{TH}(T)
 $$
-
 
 通常具有负温度系数，可以作为 CTAT-like 量。再与 PTAT 或弱反型信号组合，得到温度补偿参考。
 
@@ -1545,11 +1639,9 @@ $$
 
 传统 BGR 中：
 
-
 $$
 I_{PTAT}=\frac{\Delta V_{BE}}{R}
 $$
-
 
 如果希望低功耗，例如 nA 级电流，则 $R$ 可能达到 MΩ 级，面积很大。
 
@@ -1565,11 +1657,9 @@ $$
 
 使用：
 
-
 $$
 R_{EQ}=\frac{1}{f_{CLK}C}
 $$
-
 
 由开关电容模拟电阻。
 
@@ -1613,7 +1703,6 @@ Time-domain 或 digital-like bandgap 是先进工艺中的重要方向。它试�
 
 一种典型结构为：
 
-
 $$
 \text{PN junction}
 \rightarrow
@@ -1628,16 +1717,13 @@ $$
 V_{REF}
 $$
 
-
 也可以是：
-
 
 $$
 \text{PTAT delay}+\text{CTAT delay}
 \rightarrow
 \text{time-domain compensation}
 $$
-
 
 #### Reverse bandgap
 
@@ -1707,7 +1793,6 @@ $$
 
 常见组合是：
 
-
 $$
 \text{Parasitic BJT}
 +
@@ -1717,7 +1802,6 @@ $$
 +
 \text{curvature compensation}
 $$
-
 
 #### 路线二：PN diode / bulk diode reference
 
@@ -1787,11 +1871,9 @@ Bandgap 输出不仅要温度稳定，还要不受电源噪声影响。电源噪
 
 在 bandgap core 前增加预稳压：
 
-
 $$
 V_{DD}\rightarrow V_{REG}\rightarrow BGR
 $$
-
 
 #### Cascode / regulated cascode current mirror
 
@@ -1832,6 +1914,17 @@ $$
 
 
 ### 6.3 Digitally Trimmed / Calibration-Assisted Bandgap
+
+#### Trim 的三个设计自由度（新增）
+
+![Trim：初值与曲率分开处理](attachment/14_trim_dimensions.png)
+
+对于 Banba 结构，理想情况下 $R_4/R_2$ 主要控制 **幅度**，$R_2/R_3$ 主要控制 **一阶 TC**，额外 $I_{COMP}(T)$ 主要控制 **高阶曲率**。要把这些设计自由度分开，实现上仍须检查电阻 TCR 与电流镜的耦合。
+
+- **单点 Trim**：测量一个温度点的输出；若电路额外建立了误差相关性，可能同时改进 TC，但不是通用结论。
+- **双点 Trim**：估计有效一阶斜率；需要使用两个不同温度的参考测量。
+- **多点 Trim**：用于高阶拟合，出厂成本与 LUT/存储开销上升。
+
 
 #### 为什么需要 trim
 
@@ -1919,11 +2012,52 @@ Bandgap 的理论温漂可以很低，但实际芯片存在：
 ---
 
 
+
+
+### 6.4 2021–2026 年近期 JSSC 方向（新增）
+
+![JSSC Bandgap 研究路线](attachment/15_jssc_evolution.png)
+
+> [!info] 文献筛选原则
+> 下表区分正式 **JSSC** 与 ISSCC/A-SSCC、综述；所列为代表性工作而非全部 JSSC Bandgap 论文。出版年按正式卷期，部分 DOI 年份是早期上线年。主要信息核对于 IEEE Xplore 摘要、作者机构页面和期刊元数据，尚不能代替逐页精读原始电路。
+
+| 正式 JSSC 年份 | 论文（原题和 DOI） | 架构/关键技术 | 对设计的启发 |
+|---|---|---|---|
+| 2021 | [Kim & Cho, *A Single BJT Bandgap Reference With Frequency Compensation Exploiting Mirror Pole*](https://doi.org/10.1109/JSSC.2021.3093583) | 单 BJT 支路、PTAT-embedded amplifier、镜像极点补偿；0.18 µm、192 nW、26.3 ppm/°C | 低功耗 BGR 也必须严谨分析反馈极点 |
+| 2021 | [Boo et al., *A Single-Trim Switched Capacitor CMOS Bandgap Reference…*](https://doi.org/10.1109/JSSC.2020.3044165) | SC 求和 + DEM + 单点 trim | 动态元件匹配比单纯增大面积更系统地减轻比例误差 |
+| **2024** | [Chi-Wa U et al., *Sub-μW Auto-Calibration Bandgap Voltage Reference…*](https://doi.org/10.1109/JSSC.2023.3294996) | Current-based BGR + IDAC 一点自动校准；65 nm、1.2 V、22.3 ppm/°C；10 样本 $\sigma/\mu$ 约 0.12% | 单点校准经特殊架构设计也可能同时抑制初值和 TC 的工艺误差 |
+| **2024** | [Tang et al., *A 14-b BW/Power Scalable Sensor Interface With a Dynamic Bandgap Reference*](https://doi.org/10.1109/JSSC.2024.3471820) | PNP 容性偏置，SC ΔΣ 第一级积分器直接完成 PTAT/CTAT 求和；130 nm、98 Hz–5.9 kHz 信号带宽 | 动态 BGR 可以与低速精密 ADC 前端耦合，但不能直接推断适用于高速 SAR CDAC |
+| **2025** | [Li et al., *Compact PNP BJT-Based Temperature Sensor and Sub-1-V Bandgap Reference…4-nm FinFET*](https://doi.org/10.1109/JSSC.2024.3524245) | 寄生 PNP + 弱反型 MOS；温度传感/BGR 双模式，450 mV、33 ppm/°C（平均） | 先进 FinFET 并不意味着寄生 BJT 路线失效 |
+| **2025** | [Zhuang et al., *A Chopping-Free Single-Trim Bandgap Reference Using Amplifier With PTAT Offset*](https://doi.org/10.1109/JSSC.2025.3560578) | 构造 **PTAT amplifier offset** 用作补偿，避免单靠 chopping/auto-zero | 运放 offset 不一定只作为误差源，也可经设计转为补偿信号 |
+| **2026** | [Lv et al., *A 0.5-ppm/°C Voltage Reference With Sub-Ranging On-Chip Self-Heating and Second-Order Compensation in 65-nm CMOS*](https://doi.org/10.1109/JSSC.2025.3642879) | 片上自加热 + 二阶补偿，论文报告 0.5 ppm/°C 量级 TC | 主动热控不同于纯静态 BGR，必须计入额外加热功耗和热环路。部分卷期元数据以 IEEE 页面为准 |
+
+> [!tip] 先读哪三篇
+> 做 1 V 低压 BGR：Banba 1999 + Leung–Mok 2002 + Li 2025；做高精度 Trim：Rincón-Mora 1998 + U 2024 + Zhuang 2025；做反馈稳定性：Brokaw 1974 + Kim 2021。
+
+#### 6.4.1 U 2024：为什么传统一点 Trim 不能同时保证 TC？
+
+对于 $V_{REF}=A V_{EB}+B\Delta V_{EB}$，工艺改变 $V_{EB}$ 与 $\Delta V_{EB}$ 后，单纯用一个输出幅度系数把 $V_{REF}(25^\circ\mathrm C)$ 调到标称值，通常不能保证一阶斜率也正确。U 等用 IDAC 和特殊误差关联机制，让单点自动校准同时压低绝对误差和 TC 工艺敏感度。它不是“一点测温就能从数学上独立求出任意器件的零点和斜率”，其效果依赖所提出的电路相关性与校准约束。
+
+#### 6.4.2 Zhuang 2025：把 PTAT Offset 变成设计自由度
+
+传统 OTA $V_{OS}$ 的漂移会引入 $A_{OS}dV_{OS}/dT$ 误差；该文构造温度可控的 amplifier offset，使其与 BGR 的温度依赖关系匹配，减少常见 chopping 和 auto-zero 的需求。学习时应同时记录 **对输入等效 offset 的符号约定、一次 trim 控制的参数、输出 TC 分布、噪声与 PSRR**。
+
+#### 6.4.3 Tang 2024：Dynamic BGR 并非高速 ADC 的 Reference Buffer 替代
+
+其 PNP/capacitor DAC 动态采样 $V_{BE}$，通过 ΔΣ 第一级积分器完成参考求和，减少独立 buffer/decap；这一方法面向**低带宽微功耗传感器**。对于 625 MS/s pipeline-SAR，CDAC 的参考电荷脉冲和建立精度远高于文中动态 sensor interface 的需求，不能直接迁移。
+
+#### 6.4.4 文献综述入口（2024–2025）
+
+- [Zhuang et al., *High-Accuracy Bandgap Reference of <20 ppm/°C: A Review*, Chips 2025](https://doi.org/10.3390/chips4010005)：将误差分为 OTA offset、$V_{BE}$ 高阶曲率、电流镜 mismatch 等，适合梳理补偿技术。
+- [Moisello et al., *MOSFET-Based Voltage Reference Circuits in the Last Decade: A Review*, Micromachines 2024](https://doi.org/10.3390/mi15121504)：适合扩展 MOS-only、subthreshold 与超低功耗参考，注意它们不都属于严格 BJT Bandgap。
+
+---
+
 ## 7. Bandgap 在 ADC Reference System 中的角色
 
 ### 7.1 Bandgap + Reference Buffer / LDO 系统结构
 
-> 相关专题：[ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
+> 相关专题：[[ADC Reference Buffer]]
 
 #### 为什么 Bandgap 不能直接驱动 ADC
 
@@ -1931,11 +2065,9 @@ Bandgap 的理论温漂可以很低，但实际芯片存在：
 
 CDAC 切换会产生瞬态电荷需求：
 
-
 $$
 Q=C\Delta V
 $$
-
 
 如果 bandgap core 直接驱动 CDAC，会出现：
 
@@ -1953,7 +2085,7 @@ $$
 
 #### 典型 ADC reference 系统
 
-![05_adc_reference_system](/GarveyDing_AcademicPages/images/blog/learning-notes/bandgap-reference/05_adc_reference_system.png)
+![示意图](attachment/09_adc_reference_chain.png)
 
 #### 各模块职责
 
@@ -1990,13 +2122,11 @@ Reference buffer 关注：
 
 因此：
 
-
 $$
 \boxed{
 \text{Bandgap 决定参考的低频准确性；Reference Buffer 决定高速动态准确性}
 }
 $$
-
 
 #### 对高速 ADC 的建议
 
@@ -2021,7 +2151,6 @@ $$
 
 推荐结构：
 
-
 $$
 \text{Brokaw / Kuijk BGR}
 +
@@ -2029,7 +2158,6 @@ $$
 +
 \text{trim}
 $$
-
 
 原因：
 
@@ -2042,19 +2170,15 @@ $$
 
 推荐结构：
 
-
 $$
 \text{Banba-like current-mode sub-bandgap}
 $$
 
-
 或：
-
 
 $$
 \text{low-voltage CMOS BGR}
 $$
-
 
 原因：
 
@@ -2066,7 +2190,6 @@ $$
 
 推荐结构：
 
-
 $$
 \text{Parasitic BJT}
 +
@@ -2076,7 +2199,6 @@ $$
 +
 \text{curvature compensation}
 $$
-
 
 原因：
 
@@ -2088,19 +2210,15 @@ $$
 
 推荐结构：
 
-
 $$
 \text{MOS-only}
 $$
 
-
 或：
-
 
 $$
 \text{subthreshold / VTH-based reference}
 $$
-
 
 原因：
 
@@ -2114,7 +2232,6 @@ $$
 
 推荐系统：
 
-
 $$
 \text{BJT BGR or sub-bandgap}
 +
@@ -2124,7 +2241,6 @@ $$
 +
 \text{layout symmetry}
 $$
-
 
 重点不是单独 BGR 的温漂，而是 reference system 的：
 
@@ -2139,7 +2255,6 @@ $$
 
 推荐结构：
 
-
 $$
 \text{PTAT current / voltage}
 +
@@ -2147,7 +2262,6 @@ $$
 +
 \text{ADC or comparator}
 $$
-
 
 Bandgap core 可以同时提供：
 
@@ -2198,19 +2312,15 @@ Bandgap core 可以同时提供：
 
 建议先推导：
 
-
 $$
 \Delta V_{BE}=V_T\ln N
 $$
 
-
 再推导：
-
 
 $$
 V_{REF}=V_{BE}+K\Delta V_{BE}
 $$
-
 
 #### 第二阶段：经典电压模架构
 
@@ -2245,7 +2355,6 @@ $$
 
 需要掌握：
 
-
 $$
 V_{REF}
 =
@@ -2256,7 +2365,6 @@ R_O
 \frac{\Delta V_{BE}}{R_P}
 \right)
 $$
-
 
 以及为什么输出可以低于 1.2 V。
 
@@ -2285,7 +2393,6 @@ $$
 
 对于 ADC，重点不是单独 bandgap core，而是：
 
-
 $$
 \boxed{
 \text{Bandgap}
@@ -2297,7 +2404,6 @@ $$
 \text{Calibration}
 }
 $$
-
 
 需要把 reference 看成一个完整动态系统。
 
@@ -2359,10 +2465,42 @@ $$
 ---
 
 
+
+
+#### 扩展参考文献：经典拓扑、反馈、超低功耗、近期 JSSC（新增）
+
+> DOI 链接优先于二手转述；原始论文 / 综述补充，正式引用前仍应按 Zotero/IEEE Xplore 核对全部作者和卷期。
+
+| 编号 | 文献（作者、刊物年份、题名） | 研究切入点 |
+|---|---|---|
+| [22] | I. Lee et al., [*Exponential Curvature-Compensated BiCMOS Bandgap References*, JSSC 1994](https://doi.org/10.1109/4.328634) | 利用 BJT 电流增益温度特性补偿曲率 |
+| [23] | K. N. Leung et al., [*A 2-V 23-μA 5.3-ppm/°C Curvature-Compensated CMOS Bandgap Voltage Reference*, JSSC 2003](https://doi.org/10.1109/JSSC.2002.808328) | 电阻 TCR 比例曲率补偿 |
+| [24] | Y. H. Lam & W. H. Ki, [*CMOS Bandgap References With Self-Biased Symmetrically Matched Current-Voltage Mirror…*, TVLSI 2010](https://doi.org/10.1109/TVLSI.2009.2016204) | SM-CVM，自偏置反馈不依赖传统 OTA |
+| [25] | Y. Osaki et al., [*1.2-V Supply, 100-nW… and 0.7-V Supply, 52.5-nW… Subbandgap Reference*, JSSC 2013](https://doi.org/10.1109/JSSC.2013.2252523) | Resistorless / sub-bandgap |
+| [26] | M. Kim & S. Cho, [*A Single BJT Bandgap Reference With Frequency Compensation Exploiting Mirror Pole*, JSSC 2021](https://doi.org/10.1109/JSSC.2021.3093583) | 单 BJT / 频率补偿 |
+| [27] | Boo et al., [*A Single-Trim Switched Capacitor CMOS Bandgap Reference With a 3σ Inaccuracy of +0.02%, −0.12%*, JSSC 2021](https://doi.org/10.1109/JSSC.2020.3044165) | SC + DEM / 单点 trim |
+| [28] | C.-W. U et al., [*Sub-μW Auto-Calibration Bandgap Voltage Reference With 1σ Inaccuracy of ±0.12% Within −40°C to 120°C*, JSSC 2024](https://doi.org/10.1109/JSSC.2023.3294996) | IDAC 一点自动校准 |
+| [29] | Z. Tang et al., [*A 14-b BW/Power Scalable Sensor Interface With a Dynamic Bandgap Reference*, JSSC 2024](https://doi.org/10.1109/JSSC.2024.3471820) | 动态 PNP + SC ΔΣ |
+| [30] | Y. Li et al., [*Compact PNP BJT-Based Temperature Sensor and Sub-1-V Bandgap Reference for SoC Applications in 4-nm FinFET*, JSSC 2025](https://doi.org/10.1109/JSSC.2024.3524245) | FinFET PNP 双模式 |
+| [31] | H. Zhuang et al., [*A Chopping-Free Single-Trim Bandgap Reference Using Amplifier With PTAT Offset*, JSSC 2025](https://doi.org/10.1109/JSSC.2025.3560578) | PTAT OTA offset / 单点 trim |
+| [32] | W. Lv et al., [*A 0.5-ppm/°C Voltage Reference With Sub-Ranging On-Chip Self-Heating and Second-Order Compensation in 65-nm CMOS*, JSSC 2026](https://doi.org/10.1109/JSSC.2025.3642879) | 自加热 + 二阶补偿 |
+| [33] | H. Zhuang et al., [*High-Accuracy Bandgap Reference of <20 ppm/°C: A Review*, Chips 2025](https://doi.org/10.3390/chips4010005) | 误差源系统综述（开放获取） |
+| [34] | E. Moisello et al., [*MOSFET-Based Voltage Reference Circuits in the Last Decade: A Review*, Micromachines 2024](https://doi.org/10.3390/mi15121504) | MOS-only / low-voltage 综述（开放获取） |
+| [35] | B. Razavi, [*The Bandgap Reference*, IEEE Solid-State Circuits Magazine 2016](https://doi.org/10.1109/MSSC.2016.2577978) | 四种经典原理对照、历史源头 |
+
+#### 推荐的阅读顺序
+
+1. **系统原理与图：** Razavi 2016 → Widlar 1971 → Kuijk 1973 → Brokaw 1974。
+2. **低压/current-mode：** Rincón-Mora–Allen 1998 → Banba 1999 → Leung–Mok 2002 → Lam–Ki 2010。
+3. **精度/曲率：** Song–Gray 1983 → Lee 1994 → Malcovati 2001 → Leung 2003 → Ker–Chen 2006。
+4. **现代 JSSC：** Kim 2021 → U 2024 → Tang 2024 → Li 2025 → Zhuang 2025 → Lv 2026。
+5. **扩展综述：** Chips 2025（BJT BGR）+ Micromachines 2024（MOS-only voltage reference）。
+
+---
+
 ### 8.3 最终总结
 
 Bandgap 的结构发展可以用一句话概括：
-
 
 $$
 \boxed{
@@ -2375,7 +2513,6 @@ $$
 \text{先进工艺 MOS-only / time-domain / FinFET BJT reference}
 }
 $$
-
 
 最核心的三条主线是：
 
@@ -2390,7 +2527,6 @@ $$
 
 对于 ADC 方向，建议优先掌握：
 
-
 $$
 \boxed{
 \text{Brokaw}
@@ -2402,7 +2538,6 @@ $$
 \text{Reference Buffer System}
 }
 $$
-
 
 这四部分基本覆盖了从基础 bandgap 到高速 ADC reference system 的主线。
 
@@ -2420,11 +2555,9 @@ $$
 
 1971 年，R. J. Widlar 发表 “New Developments in IC Voltage Regulators”，给出了被广泛视为早期 bandgap reference 原型的电路。其核心思想已经是：
 
-
 $$
-V_{BE}+K\Delta V_{BE}
+V_{BE}+K\Delta V_{BE}  
 $$
-
 
 
 
@@ -2436,11 +2569,9 @@ $$
 
 这一时期形成了传统电压模 bandgap 的基本范式：
 
-
 $$
-V_{REF}=V_{BE}+K\Delta V_{BE}
+V_{REF}=V_{BE}+K\Delta V_{BE}  
 $$
-
 
 
 
@@ -2509,11 +2640,9 @@ Song–Gray 结构重点不在基础 PTAT/CTAT 生成，而在 **曲率补偿**�
 
 其目标是抵消 $V_{BE}$(T) 中的高阶项，例如：
 
-
 $$
-T\ln T
+T\ln T  
 $$
-
 
 
 
@@ -2569,11 +2698,9 @@ $$
 
 运放 offset 会直接改变两个 BJT 的电流密度比，进而影响：
 
-
 $$
-\Delta V_{BE}
+\Delta V_{BE}  
 $$
-
 
 
 
@@ -2583,11 +2710,9 @@ $$
 
 自偏置 bandgap 通常存在一个零电流解：
 
-
 $$
-I=0
+I=0  
 $$
-
 
 
 
@@ -2674,11 +2799,9 @@ Bandgap core 往往只能驱动很轻的静态负载。
 
 因此高速 ADC 中通常采用：
 
-
 $$
-\text{Bandgap} \rightarrow \text{低噪声缓冲器或 LDO} \rightarrow \text{大去耦电容} \rightarrow \text{CDAC}
+\text{Bandgap} \rightarrow \text{低噪声缓冲器或 LDO} \rightarrow \text{大去耦电容} \rightarrow \text{CDAC}  
 $$
-
 
 
 
@@ -2688,6 +2811,9 @@ Bandgap 负责长期稳定性，reference buffer 负责动态驱动能力。
 
 
 ### 9.4 附录 D：Bandgap 的主要误差来源
+
+![误差路径总览](attachment/08_error_sources.png)
+
 
 
 |误差来源|对输出的影响|常见改进方式|
@@ -2714,11 +2840,9 @@ Bandgap 负责长期稳定性，reference buffer 负责动态驱动能力。
 
 常见定义为：
 
-
 $$
-TC= \frac{V_{MAX}-V_{MIN}} {V_{NOM}(T_{MAX}-T_{MIN})} \times10^6 \quad\text{ppm}/^\circ\text{C}
+TC= \frac{V_{MAX}-V_{MIN}} {V_{NOM}(T_{MAX}-T_{MIN})} \times10^6 \quad\text{ppm}/^\circ\text{C}  
 $$
-
 
 
 
@@ -2741,11 +2865,9 @@ $$
 
 初始精度通常写成：
 
-
 $$
-\text{Accuracy} = \frac{V_{REF}-V_{TARGET}} {V_{TARGET}} \times100\%
+\text{Accuracy} = \frac{V_{REF}-V_{TARGET}} {V_{TARGET}} \times100\%  
 $$
-
 
 
 
@@ -2770,11 +2892,9 @@ $$
 
 表示电源电压变化对输出的低频影响：
 
-
 $$
-LS= \frac{\Delta V_{REF}} {\Delta V_{DD}}
+LS= \frac{\Delta V_{REF}} {\Delta V_{DD}}  
 $$
-
 
 
 
@@ -2791,11 +2911,9 @@ $$
 
 PSRR 表示交流电源扰动到输出的耦合：
 
-
 $$
-PSRR(f) = 20\log_{10} \left| \frac{\Delta V_{DD}(f)} {\Delta V_{REF}(f)} \right|
+PSRR(f) = 20\log_{10} \left| \frac{\Delta V_{DD}(f)} {\Delta V_{REF}(f)} \right|  
 $$
-
 
 
 
@@ -2861,11 +2979,9 @@ Bandgap 噪声主要来自：
 
 可以采用：
 
-
 $$
-\text{寄生 BJT Brokaw/Kuijk BGR}
+\text{寄生 BJT Brokaw/Kuijk BGR}  
 $$
-
 
 
 
@@ -2880,11 +2996,9 @@ $$
 
 生成 ADC 所需的：
 
-
 $$
-V_{REFP},\quad V_{REFN},\quad V_{CM}
+V_{REFP},\quad V_{REFN},\quad V_{CM}  
 $$
-
 
 
 
@@ -2894,21 +3008,17 @@ $$
 
 更适合采用：
 
-
 $$
-\text{Banba-like current-mode sub-bandgap}
+\text{Banba-like current-mode sub-bandgap}  
 $$
-
 
 
 
 输出可设计在：
 
-
 $$
-0.4\sim0.6\ \text{V}
+0.4\sim0.6\ \text{V}  
 $$
-
 
 
 
@@ -2935,20 +3045,59 @@ $$
 
 对于高速 SAR 或 pipeline-SAR ADC，工程上应将 **bandgap 精度问题** 和 **reference 动态驱动问题** 分开处理：
 
-
 $$
-\boxed{ \text{Bandgap 决定低频基准稳定性，Reference Buffer 决定高速动态建立精度} }
+\boxed{ \text{Bandgap 决定低频基准稳定性，Reference Buffer 决定高速动态建立精度} }  
 $$
-
 
 
 
 ---
 
 
-## 相关笔记
+---
 
-- [ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
-- [电路噪声：从 MOS 器件到系统设计](/GarveyDing_AcademicPages/blog/circuit-noise/)
-- [PVT 对 MOS 管性能参数的影响](/GarveyDing_AcademicPages/blog/mos-pvt/)
-- [TSMC 28 nm CMOS 片上无源器件：电阻、电容与电感](/GarveyDing_AcademicPages/blog/cmos28-passive-devices/)
+
+### 9.7 附录 G：实际复现路线（TSMC 28 nm / Virtuoso）
+
+![Virtuoso 逐级验证矩阵](attachment/18_virtuoso_check_matrix.png)
+
+#### G.1 五个互相独立的 testbench
+
+| Testbench | 输入扫参 | 必须保存的波形/数据 | 最先排查的失败原因 |
+|---|---|---|---|
+| PNP/PN-junction 基础 | $I_C$ 扫 10 nA–10 μA、T、corners、面积比 | $V_f$、$\Delta V_f$、$\beta$、leakage | 寄生结模型、错误端口/衬底偏置 |
+| Ideal-core BGR | 理想 OTA/电流镜、R2/R3、N | KCL、$V_a-V_b$、$I_{CTAT/PTAT}$、$V_{REF}(T)$ | 电流密度比/反馈极性不正确 |
+| Real OTA + Startup | VDD ramp、慢上电、不同初始条件 | $V_{CM,in}$、$V_{out,OTA}$、工作区、启动时间 | OTA headroom / 零电流态 |
+| Loop/AC | 真实 Rload/Cload、stb probe、交流 VDD 注入 | PM、unity-loop gain、PSRR(f)、Zout(f) | probe 位置、镜像高阻极点 |
+| PVT + Monte Carlo + PEX | corners × 温度 × VDD × mismatch | $VREF_{typ/\sigma}$、TC 分布、min VDD、yield | 电阻 TCR/matching、layout 热梯度 |
+
+**推荐执行顺序：** 先在某一固定 $T_0$ 检查 $V_a=V_b$ 与 KCL，再做 temperature，再换真实 OTA，最后加 startup、PSRR/Noise 和 PEX。应避免理想 OTA 阶段就开始追求极低 TC，因为实际误差项会改变最优电阻比。
+
+#### G.2 设计评审时要回答的十个问题
+
+1. 寄生 PNP 的 collector/substrate 约束是什么？是否有可靠温度模型？
+2. 面积比 N 是否通过单位阵列实现？其 mismatch 与热梯度量化了吗？
+3. $\Delta V_{BE}$ 的电流密度比在所有 PVT 下是否维持？
+4. R2/R3 的一阶 PTAT 权重是否由实际斜率仿真计算？
+5. 电阻类型、TCR 和 mismatch 是否会破坏幅度与斜率的独立 Trim？
+6. 1 V 核心供电下，冷启动、SS 角的 PNP 与 OTA headroom 是否都满足？
+7. Startup 是否在所有上电波形下脱离零电流态，退出后是否仍泄漏？
+8. STB 位置是否代表完整反馈回路？不同负载下 PM 是否满足目标？
+9. 输出 integrated noise、PSRR 与温区/样本数是否在同一指标表中表达？
+10. 用于 ADC 时，参考系统的动态负载是否由独立 RVB/LDO 驱动且与 BGR 噪声预算协同设计？
+
+#### G.3 Banba 的初始算例（仅设计起点）
+
+假设室温 $N=8$、$V_{f1}=0.68\ \mathrm V$、$dV_f/dT=-1.8\ \mathrm{mV/K}$：
+
+$$
+\Delta V_f=25.85\ \mathrm{mV}\ln8\approx53.75\ \mathrm{mV},\quad K\approx\frac{1.8}{0.08617\ln8}\approx10.04
+$$
+
+若设 $R_2=100\ \mathrm{k\Omega}$，得 $R_3\approx9.96\ \mathrm{k\Omega}$，于是：
+
+$$
+I_{CTAT}\approx6.8\ \mathrm{\mu A},\quad I_{PTAT}\approx5.40\ \mathrm{\mu A}
+$$
+
+输出目标 0.5 V 时 $R_4\approx0.5/(12.2\ \mathrm{\mu A})\approx41\ \mathrm{k\Omega}$。该算例忽略了镜像 $r_o$、温度/工艺电阻漂移和 OTA，必须经过真实 PDK 重新调参，**不能作为已经能在 1 V 全 PVT 工作的证明**。

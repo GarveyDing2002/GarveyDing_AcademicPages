@@ -1,14 +1,16 @@
 ---
 title: ADC 数据输出接口：架构与设计
-date: 2026-05-18
+date: '2026-10-26'
 excerpt: 梳理 ADC 到 FPGA、ASIC 或 MCU 的数据链路，覆盖吞吐量、接口架构、时序和噪声耦合。
 tags:
-  - 学习记录
-  - adc
-  - digital-interface
+- 学习记录
+- adc
+- digital-interface
 ---
 
-> **核心定位**
+# ADC 数据输出接口：架构与设计
+
+> [!abstract] 核心定位
 > 梳理 ADC 到 FPGA、ASIC 或 MCU 的数据链路，覆盖吞吐量、接口架构、时序和噪声耦合。
 
 ---
@@ -18,10 +20,12 @@ tags:
 ---
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **7 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 接口基础：作用、吞吐量与总体分类
    - 1.1 ADC 数据输出接口的作用
@@ -57,6 +61,11 @@ tags:
    - 7.3 参考资料
 
 ## 1. 接口基础：作用、吞吐量与总体分类
+
+![01_adc_data_output_link](/images/blog/learning-notes/adc-data-interfaces/01_adc_data_output_link.svg)
+
+*图：ADC 量化结果经数据组织和接口链路送至 FPGA/ASIC；时钟、帧与同步信号需按所选协议确定。*
+
 
 ### 1.1 ADC 数据输出接口的作用
 
@@ -1424,7 +1433,69 @@ JESD204C
 
 10. Sony Semiconductor Solutions, _High-speed Interface SLVS-EC_. [https://www.sony-semicon.com/en/technology/is/slvsec.html](https://www.sony-semicon.com/en/technology/is/slvsec.html)
 
+## 2026 深化：从 ADC 原始码率到 JESD204C / 片上 Capture（新增）
 
-## 相关笔记
+> [!tip] 重要区分
+> 物理层（CML/LVDS/CMOS/SLVS）、链路编码（8b/10b、64b/66b）、运输层 mapping（samples/converters/lanes）和采集机制（SRAM/FIFO/decimation）位于**不同层级**。JESD204B/C 是串行传输标准及 framing/link/同步规范，并非某种模拟 ADC 架构。根据公开资料，**JESD204D 已在 2023 年公布**，这里重点仍是 B/C，因为原笔记的目标为 ADC→FPGA 测试。[I1]
 
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
+### I1. 先算 payload，再算编码、分 lane 与效率
+
+对 ADC 原始数码，若 `M` 个 converter，每个每秒 `Fs` 样本，实际输出/运输层每样本 `N'` bit，则：
+
+$$R_{\rm payload}=M\times F_s\times N'.$$
+
+对 JESD204B 8b/10b 编码，理想只考虑线路编码开销时 `R_lane=R_payload×(10/8)/L`；对 JESD204C 64b/66b 模式为 `R_lane≈R_payload×(66/64)/L`，仍须按具体 frame mapping/padding、控制/同步开销和收发器余量修正。**不是所有 JESD204C 链接都一定采用 64b/66b**；它还包含其他工作模式。不要把协议理论峰值/PHY 极限直接用作可持续有效数据率。
+
+假定一颗 `20 GS/s × 12 bit` ADC，若每样本运输为 16 bit，则 `R_payload=320 Gb/s`；若采用 8 个 JESD204C 64b/66b lanes，不计其它 overhead，理论 `R_lane≈41.25 Gb/s`，已超出许多常规收发器或特定 JESD204C 实现的能力，说明**从一开始就必须引入更多 lanes、片上筛选/降采样、数据分时输出或更高代际 PHY**。这是预算示例，非某芯片已实现规格。
+
+![2026_05_专项机制图](/images/blog/learning-notes/adc-data-interfaces/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_接口分层](/images/blog/learning-notes/adc-data-interfaces/2026_01_接口分层.svg)
+
+### I2. 片上 SRAM Capture、降采样和全速输出三选一吗？
+
+不是。可同时设置 test modes：完整 20 GS/s 全速输出测试 PHY；一部分验证通道以可控 decimation rate 输出用于静态调试；全通道信号通过片上 Capture SRAM/FIFO 写入，随后慢速读出做高精度 FFT。三个方案互补，但它们的**保真条件不同**：
+
+|路径|最直接用途|上限与风险|是否等于真实全速测试|
+|---|---|---|---|
+|全速物理链路|实时连续波形/BER/宽带测量|pad、SERDES、封装、板级功耗和 EMI|是（若无丢失）|
+|固定抽取/decimation|低引脚数功能调试|未经抗混叠滤波会频率折叠；抽取不保留所有原始样本|否，除非明确测量带宽/重建条件|
+|片上 SRAM/FIFO Capture|连续短窗频谱/错误码抓取|深度、写端口功耗、触发对齐、CDC、数据下载时长|短记录可，不能无限连续|
+
+对片上 capture，设置 32 个子 ADC、每路 625 MS/s，每次记录 `K` 个样本，则 `Memory_bits=32×K×N_out`。如 `K=256, N_out=12`，需 `98,304 bit` 纯 payload；如果包含校准旁路码、时间标志、触发元数据和冗余位，则需额外预算。注意采样相位对齐、写地址映射与重构顺序必须清楚，否则即使单通道各自正确，合并后也会出现周期性 spur。
+
+![2026_02_三种数据采集](/images/blog/learning-notes/adc-data-interfaces/2026_02_三种数据采集.svg)
+
+### I3. JESD204B/C Subclass 1 的同步不是“所有 lane 同时到达”
+
+通过 SYSREF 建立确定性时基，使器件间 frame/multiframe 或 extended multiblock 边界可对齐；RX 仍需弹性缓冲、lane alignment 与 deterministic latency 管理。设计时分别检查 `device clock`、`SYSREF` 采样条件、`SYNC~` 复位行为、`LMFC/LEMC`、FPGA transceiver CDR 与帧解码。两次 power-cycle 后输出某个字是否在同一 FPGA 时钟出现，才是系统级 deterministic-latency 的关键验证项，不能只看 PRBS 误码率。[I2][I3]
+
+### I4. 测试计划：码型、数字噪声串扰和时钟域交叉
+
+1. 码型：固定 0/1、walking-one、计数器、伪随机 PRBS、常数通道与真实 ADC 输出，先验证 bit mapping/极性，再验证时序和接口 BER。
+2. CDC：异步 FIFO 需要独立时钟域的读写指针跨域与 full/empty 保护；不可把多 bit 总线简单用两个 DFF 同步。
+3. 电源完整性：同时翻转的 CMOS bus/pad drive 会导致 supply bounce、衬底耦合，需在芯片顶层加真实 IO model 并对比输出 PHY on/off 下的模拟 FFT。
+4. 封装：高速差分线的 return path、DC blocking、AC coupling、ESD/封装寄生与 100 Ω 差分端接均须按所用器件接口文档，不可由 “CML” 一词推断实际电压幅度或阻抗。
+
+![2026_03_接口验证链](/images/blog/learning-notes/adc-data-interfaces/2026_03_接口验证链.svg)
+
+### I5. 标准/厂商文档（新增并更新版本）
+
+- [I1] JEDEC JESD204B / JESD204C.01 / JESD204D（标准原文以 JEDEC 授权版本为准）；版本关系与修订索引可参阅 [JESD204 技术入口](https://www.jesd204b.com/docs.html)（第三方汇编，用作导航，不代替标准）。
+- [I2] Texas Instruments, *Understanding JESD204B*, [官方技术资料 SNAU140](https://www.ti.com/lit/pdf/snau140)（Subclass 0/1/2、SYSREF/SYNC 与数据组织）。
+- [I3] Intel, *F-Tile JESD204B IP Deterministic Latency Implementation Guidelines*, 2024, [官方说明](https://www.intel.com/content/www/us/en/docs/programmable/723907/24-1-2-2-0/ip-deterministic-latency-implementation.html)。
+- [I4] Texas Instruments, *What to Know About the Differences Between JESD204B and JESD204C*, [SBAA517](https://www.ti.com/lit/sbaa517)。
+- [I5] IEEE Std 1241-2023, *Terminology and Test Methods for Analog-to-Digital Converters*, [标准主页](https://standards.ieee.org/ieee/1241/6797/)（用于定义 ENOB/SNDR/采集测试规范）。
+- [I6] B. Murmann, *ADC Performance Survey 1997–2026*, <https://github.com/bmurmann/ADC-survey>（比较公开高速 ADC 采样率、功耗时明确数据输出条件）。
+
+**图示边界**：三张新增 SVG 为分层系统图、模式比较与验证路径图；不是 JESD 官方时序图。若后续拿到对应 FPGA IP/ADC 芯片的手册，需再补入原文中的 link training、SYSREF/SYNC 和 transport mapping 实际时序图。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/adc-data-interfaces/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

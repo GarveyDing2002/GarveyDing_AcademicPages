@@ -1,15 +1,22 @@
 ---
 title: ADC 比较器：架构、关键指标与设计方法
-date: 2026-06-09
-excerpt: 下图只是用于建立“速度/能效”和“精度/低噪声”的相对直觉，不代表统一 FoM 或绝对性能排名。
+date: '2026-09-01'
+excerpt: 按典型架构、核心指标、噪声与失调机理、ADC 系统约束及仿真验证，建立比较器设计与选型框架。
 tags:
-  - 学习记录
-  - analog-ic
-  - comparator
-  - adc
-  - sar-adc
-  - pipeline-sar
+- 学习记录
+- analog-ic
+- comparator
+- adc
+- sar-adc
+- pipeline-sar
 ---
+
+# ADC 比较器：架构、关键指标与设计方法
+
+> [!abstract] 核心定位
+> 按典型架构、核心指标、噪声与失调机理、ADC 系统约束及仿真验证，建立比较器设计与选型框架。
+
+
 
 ## 目录
 
@@ -37,14 +44,11 @@ tags:
 
 比较器的本质任务是对两个模拟量进行符号判决。对于差分输入：
 
-
 $$
 V_{id}=V_{ip}-V_{in}
 $$
 
-
 理想比较器输出满足：
-
 
 $$
 D=
@@ -54,14 +58,11 @@ D=
 \end{cases}
 $$
 
-
 但实际 ADC 比较器存在输入等效噪声、失调、有限比较时间、Kickback、输入电容、亚稳态以及 PVT 漂移，因此真实判决更接近概率事件：
-
 
 $$
 P(D=1)\approx \Phi\left(\frac{V_{id}+V_{OS}}{\sigma_{n,in}}\right)
 $$
-
 
 其中 $\Phi(\cdot)$ 为标准正态累积分布函数。
 
@@ -77,11 +78,9 @@ $$
 
 实际比较器可以抽象为：
 
-
 $$
 V_{eff}=V_{id}+V_{OS}+v_n(t)+v_{dyn}(t)
 $$
-
 
 其中：
 
@@ -91,23 +90,19 @@ $$
 
 最终比较器是否可用，不是只看某一个参数，而是看：
 
-
 $$
 \boxed{
 \text{Accuracy} + \text{Speed} + \text{Input Interface} + \text{Energy} + \text{Robustness}
 }
 $$
 
-
 ### 1.3 ADC 对比较器的系统级要求
 
 对于有冗余的 ADC，第一级比较器通常不需要机械地满足最终 ADC 的 $0.5\,\mathrm{LSB}$。更合理的系统约束是：
 
-
 $$
 k\sigma_{cmp}+|V_{OS}|+|V_{DACerr}|+|V_{settle}|+|V_{kick}|<V_{red}
 $$
-
 
 其中 $V_{red}$ 为折算到当前级输入端的冗余窗口。
 
@@ -149,10 +144,10 @@ flowchart TD
 - Calibration friendliness
 - Circuit / clock complexity
 
-> **架构选型直觉**
+> [!tip] 架构选型直觉
 > 下图只是用于建立“速度/能效”和“精度/低噪声”的相对直觉，不代表统一 FoM 或绝对性能排名。
 
-![fig_architecture_tradeoff](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_architecture_tradeoff.svg)
+![fig_architecture_tradeoff](/images/blog/learning-notes/adc-comparators/fig_architecture_tradeoff.svg)
 
 ---
 
@@ -162,11 +157,9 @@ flowchart TD
 
 典型形式为：
 
-
 $$
 \text{Differential Pair}\rightarrow \text{Gain Stage}\rightarrow \text{Output Buffer}
 $$
-
 
 可采用单级差分放大器、多级 OTA、Folded-Cascode、Telescopic 等连续时间结构。
 
@@ -174,11 +167,9 @@ $$
 
 依靠连续时间增益：
 
-
 $$
 V_o=A_v(V_{ip}-V_{in})
 $$
-
 
 当 $A_v$ 足够大时，小输入差分被放大到数字后级可识别范围。
 
@@ -217,21 +208,17 @@ $$
 
 #### 2.3.1 基本结构
 
-
 $$
 V_{in}\rightarrow A_{pre}\rightarrow \text{Regenerative Latch}\rightarrow \text{Digital}
 $$
-
 
 #### 2.3.2 工作原理
 
 前置放大器先产生：
 
-
 $$
 \Delta V_{pre}=A_{pre}\Delta V_{in}
 $$
-
 
 再由锁存器利用正反馈完成全摆幅判决。
 
@@ -239,19 +226,15 @@ $$
 
 - 前置增益降低 latch 输入等效噪声：
 
-
 $$
 \sigma_{latch,in}\approx \frac{\sigma_{latch}}{A_{pre}}
 $$
 
-
 - 前置增益降低 latch 输入等效失调：
-
 
 $$
 V_{OS,latch,in}\approx \frac{V_{OS,latch}}{A_{pre}}
 $$
-
 
 - Preamp 可隔离 latch 大摆幅翻转，Kickback 较小；
 - 适合小输入残差判决；
@@ -280,11 +263,9 @@ $$
 
 再生阶段可近似描述为：
 
-
 $$
 \Delta V(t)=\Delta V_0 e^{t/\tau_{reg}}
 $$
-
 
 #### 2.4.3 优点
 
@@ -329,9 +310,9 @@ flowchart LR
     LAT --> OUT[Digital Output]
 ```
 
-![fig_strongarm](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_strongarm.svg)
+![fig_strongarm](/images/blog/learning-notes/adc-comparators/fig_strongarm.svg)
 
-> **结构理解**
+> [!note] 结构理解
 > StrongARM 的核心是“输入感知与正反馈再生高度耦合”。其命名源于 DEC StrongARM 处理器中的应用，而基本拓扑更早已有类似实现。Razavi 的 2015 年综述是理解其工作相位、失调和再生过程的经典入口。[R2]
 
 #### 2.5.2 工作原理
@@ -344,11 +325,9 @@ flowchart LR
 
 1. **零静态功耗**
 
-
 $$
 P_{static}\approx 0
 $$
-
 
 2. **速度快**：正反馈强，适合高速 SAR；
 3. **结构简单**：晶体管数少、面积小、时钟简单；
@@ -382,11 +361,9 @@ $$
 
 Double-Tail 本质是：
 
-
 $$
 \text{Dynamic Preamp}\rightarrow \text{Dynamic Latch}
 $$
-
 
 两个 tail 分别控制输入 sensing 和 latch regeneration，因此称为 Double-Tail。
 
@@ -400,9 +377,9 @@ flowchart LR
     CLK --> LAT
 ```
 
-![fig_double_tail](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_double_tail.svg)
+![fig_double_tail](/images/blog/learning-notes/adc-comparators/fig_double_tail.svg)
 
-> **经典来源**
+> [!note] 经典来源
 > Schinkel 等人在 ISSCC 2007 的经典工作通过“输入级与交叉耦合再生级分离”实现 double-tail sense amplifier，并报告了 90 nm CMOS、1.2 V 下约 92 fJ/decision、1.5 mV input-equivalent noise、8 mV 的 1σ offset 和 18 ps setup+hold time。这里的数字只用于理解该架构的历史定位，不应直接拿来作为先进工艺的设计目标。[R3]
 
 #### 2.6.2 工作原理
@@ -454,11 +431,9 @@ Reset 时内部节点预充；Evaluation 时第一级输入对先在 FN/FP 节�
 
 核心目标是提高：
 
-
 $$
 \frac{d\Delta V_F}{dt}
 $$
-
 
 或者在相同时间内获得更大的 latch initial differential。
 
@@ -493,25 +468,21 @@ $$
 
 #### 2.8.1 基本结构
 
-
 $$
 V_{in}\rightarrow \text{FIA}\rightarrow \text{Regenerative Latch}
 $$
 
-
 FIA 为 Floating Inverter Amplifier，利用 CMOS inverter 的 NMOS 与 PMOS 同时提供跨导。
 
-![fig_fia_latch](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg)
+![fig_fia_latch](/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg)
 
 #### 2.8.2 工作原理
 
 有效跨导近似为：
 
-
 $$
 g_{m,FIA}\approx g_{mn}+g_{mp}
 $$
-
 
 通过 floating / reservoir capacitor 在动态相位向 inverter-based amplifier 提供能量，在保持低静态功耗的同时获得较高 $g_m/I_D$ 和前置增益。
 
@@ -528,11 +499,9 @@ flowchart LR
 1. **Noise efficiency 高**：NMOS/PMOS current reuse 提高有效 $g_m$；
 2. **Preamp gain 较高**，可明显压低 latch noise：
 
-
 $$
 \sigma_{cmp}^2\approx \sigma_{FIA}^2+\frac{\sigma_{latch}^2}{A_{FIA}^2}
 $$
-
 
 3. 同时降低 latch input-referred offset；
 4. 对 latch Kickback 有良好隔离；
@@ -578,19 +547,15 @@ $$
 
 核心关系：
 
-
 $$
 Q=CV
 $$
 
-
 典型过程为：
-
 
 $$
 \text{Precharge}\rightarrow \text{Charge Steering}\rightarrow \text{Regeneration}
 $$
-
 
 #### 2.9.3 优点
 
@@ -632,11 +597,10 @@ $$
 | FIA + Latch | 高 | 很低 | 较低 | 低 | 极低 | 很好 | 高 | 低噪声、高精度 SAR / Pipeline-SAR |
 | Charge-Steering | 高 | 中~低 | 中 | 中 | 0 | 很好 | 高 | 低压、低能耗 ADC |
 
-> **表格使用方式**
+> [!warning] 表格使用方式
 > 上表是**架构级定性比较**，不是绝对排序。最终 noise、offset、delay 和 kickback 仍强烈依赖工艺、输入共模、器件尺寸、时钟边沿、负载以及校准方法。尤其 FIA 与 Double-Tail 都可能通过不同实现覆盖很宽的性能区域。
 
 按目标粗略选型：
-
 
 $$
 \boxed{
@@ -650,7 +614,6 @@ $$
 }
 $$
 
-
 ---
 
 ## 3. ADC 比较器的核心性能指标
@@ -659,11 +622,9 @@ $$
 
 通常使用 RMS input-referred noise：
 
-
 $$
 \boxed{\sigma_{n,in}}
 $$
-
 
 它直接影响 ADC 的随机判决误差、SNDR、ENOB 和 DNL。
 
@@ -671,37 +632,29 @@ $$
 
 比较器 50% switching point 相对理想零点的偏移：
 
-
 $$
 \boxed{V_{OS}}
 $$
 
-
 工程上应同时报告：
-
 
 $$
 \mu_{VOS},\qquad \sigma_{VOS}
 $$
 
-
 用于区分 systematic offset 与 random mismatch offset。
 
 ### 3.3 比较延迟
-
 
 $$
 \boxed{t_{cmp}}
 $$
 
-
 动态比较器的 delay 不是常数，而是：
-
 
 $$
 t_{cmp}=f(V_{in},V_{CM},V_{DD},T,\text{corner})
 $$
-
 
 最关键的是 small-signal delay。
 
@@ -709,11 +662,9 @@ $$
 
 当 $|V_{in}|\rightarrow 0$ 时，再生时间迅速增加。系统更有意义的指标是：
 
-
 $$
 P(t_{cmp}>T_{available})
 $$
-
 
 即比较器未在可用时序内完成判决的概率。
 
@@ -721,11 +672,9 @@ $$
 
 定义比较器开启前后输入节点的扰动：
 
-
 $$
 \Delta V_{KB}=V_{input,after}-V_{input,before}
 $$
-
 
 需要区分：
 
@@ -738,11 +687,9 @@ $$
 
 比较器输入电容：
 
-
 $$
 C_{in}=C_{gs}+C_{gd}+C_{db}+C_{routing}+\cdots
 $$
-
 
 它会增加 CDAC 顶板负载、影响 settling，并与 Kickback 共同形成输入接口问题。
 
@@ -763,11 +710,9 @@ $$
 
 必须满足：
 
-
 $$
 t_{reset}<T_{reset,available}
 $$
-
 
 否则会产生 memory effect。
 
@@ -775,19 +720,15 @@ $$
 
 应区分：
 
-
 $$
 t_{core}
 $$
 
-
 与：
-
 
 $$
 t_{core+buffer}
 $$
-
 
 比较器 core 不应直接驱动过大的 fanout。
 
@@ -795,11 +736,9 @@ $$
 
 对于 dynamic comparator，比平均功耗更有意义的是：
 
-
 $$
 \boxed{E_{cmp}=\frac{P_{avg}}{f_{cmp}}}
 $$
-
 
 常用单位为 fJ/decision。
 
@@ -807,12 +746,10 @@ $$
 
 关注：
 
-
 $$
 \frac{\partial V_{OS}}{\partial V_{DD}},\qquad
 \frac{\partial t_{cmp}}{\partial V_{DD}}
 $$
-
 
 以及 clock slew、duty cycle、clock feedthrough、clock skew 对 delay/offset 的影响。
 
@@ -824,11 +761,9 @@ $$
 
 最终系统真正关心的是：
 
-
 $$
 \boxed{P_{err}(V_{in})}
 $$
-
 
 它综合反映 noise、offset、metastability、insufficient settling 和 Kickback。
 
@@ -844,24 +779,19 @@ $$
 
 输入对在小信号近似下产生：
 
-
 $$
 \Delta I\approx g_mV_{in}
 $$
-
 
 ### 4.3 动态积分
 
 差分电流在内部节点电容上积分：
 
-
 $$
 \Delta V_F(t)\approx \frac{g_m}{C_F}V_{in}t
 $$
 
-
 ### 4.4 动态预放大增益
-
 
 $$
 \boxed{
@@ -869,26 +799,21 @@ A_{pre}(t)=\frac{\Delta V_F(t)}{V_{in}}\approx \frac{g_mt_{int}}{C_F}
 }
 $$
 
-
 与静态 OTA 不同，这是 transient 积分形成的动态增益。
 
 ### 4.5 最大积分时间与最大动态增益
 
 内部节点不能无限下降。对 NMOS 输入对，可粗略认为：
 
-
 $$
 V_F\gtrsim V_{CM}-V_{TH}
 $$
 
-
 因此可用共模下降幅度约为：
-
 
 $$
 \Delta V_{max}\approx V_{DD}-V_{CM}+V_{TH}
 $$
-
 
 最大动态增益受 input overdrive、节点摆幅与 latch trigger timing 共同限制。
 
@@ -896,27 +821,21 @@ $$
 
 再生时间：
 
-
 $$
 t_{reg}\approx \tau_{reg}\ln\left(\frac{V_{logic}}{\Delta V_0}\right)
 $$
 
-
 其中：
-
 
 $$
 \tau_{reg}\approx \frac{C_L}{g_{m,latch}}
 $$
 
-
 而 latch 初始差分近似为：
-
 
 $$
 \Delta V_0\approx A_{pre}V_{in}
 $$
-
 
 因此 preamp 不仅改善噪声/失调，也能缩短再生时间。
 
@@ -924,11 +843,9 @@ $$
 
 动态比较器没有严格固定的小信号 -3 dB bandwidth，更适合使用：
 
-
 $$
 \omega_{eff}\sim \frac{g_m}{C_F}
 $$
-
 
 描述动态建立能力。
 
@@ -964,7 +881,6 @@ flowchart LR
 
 对 preamp + latch：
 
-
 $$
 \boxed{
 \sigma_{n,in,total}^2
@@ -977,49 +893,40 @@ $$
 }
 $$
 
-
 设计目标通常是让第一级成为主要噪声源，后级贡献被前置增益充分压低。
 
-![fig_noise_budget](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg)
+![fig_noise_budget](/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg)
 
-> **非平稳噪声**
+> [!note] 非平稳噪声
 > Dynamic comparator 的噪声发生在 reset、积分和再生等瞬态过程中，严格来说不是简单的稳态宽平稳噪声问题。Sepke 等人的工作是理解 comparator-based circuits 非平稳噪声分析的经典参考。[R7]
 
 ### 5.3 提高输入对 $g_m$
 
 MOS 热噪声电流近似：
 
-
 $$
 \overline{i_n^2}=4kT\gamma g_m
 $$
 
-
 但 input-referred noise 通常随有效跨导增大而下降。因此：
-
 
 $$
 \boxed{g_m\uparrow\Rightarrow v_{n,in}\downarrow}
 $$
 
-
 ### 5.4 提高 $g_m/I_D$ 与优化 $V_{ov}$
 
 强反型近似：
-
 
 $$
 g_m\approx \frac{2I_D}{V_{ov}}
 $$
 
-
 固定电流下：
-
 
 $$
 V_{ov}\downarrow\Rightarrow g_m/I_D\uparrow
 $$
-
 
 但过低 $V_{ov}$ 可能增加 PVT sensitivity 与 parasitic。
 
@@ -1034,11 +941,9 @@ $$
 
 因此需要优化的是：
 
-
 $$
 \frac{g_m}{C_F}
 $$
-
 
 而不是单纯增大 W。
 
@@ -1046,37 +951,29 @@ $$
 
 动态 comparator 中：
 
-
 $$
 A_{pre}\approx \frac{g_mt_{int}}{C_F}
 $$
 
-
 且输入等效噪声趋势可粗略理解为：
-
 
 $$
 \overline{v_{n,in}^2}\propto \frac{1}{g_mt_{int}}
 $$
 
-
 因此延长 $t_{int}$ 有利于噪声，但直接牺牲速度。
 
 ### 5.7 提高 Preamp Gain
-
 
 $$
 \sigma_{latch,in}\approx \frac{\sigma_{latch}}{A_{pre}}
 $$
 
-
 但当：
-
 
 $$
 \frac{\sigma_{latch}}{A_{pre}}\ll \sigma_{pre}
 $$
-
 
 继续提高增益收益开始饱和。
 
@@ -1084,16 +981,13 @@ $$
 
 FIA 利用 inverter current reuse：
 
-
 $$
 g_{m,FIA}\approx g_{mn}+g_{mp}
 $$
 
-
 因此可在较低电流下获得较高有效跨导和较好的 noise efficiency。
 
 总噪声近似：
-
 
 $$
 \boxed{
@@ -1102,14 +996,11 @@ $$
 }
 $$
 
-
 合理设计目标是：
-
 
 $$
 \frac{\sigma_{latch}}{A_{FIA}}\lesssim \sigma_{FIA}
 $$
-
 
 避免为了过高 FIA gain 牺牲过多速度、面积和功耗。Tang 等人的 FIA comparator 进一步指出，floating reservoir capacitor 不只是“供电电容”，还通过动态偏置/源退化改善 $g_m/I_D$，并减弱输入共模对噪声、失调与延迟的影响。[R5]
 
@@ -1117,14 +1008,11 @@ $$
 
 若：
 
-
 $$
 V_{in}\rightarrow A_1\rightarrow A_2\rightarrow Latch
 $$
 
-
 则：
-
 
 $$
 \sigma_{in}^2\approx
@@ -1133,18 +1021,15 @@ $$
 \frac{\sigma_{latch}^2}{A_1^2A_2^2}
 $$
 
-
 这是经典 first-stage-noise-dominance 原则。
 
 ### 5.10 Latch Noise 优化
 
 重点不是单纯增大 latch 尺寸，而是提高：
 
-
 $$
 \boxed{\frac{g_{m,latch}}{C_L}}
 $$
-
 
 并减小输出 fanout、routing parasitic 和不必要的大节点电容。
 
@@ -1152,11 +1037,9 @@ $$
 
 增加电容可降低节点瞬时 $kT/C$ 电压噪声，但会降低：
 
-
 $$
 \frac{g_m}{C}
 $$
-
 
 因此应通过 transient-noise 仿真寻找 optimum，而不是机械地加大电容。
 
@@ -1177,11 +1060,9 @@ $$
 
 Auto-Zero 主要消除 DC / slowly-varying offset，却会额外引入：
 
-
 $$
 \sigma_V\sim \sqrt{\frac{kT}{C}}
 $$
-
 
 以及 noise folding / clock feedthrough，因此不能把 AZ 简单理解成“同时把 noise 消掉”。
 
@@ -1226,23 +1107,19 @@ flowchart TD
 
 ### 6.2 Offset 输入折算
 
-
 $$
 \boxed{
 V_{OS,total}\approx V_{OS,pre}+\frac{V_{OS,latch}}{A_{pre}}+V_{OS,dyn}
 }
 $$
 
-
 其中第一级自身 offset 不能被自己的增益抑制。
 
 ### 6.3 Pelgrom Mismatch 与尺寸优化
 
-
 $$
 \sigma(\Delta V_{TH})\approx \frac{A_{Vt}}{\sqrt{WL}}
 $$
-
 
 增大面积可以降低随机 offset，但会增加输入电容、内部节点电容和 Kickback。
 
@@ -1250,11 +1127,9 @@ $$
 
 只对后级 offset 有效：
 
-
 $$
 V_{OS,latch,in}\approx \frac{V_{OS,latch}}{A_{pre}}
 $$
-
 
 ### 6.5 版图匹配优化
 
@@ -1273,27 +1148,21 @@ $$
 
 Calibration phase 中令：
 
-
 $$
 V_{id}=0
 $$
 
-
 测得 $V_{OS}$ 并生成：
-
 
 $$
 V_{CAL}\approx -V_{OS}
 $$
 
-
 正常比较：
-
 
 $$
 V_{eff}=V_{in}+V_{OS}+V_{CAL}\approx V_{in}
 $$
-
 
 **优点：** offset suppression 强。
 
@@ -1301,24 +1170,20 @@ $$
 
 ### 6.7 IOS：Input Offset Storage
 
-![fig_offset_cancellation](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg)
+![fig_offset_cancellation](/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg)
 
 
 在输入侧 capacitor 存储 input-referred offset：
-
 
 $$
 V_C\approx V_{OS}
 $$
 
-
 比较时：
-
 
 $$
 V_{eff}=V_{in}+V_{OS}-V_C\approx V_{in}
 $$
-
 
 **优点：** cancellation 直接发生在输入域；结构概念清晰，适合把 preamp 自身 offset 周期性存储在输入耦合电容上。
 
@@ -1328,19 +1193,15 @@ $$
 
 在 preamp output 侧存储：
 
-
 $$
 V_C\approx A_{pre}V_{OS}
 $$
 
-
 正常比较：
-
 
 $$
 A_{pre}(V_{in}+V_{OS})-V_C\approx A_{pre}V_{in}
 $$
-
 
 **优点：** offset storage 位于 preamp 输出侧，通常具有更小的输入电容；经典分析中，在相似 preamp 条件下 OOS 可获得比 IOS 更低的 residual offset，因此长期用于高精度并行/子量化比较器。[R1]
 
@@ -1354,7 +1215,7 @@ $$
 | IOS | 输入端 | 中~慢 | $C_{in}$、settling、$kT/C$ | 中 |
 | OOS | Preamp 输出 | 较快 | 输出节点电容、$kT/C$、开环输出范围 | 较高 |
 
-> **Offset cancellation 经典文献**
+> [!reference] Offset cancellation 经典文献
 > Razavi 与 Wooley 1992 年的 JSSC 论文直接比较了 IOS 与 OOS 的残余失调、输入电容和前置放大器增益限制，是理解这两种方法最值得优先阅读的原始资料之一。[R1]
 
 ### 6.10 Analog Trim
@@ -1363,21 +1224,17 @@ $$
 
 利用：
 
-
 $$
 C_{trim,p}-C_{trim,n}
 $$
-
 
 人为改变动态节点速度。
 
 #### Current Trim
 
-
 $$
 \Delta I_{trim}=I_{trim,p}-I_{trim,n}
 $$
-
 
 抵消 mismatch current。
 
@@ -1389,11 +1246,9 @@ $$
 
 利用 body effect 调节：
 
-
 $$
 V_{TH}(V_{BS})
 $$
-
 
 适用于工艺允许独立 body control 的情况。
 
@@ -1401,11 +1256,9 @@ $$
 
 增加小型辅助差分对：
 
-
 $$
 g_{m,C}V_{CAL}
 $$
-
 
 产生可控修正电流，在不大幅改变主 input pair 的情况下校准 offset。
 
@@ -1413,11 +1266,9 @@ $$
 
 上电或空闲时短接输入，通过数字 SAR-search 寻找：
 
-
 $$
 P(D=1)\approx 50\%
 $$
-
 
 对应的 trim code，并存储用于正常工作。
 
@@ -1425,19 +1276,15 @@ $$
 
 持续估计：
 
-
 $$
 V_{OS}(t)
 $$
 
-
 并动态更新：
-
 
 $$
 Code_{OS}(t)
 $$
-
 
 用于追踪温漂、电源变化与 aging。
 
@@ -1449,11 +1296,9 @@ Chopping 可同时抑制 DC offset 与 $1/f$ noise，但会引入额外调制时
 
 对有冗余的 ADC：
 
-
 $$
 |V_{OS}|<V_{red}
 $$
-
 
 时，系统可以选择 **容忍并数字修正**，而不是在模拟端彻底消除 offset。
 
@@ -1484,39 +1329,31 @@ flowchart TD
 
 ### 7.1 总延迟组成
 
-
 $$
 \boxed{t_{cmp}\approx t_{pre}+t_{reg}+t_{buf}}
 $$
-
 
 ### 7.2 Preamp Delay
 
 若 latch 需要内部节点达到 $\Delta V_{req}$：
 
-
 $$
 t_{pre}\approx \frac{C_F\Delta V_{req}}{g_m|V_{in}|}
 $$
-
 
 因此小输入差分是最坏情况。
 
 ### 7.3 Regeneration Delay
 
-
 $$
 t_{reg}\approx \frac{C_L}{g_{m,latch}}\ln\left(\frac{V_{logic}}{A_{pre}|V_{in}|}\right)
 $$
 
-
 ### 7.4 Input Differential 对 Delay 的影响
-
 
 $$
 |V_{in}|\downarrow \Rightarrow t_{cmp}\uparrow
 $$
-
 
 比较器 delay 应以 $t_{cmp}(V_{in})$ 曲线表征，而不是只报一个 nominal 数字。
 
@@ -1537,58 +1374,48 @@ $$
 
 本质是：
 
-
 $$
 \boxed{\text{Speed}\leftrightarrow A_{pre}\leftrightarrow \text{Noise/Offset}}
 $$
-
 
 ### 7.6 Tail Current 与速度
 
 Tail 管变大通常增加放电能力，但也可能让内部节点共模下降过快，缩短有效积分时间，因此：
 
-
 $$
 I_{tail}\uparrow \not\Rightarrow A_{pre}\uparrow
 $$
-
 
 ### 7.7 Metastability
 
 当：
 
-
 $$
 |V_{in}|\rightarrow 0
 $$
-
 
 latch initial differential 趋近于 0，导致 regeneration delay 长尾化。
 
 系统上应评估：
 
-
 $$
 P_{meta}=P(t_{cmp}>T_{available})
 $$
 
-
 而不是只看平均 delay。
 
-![fig_metastability_delay](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg)
+![fig_metastability_delay](/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg)
 
-> **读图方式**
+> [!warning] 读图方式
 > 图中曲线只是由再生模型生成的概念示意。真正的 $t_{cmp}(V_{in})$ 必须用目标 PVT、真实输入共模、负载和 clock slew 进行 transient / Monte Carlo 提取。
 
 ### 7.8 Reset Speed 与 Memory Effect
 
 Reset 不完全会使上一周期内部状态影响下一周期：
 
-
 $$
 \text{Previous Decision}\rightarrow \text{Current Threshold Shift}
 $$
-
 
 高速 SAR 中应检查连续 0/1、交替 0/1、最坏输出历史等模式。
 
@@ -1600,11 +1427,9 @@ $$
 
 主要影响：
 
-
 $$
 g_m,\ C_{in},\ C_F,\ V_{OS},\ v_n,\ Kickback
 $$
-
 
 输入管过小：$g_m$ 不足、noise/offset 大、速度慢。
 
@@ -1639,21 +1464,17 @@ Double-Tail/Modified Double-Tail 中 intermediate devices 决定 preamp 到 latc
 
 优化目标不是单纯 W 大，而是：
 
-
 $$
 \boxed{\frac{g_{m,latch}}{C_L}}
 $$
-
 
 ### 8.7 Output Buffer
 
 推荐：
 
-
 $$
 \text{Comparator Core}\rightarrow \text{Small Buffer}\rightarrow \text{Digital Logic}
 $$
-
 
 避免 core 直接带大 fanout。
 
@@ -1685,16 +1506,14 @@ $$
 
 ### 9.1 Kickback 形成机理
 
-> **经典参考**
+> [!reference] 经典参考
 > Figueiredo 与 Vital 2006 年的工作系统讨论了 CMOS latched comparator 的 Kickback 形成与降低方法，是这一主题的经典入口。[R6]
 
 内部节点和 latch 输出发生快速变化，通过：
 
-
 $$
 C_{gd},\ C_{gs},\ C_{db}
 $$
-
 
 耦回比较器输入和 CDAC 顶板。
 
@@ -1714,11 +1533,9 @@ FIA 同样可在输入和 latch 之间形成较强增益/阻隔，尤其适合�
 
 CDAC 顶板实际看到：
 
-
 $$
 C_{load}=C_{DAC}+C_{in,cmp}+C_{par}
 $$
-
 
 输入管 sizing 必须与 CDAC settling 联合优化。
 
@@ -1726,11 +1543,9 @@ $$
 
 真正容易改变比较结果的是：
 
-
 $$
 \Delta V_{diff,KB}
 $$
-
 
 而 common-mode kickback 主要影响输入工作点和下一周期恢复。
 
@@ -1778,11 +1593,9 @@ Low $V_{DD}$ 会降低：
 
 重点提取：
 
-
 $$
 \mu_{VOS},\quad \sigma_{VOS},\quad t_{cmp}\text{ distribution}
 $$
-
 
 必要时结合 transient noise。
 
@@ -1876,13 +1689,11 @@ PEX 后 offset 变大常见原因：
 
 ### 12.4 Redundancy Window
 
-
 $$
 \boxed{
 k\sigma_{cmp}+|V_{OS}|+|V_{DACerr}|+|V_{settle}|+|V_{kick}|<V_{red}
 }
 $$
-
 
 ### 12.5 第一级 Comparator
 
@@ -1912,11 +1723,9 @@ $$
 
 高速 ADC 中更推荐：
 
-
 $$
 \boxed{\text{Analog Moderate Accuracy}+\text{Redundancy}+\text{Digital Calibration}}
 $$
-
 
 而不是无限提高单个 comparator 的模拟精度。
 
@@ -1932,11 +1741,9 @@ $$
 
 建议 sweep：
 
-
 $$
 1\,\mathrm{LSB},\ 2\,\mathrm{LSB},\ 4\,\mathrm{LSB},\ 8\,\mathrm{LSB},\ \ldots
 $$
-
 
 并增加更小差分用于 metastability 尾部评估。
 
@@ -1952,11 +1759,9 @@ $$
 
 绘制：
 
-
 $$
 t_{cmp}(V_{CM})
 $$
-
 
 避免只在 nominal common-mode 下验证。
 
@@ -1972,19 +1777,15 @@ $$
 
 对每个 MC sample sweep 输入差分，寻找 50% switching point：
 
-
 $$
 V_{OS}=V_{in}|_{P(D=1)=50\%}
 $$
 
-
 最终统计：
-
 
 $$
 \mu_{OS},\qquad \sigma_{OS}
 $$
-
 
 ### 13.7 Kickback 仿真
 
@@ -2001,11 +1802,9 @@ $$
 
 提取：
 
-
 $$
 P(t_{cmp}>T_{available})
 $$
-
 
 并观察极小输入下 delay distribution。
 
@@ -2023,11 +1822,9 @@ $$
 
 计算：
 
-
 $$
 E_{cmp}=\int V_{DD}i_{DD}(t)dt
 $$
-
 
 按单次 decision 统计更有意义。
 
@@ -2071,7 +1868,7 @@ Comparator 最终是否“够好”应通过 ADC 指标验证：
 
 ### 14.1 从 ADC 系统指标反推 Comparator Spec
 
-![fig_design_flow](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/fig_design_flow.svg)
+![fig_design_flow](/images/blog/learning-notes/adc-comparators/fig_design_flow.svg)
 
 先确定：
 
@@ -2087,11 +1884,9 @@ Comparator 最终是否“够好”应通过 ADC 指标验证：
 
 将总误差拆成：
 
-
 $$
 \sigma_{cmp},\ V_{OS},\ V_{DACerr},\ V_{settle},\ V_{kick}
 $$
-
 
 并给出合理 margin。
 
@@ -2099,11 +1894,9 @@ $$
 
 明确：
 
-
 $$
 T_{bit}=T_{DAC-settle}+T_{cmp}+T_{logic}+T_{margin}
 $$
-
 
 ### 14.4 架构选择
 
@@ -2117,29 +1910,23 @@ $$
 
 重点联合优化：
 
-
 $$
 \boxed{g_m,\ C_{in},\ C_F,\ A_{pre},\ t_{int},\ g_{m,latch}/C_L}
 $$
-
 
 ### 14.6 Preamp Gain / Latch Timing Optimization
 
 核心关系：
 
-
 $$
 A_{pre}\approx \frac{g_mt_{int}}{C_F}
 $$
 
-
 以及：
-
 
 $$
 t_{reg}\approx \frac{C_L}{g_{m,latch}}\ln\left(\frac{V_{logic}}{A_{pre}V_{in}}\right)
 $$
-
 
 ### 14.7 Kickback Optimization
 
@@ -2153,16 +1940,13 @@ $$
 
 比较器 layout 的第一原则是：
 
-
 $$
 \boxed{\text{Symmetry} + \text{Matched Environment} + \text{Controlled Parasitics}}
 $$
 
-
 ### 14.10 最终总结
 
 ADC comparator 的设计不能被简化为“把输入管做大、tail 做强、latch 做快”。真正的设计对象是：
-
 
 $$
 \boxed{
@@ -2177,32 +1961,23 @@ $$
 }
 $$
 
-
 对于动态 preamp + latch 比较器，最核心的关系仍然是：
-
 
 $$
 \boxed{A_{pre}\approx \frac{g_mt_{int}}{C_F}}
 $$
 
-
-
 $$
 \boxed{t_{reg}\approx \frac{C_L}{g_{m,latch}}\ln\left(\frac{V_{logic}}{A_{pre}V_{in}}\right)}
 $$
-
-
 
 $$
 \boxed{\sigma_{n,in,total}^2\approx \sigma_{n,pre}^2+\frac{\sigma_{n,latch}^2}{A_{pre}^2}}
 $$
 
-
-
 $$
 \boxed{V_{OS,total}\approx V_{OS,pre}+\frac{V_{OS,latch}}{A_{pre}}+V_{OS,dyn}}
 $$
-
 
 因此高速 ADC comparator 的真正优化目标，是在 **第一级动态增益、再生速度、噪声、失调、Kickback、输入负载和能量** 之间找到系统级最优点，而不是单独追求某一个器件或某一个指标的极值。
 
@@ -2264,19 +2039,17 @@ flowchart LR
 
 如果目标是**高速 SAR / Pipeline-SAR comparator 设计**，推荐顺序：
 
-
 $$
 \boxed{
 R8\rightarrow R2\rightarrow R3\rightarrow R4\rightarrow R6\rightarrow R7\rightarrow R5\rightarrow R1
 }
 $$
 
-
 即先建立 comparator 设计和 StrongARM 直觉，再看 Double-Tail 与 modified Double-Tail，随后补 Kickback、Noise、FIA，最后系统读高精度 offset cancellation。
 
 ### 15.5 参考文献
 
-完整 BibTeX 数据库见 [ADC Comparator References](/GarveyDing_AcademicPages/images/blog/learning-notes/adc-comparators/ADC_Comparator_References.bib)。
+完整 BibTeX 数据库见 [[学习记录/ADC 比较器/attachment/ADC_Comparator_References.bib|ADC Comparator References]]。
 
 - **[R1]** B. Razavi and B. A. Wooley, “Design Techniques for High-Speed, High-Resolution Comparators,” *IEEE JSSC*, vol. 27, no. 12, pp. 1916–1926, 1992. DOI: 10.1109/4.173122.
 - **[R2]** B. Razavi, “The StrongARM Latch [A Circuit for All Seasons],” *IEEE Solid-State Circuits Magazine*, vol. 7, no. 2, pp. 12–17, 2015. DOI: 10.1109/MSSC.2015.2418155.
@@ -2358,10 +2131,3 @@ $$
 - [ ] Comparator + CDAC + SAR logic 联合仿真；
 - [ ] 将 noise/offset/delay/kickback 重新折算回 ADC redundancy/error budget；
 - [ ] 最终以 SNDR/SFDR/DNL/INL/BER 或 metastability error rate 做系统闭环确认。
-
-
-## 相关笔记
-
-- [电路噪声：从 MOS 器件到系统设计](/GarveyDing_AcademicPages/blog/circuit-noise/)
-- [PVT 对 MOS 管性能参数的影响](/GarveyDing_AcademicPages/blog/mos-pvt/)
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)

@@ -1,8 +1,8 @@
 [
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png",
-    "title": "A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS",
-    "DOI": "10.1109/TCSII.2022.3188534",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/01_fvf_comparison.png",
+    "key": "B5HLXYYN",
+    "attachment": "38ANF85M",
     "pdf_page": 2,
     "original_figure": "Fig. 2",
     "crop_normalized": [
@@ -10,12 +10,15 @@
       0.295,
       0.495,
       0.49
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\storage\\38ANF85M\\2022-Huang et al.-A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GSs ADC in 28-nm CMOS.pdf",
+    "title": "A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS",
+    "DOI": "10.1109/TCSII.2022.3188534"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png",
-    "title": "A 24-GHz Bandwidth 58.8-dB SNDR Input Buffer Based on Class-AB Enhanced Super Source Follower",
-    "DOI": "10.1109/ICTA68203.2025.11329604",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/02_ssf_essf.png",
+    "key": "DLDWSRMX",
+    "attachment": "JYT6E7MZ",
     "pdf_page": 1,
     "original_figure": "Fig. 1",
     "crop_normalized": [
@@ -23,12 +26,15 @@
       0.035,
       0.96,
       0.199
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\Conference\\2025-Guo et al.-A 24-GHz Bandwidth 58.8-dB SNDR Input Buffer Based on Class-AB Enhanced Super Source Follower.pdf",
+    "title": "A 24-GHz Bandwidth 58.8-dB SNDR Input Buffer Based on Class-AB Enhanced Super Source Follower",
+    "DOI": "10.1109/ICTA68203.2025.11329604"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png",
-    "title": "A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm",
-    "DOI": "10.1109/A-SSCC47793.2019.9056969",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/03_differential_ssf.png",
+    "key": "MQDUICAW",
+    "attachment": "8Y7G9A4C",
     "pdf_page": 2,
     "original_figure": "Fig. 4",
     "crop_normalized": [
@@ -36,12 +42,15 @@
       0.347,
       0.95,
       0.696
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\主题分类\\Technicals\\Input Buffer\\2019-Shifman et al.-A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm.pdf",
+    "title": "A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm",
+    "DOI": "10.1109/A-SSCC47793.2019.9056969"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png",
-    "title": "A 12-b 10-GS/s interleaved pipeline ADC in 28-nm CMOS technology",
-    "DOI": "10.1109/JSSC.2017.2747758",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/04_ppsf_bootstrap.png",
+    "key": "JI8G84VA",
+    "attachment": "H2C2I6E2",
     "pdf_page": 7,
     "original_figure": "Fig. 11",
     "crop_normalized": [
@@ -49,12 +58,15 @@
       0.38,
       0.93,
       0.66
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\storage\\H2C2I6E2\\2017-Devarajan et al.-A 12-b 10-GSs interleaved pipeline ADC in 28-nm CMOS technology.pdf",
+    "title": "A 12-b 10-GS/s interleaved pipeline ADC in 28-nm CMOS technology",
+    "DOI": "10.1109/JSSC.2017.2747758"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png",
-    "title": "A novel push-pull input buffer for wideband ADCs with improved high-frequency linearity",
-    "DOI": "10.1109/NEWCAS57931.2023.10198057",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/05_body_buffer.png",
+    "key": "PKP4WR5K",
+    "attachment": "2NWV4U5B",
     "pdf_page": 3,
     "original_figure": "Fig. 3",
     "crop_normalized": [
@@ -62,12 +74,15 @@
       0.07,
       0.94,
       0.31
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\Conference\\NEWCAS\\2023-Scaletti et al.-A novel push-pull input buffer for wideband ADCs with improved high-frequency linearity.pdf",
+    "title": "A novel push-pull input buffer for wideband ADCs with improved high-frequency linearity",
+    "DOI": "10.1109/NEWCAS57931.2023.10198057"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png",
-    "title": "A wideband input buffer based on cascade complementary source follower",
-    "DOI": "10.1109/TVLSI.2024.3349564",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/06_ccsf.png",
+    "key": "IZ8STV8W",
+    "attachment": "6YY25BVX",
     "pdf_page": 2,
     "original_figure": "Fig. 2",
     "crop_normalized": [
@@ -75,12 +90,15 @@
       0.065,
       0.495,
       0.425
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\storage\\6YY25BVX\\2024-Li et al.-A wideband input buffer based on cascade complementary source follower.pdf",
+    "title": "A wideband input buffer based on cascade complementary source follower",
+    "DOI": "10.1109/TVLSI.2024.3349564"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png",
-    "title": "A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer",
-    "DOI": "10.1109/JSSC.2024.3482567",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/07_sacc.png",
+    "key": "AMZFXGAJ",
+    "attachment": "6W2PQ55D",
     "pdf_page": 7,
     "original_figure": "Figs. 13-14",
     "crop_normalized": [
@@ -88,12 +106,15 @@
       0.075,
       0.94,
       0.4
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\Journal\\2024-Cao et al.-A 12-GSs 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer.pdf",
+    "title": "A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer",
+    "DOI": "10.1109/JSSC.2024.3482567"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png",
-    "title": "A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications",
-    "DOI": "10.1109/VLSITechnologyandCir46783.2024.10631521",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/08_hierarchy_timing.png",
+    "key": "GHM37WIL",
+    "attachment": "WBMAVNJ6",
     "pdf_page": 2,
     "original_figure": "Fig. 3",
     "crop_normalized": [
@@ -101,12 +122,15 @@
       0.04,
       0.96,
       0.326
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\Conference\\VLSI\\2024-Markulić et al.-A 10GSs hierarchical time-interleaved ADC for RF-sampling applications.pdf",
+    "title": "A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications",
+    "DOI": "10.1109/VLSITechnologyandCir46783.2024.10631521"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png",
-    "title": "A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications",
-    "DOI": "10.1109/VLSITechnologyandCir46783.2024.10631521",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/09_hierarchy_interface.png",
+    "key": "GHM37WIL",
+    "attachment": "WBMAVNJ6",
     "pdf_page": 2,
     "original_figure": "Fig. 2",
     "crop_normalized": [
@@ -114,12 +138,15 @@
       0.683,
       0.51,
       0.965
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\Conference\\VLSI\\2024-Markulić et al.-A 10GSs hierarchical time-interleaved ADC for RF-sampling applications.pdf",
+    "title": "A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications",
+    "DOI": "10.1109/VLSITechnologyandCir46783.2024.10631521"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png",
-    "title": "A 12.8-GS/s time-interleaved sub-sampling ADC front end with 38-GHz input bandwidth and >39-dB SNDR for 1–32 GHz in 22-nm FDSOI",
-    "DOI": "10.1109/JSSC.2025.3598874",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/10_active_bootstrap.png",
+    "key": "62CPDB27",
+    "attachment": "RETDDW3K",
     "pdf_page": 7,
     "original_figure": "Fig. 9",
     "crop_normalized": [
@@ -127,12 +154,15 @@
       0.075,
       0.53,
       0.32
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\主题分类\\Time Interleaved\\2025-Heel et al.-A 12.8-GSs time-interleaved sub-sampling ADC front end with 38-GHz input bandwidth and 39-dB SNDR for 1–32 GHz in 22-nm FDSOI.pdf",
+    "title": "A 12.8-GS/s time-interleaved sub-sampling ADC front end with 38-GHz input bandwidth and >39-dB SNDR for 1–32 GHz in 22-nm FDSOI",
+    "DOI": "10.1109/JSSC.2025.3598874"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png",
-    "title": "An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process",
-    "DOI": "10.1587/elex.22.20250092",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/11_body_cross_coupling.png",
+    "key": "RNRP3VQM",
+    "attachment": "JBJ7FQJX",
     "pdf_page": 4,
     "original_figure": "Fig. 6",
     "crop_normalized": [
@@ -140,12 +170,15 @@
       0.228,
       0.93,
       0.447
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\主题分类\\Technicals\\Input Buffer\\2025-Li et al.-An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GSs pipelined ADC in 40-nm CMOS process.pdf",
+    "title": "An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process",
+    "DOI": "10.1587/elex.22.20250092"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png",
-    "title": "An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process",
-    "DOI": "10.1587/elex.22.20250092",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/12_pvt_mc.png",
+    "key": "RNRP3VQM",
+    "attachment": "JBJ7FQJX",
     "pdf_page": 5,
     "original_figure": "Figs. 12-13",
     "crop_normalized": [
@@ -153,12 +186,15 @@
       0.58,
       0.96,
       0.94
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\主题分类\\Technicals\\Input Buffer\\2025-Li et al.-An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GSs pipelined ADC in 40-nm CMOS process.pdf",
+    "title": "An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process",
+    "DOI": "10.1587/elex.22.20250092"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png",
-    "title": "A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm",
-    "DOI": "10.1109/A-SSCC47793.2019.9056969",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/13_hold_kickback.png",
+    "key": "MQDUICAW",
+    "attachment": "8Y7G9A4C",
     "pdf_page": 2,
     "original_figure": "Fig. 3",
     "crop_normalized": [
@@ -166,12 +202,15 @@
       0.105,
       0.95,
       0.344
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\Attanger\\主题分类\\Technicals\\Input Buffer\\2019-Shifman et al.-A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm.pdf",
+    "title": "A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm",
+    "DOI": "10.1109/A-SSCC47793.2019.9056969"
   },
   {
-    "file": "/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png",
-    "title": "A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS",
-    "DOI": "10.1109/TCSII.2022.3188534",
+    "file": "学习记录/高速 ADC Input Buffer/attachment/14_fanout.png",
+    "key": "B5HLXYYN",
+    "attachment": "38ANF85M",
     "pdf_page": 2,
     "original_figure": "Fig. 1",
     "crop_normalized": [
@@ -179,6 +218,9 @@
       0.065,
       0.925,
       0.28
-    ]
+    ],
+    "source_pdf": "D:\\Zotero\\storage\\38ANF85M\\2022-Huang et al.-A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GSs ADC in 28-nm CMOS.pdf",
+    "title": "A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS",
+    "DOI": "10.1109/TCSII.2022.3188534"
   }
 ]

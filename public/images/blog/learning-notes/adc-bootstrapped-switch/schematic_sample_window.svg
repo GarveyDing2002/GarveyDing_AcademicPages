@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="450" viewBox="0 0 1200 450"><rect width="1200" height="450" fill="white"/>
+<g font-family="Arial,sans-serif" fill="#172335"><text x="40" y="54" font-size="34">Sampling aperture and clock non-overlap (conceptual)</text><text x="42" y="118" font-size="25">THA track</text><text x="42" y="219" font-size="25">Sub-ADC track</text><text x="42" y="320" font-size="25">Safe phase margin</text></g>
+<g stroke="#a0aec0" stroke-width="2" stroke-dasharray="8 9"><path d="M280 90 V385 M1070 90 V385 M670 90 V385"/></g>
+<g stroke-width="5" fill="none"><path stroke="#2563eb" d="M280 170 H320 V95 H555 V170 H670 V95 H900 V170 H1070"/>
+<path stroke="#de7a28" d="M280 270 H600 V195 H660 V270 H1070"/>
+<path stroke="#2c8b77" d="M280 370 H660 M660 370 H900"/><path stroke="#2c8b77" d="M660 370 L660 353 M900 370 L900 353"/>
+</g><g font-size="24" font-family="Arial,sans-serif"><text x="305" y="412">Track and hold edges are illustrative only; guard band must include PVT/skew/jitter.</text><text x="675" y="337" fill="#2c8b77">Hold-only zone</text></g></svg>

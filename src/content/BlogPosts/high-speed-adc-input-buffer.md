@@ -1,59 +1,65 @@
 ---
 title: 高速 ADC Input Buffer：原理、架构与设计方法
-date: 2026-09-14
-excerpt: 面向模拟／混合信号电路博士生的技术学习笔记。阅读主线：系统约束 → MOS 工作状态 → SF/FVF/SSF/Push-Pull →
-  非线性与噪声 → 采样协同 → 设计验证。资料范围：2026-09-14 读取本地 Zotero Input Buffer 分类的全部 45 条文献元数据和
-  47 份 PDF 附件；对核心架构论文的相关正文、电路图和结果进行
+date: '2026-09-14'
+excerpt: 面向高速 ADC 输入缓冲器，系统梳理输入驱动架构、非线性与噪声、采样网络协同及验证流程。
 tags:
-  - 学习记录
-  - 模拟集成电路
-  - analog-ic
-  - adc
-  - input-buffer
-  - source-follower
-  - fvf
-  - ssf
-  - push-pull
-  - ppsf
-  - bootstrap
-  - rf-sampling
+- 学习记录
+- 模拟集成电路
+- analog-ic
+- adc
+- input-buffer
+- source-follower
+- fvf
+- ssf
+- push-pull
+- ppsf
+- bootstrap
+- rf-sampling
 ---
 
-> 面向模拟／混合信号电路博士生的技术学习笔记。阅读主线：**系统约束 → MOS 工作状态 → SF/FVF/SSF/Push-Pull → 非线性与噪声 → 采样协同 → 设计验证**。
+# 高速 ADC Input Buffer：原理、架构与设计方法
+
+> [!abstract] 核心定位
+> 面向高速 ADC 输入缓冲器，系统梳理输入驱动架构、非线性与噪声、采样网络协同及验证流程。
+>
+> [!tip] 阅读主线
+> 系统约束 → MOS 工作状态 → SF/FVF/SSF/Push-Pull → 非线性与噪声 → 采样协同 → 设计验证。
+>
+> [!info] 资料范围与证据边界
 >
 > 资料范围：2026-09-14 读取本地 Zotero `Input Buffer` 分类的全部 45 条文献元数据和 47 份 PDF 附件；对核心架构论文的相关正文、电路图和结果进行重点核读，其余条目用于摘要级筛选与延伸阅读。附录列出完整条目，不能将“有附件”理解成“每一篇均逐页精读”。会议稿与期刊扩展稿不作为独立技术突破重复计数。
 >
 > **证据标记**：文中“推导／估算”为明确假设下的分析；“论文实测”为原文所报告的测量；“论文仿真”为原理图或版图提取后结果。本文未执行任何 PDK 晶体管仿真，所有算例都不是流片性能承诺。
 >
-> **使用方式**：本文已适配 Obsidian；14 张论文截图保存在 `学习记录/attachment/高速ADC_Input_Buffer`，通过库内嵌入链接显示。图为本地论文的原图区域截图，图注给出文献、原图号和 PDF 页码，图中标号服从原文；正文中的通用晶体管标号只在对应小节有效。原图版权归原作者及出版方。[图片来源清单](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/figure_sources.json) 保存逐图溯源信息。
+> **使用方式**：本文已适配 Obsidian；14 张论文截图保存在 `学习记录/高速 ADC Input Buffer/attachment`，通过库内嵌入链接显示。图为本地论文的原图区域截图，图注给出文献、原图号和 PDF 页码，图中标号服从原文；正文中的通用晶体管标号只在对应小节有效。原图版权归原作者及出版方。[[学习记录/高速 ADC Input Buffer/attachment/figure_sources.json|图片来源清单]] 保存逐图溯源信息。
 
 ## 目录
 
-1. [系统位置与设计目标](#1-系统位置与设计目标)
-2. [MOS 参数与饱和裕量](#2-mos-参数与饱和裕量)
-3. [负载、驱动电流与采样窗口](#3-负载驱动电流与采样窗口)
-4. [SF：基本源跟随器](#4-sf基本源跟随器)
-5. [FVF：翻转电压跟随器](#5-fvf翻转电压跟随器)
-6. [SSF：超级源跟随器及 Class-AB 扩展](#6-ssf超级源跟随器及-class-ab-扩展)
-7. [Push-Pull／PPSF：互补主动驱动](#7-push-pullppsf互补主动驱动)
-8. [架构对比与选择](#8-架构对比与选择)
-9. [非线性、HD2／HD3 与失真定位](#9-非线性hd2hd3-与失真定位)
-10. [Bootstrap 与辅助线性化](#10-bootstrap-与辅助线性化)
-11. [带宽、settling、slew 与稳定性](#11-带宽settlingslew-与稳定性)
-12. [噪声与动态范围](#12-噪声与动态范围)
-13. [Hierarchical buffer 与多级采样](#13-hierarchical-buffer-与多级采样)
-14. [THA／采样网络协同](#14-tha采样网络协同)
-15. [S 参数与输入匹配](#15-s-参数与输入匹配)
-16. [技术演进与论文案例](#16-技术演进与论文案例)
-17. [可执行的设计流程](#17-可执行的设计流程)
-18. [PVT、Monte Carlo 与 post-layout](#18-pvtmonte-carlo-与-post-layout)
-19. [版图与封装注意事项](#19-版图与封装注意事项)
-20. [仿真 checklist](#20-仿真-checklist)
-21. [常见误区与调试索引](#21-常见误区与调试索引)
-22. [经典论文与阅读顺序](#22-经典论文与阅读顺序)
-23. [附录 A：符号与速查公式](#附录-a符号与速查公式)
-24. [附录 B：Zotero 分类完整索引](#附录-bzotero-分类完整索引)
-25. [附录 C：图片与资料核验说明](#附录-c图片与资料核验说明)
+1. [[#1. 系统位置与设计目标|系统位置与设计目标]]
+2. [[#2. MOS 参数与饱和裕量|MOS 参数与饱和裕量]]
+3. [[#3. 负载、驱动电流与采样窗口|负载、驱动电流与采样窗口]]
+4. [[#4. SF：基本源跟随器|SF：基本源跟随器]]
+5. [[#5. FVF：翻转电压跟随器|FVF：翻转电压跟随器]]
+6. [[#6. SSF：超级源跟随器及 Class-AB 扩展|SSF：超级源跟随器及 Class-AB 扩展]]
+7. [[#7. Push-Pull／PPSF：互补主动驱动|Push-Pull／PPSF：互补主动驱动]]
+8. [[#8. 架构对比与选择|架构对比与选择]]
+9. [[#9. 非线性、HD2／HD3 与失真定位|非线性、HD2／HD3 与失真定位]]
+10. [[#10. Bootstrap 与辅助线性化|Bootstrap 与辅助线性化]]
+11. [[#11. 带宽、settling、slew 与稳定性|带宽、settling、slew 与稳定性]]
+12. [[#12. 噪声与动态范围|噪声与动态范围]]
+13. [[#13. Hierarchical buffer 与多级采样|Hierarchical buffer 与多级采样]]
+14. [[#14. THA／采样网络协同|THA／采样网络协同]]
+15. [[#15. S 参数与输入匹配|S 参数与输入匹配]]
+16. [[#16. 技术演进与论文案例|技术演进与论文案例]]
+17. [[#17. 可执行的设计流程|可执行的设计流程]]
+18. [[#18. PVT、Monte Carlo 与 post-layout|PVT、Monte Carlo 与 post-layout]]
+19. [[#19. 版图与封装注意事项|版图与封装注意事项]]
+20. [[#20. 仿真 checklist|仿真 checklist]]
+21. [[#21. 常见误区与调试索引|常见误区与调试索引]]
+22. [[#22. 经典论文与阅读顺序|经典论文与阅读顺序]]
+23. [[#附录 A：符号与速查公式|附录 A：符号与速查公式]]
+24. [[#附录 B：Zotero 分类完整索引|附录 B：Zotero 分类完整索引]]
+25. [[#附录 C：图片与资料核验说明|附录 C：图片与资料核验说明]]
 
 ## 1. 系统位置与设计目标
 
@@ -73,7 +79,7 @@ ADC 的开关电容输入不是恒定电阻，也不是单纯的固定电容。�
 
 Buffer 用低输出阻抗及电源提供的驱动电流，让外部信号源主要面对较可控的输入导纳，同时承受内部采样网络的充放电需求。它可以降低反向扰动，但输入输出寄生耦合、供电及衬底耦合仍然存在，不能把“隔离”理解成完全单向。
 
-![14_fanout](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png)
+![14_fanout](/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png)
 
 *图 1：Huang 等，2022，原 Fig. 1，PDF 第 2 页。左图把封装、ESD、匹配、buffer、走线与采样阵列放在同一链路；右图表明实际扇出是一张分布网络。[论文 DOI](https://doi.org/10.1109/TCSII.2022.3188534)，Zotero：`B5HLXYYN`。*
 
@@ -112,25 +118,19 @@ Buffer 的信号增益可以小于 1，只要增益损失在输入满量程与�
 
 对 NMOS：
 
-
 $$
 V_{GS}=V_G-V_S,\qquad V_{DS}=V_D-V_S,\qquad V_{SB}=V_S-V_B.
 $$
-
-
 
 $$
 V_{OV}=V_{GS}-V_{TH}.
 $$
 
-
 对 PMOS，建议用正量比较：
-
 
 $$
 V_{SG}=V_S-V_G,\qquad V_{SD}=V_S-V_D,\qquad V_{OV,p}=V_{SG}-|V_{TH,p}|.
 $$
-
 
 | 参数 | 物理含义 | 在 buffer 中应怎样看 |
 |---|---|---|
@@ -145,7 +145,6 @@ $$
 
 在强反型、长沟道、忽略二阶效应时：
 
-
 $$
 I_D\simeq \frac{1}{2}\mu C_{ox}\frac WL V_{OV}^2,
 \qquad
@@ -154,15 +153,12 @@ g_m\simeq \frac{2I_D}{V_{OV}},
 \frac{g_m}{I_D}\simeq\frac{2}{V_{OV}}.
 $$
 
-
 若加入一阶沟道长度调制：
-
 
 $$
 I_D\simeq \frac{1}{2}\mu C_{ox}\frac WL V_{OV}^2(1+\lambda V_{DS}),
 \qquad r_o\simeq\frac{1}{\lambda I_D}.
 $$
-
 
 它们适合建立直觉：增大电流或尺寸可提高 $g_m$；较大的 $g_m$ 通常降低输出阻抗；$V_{DS}$ 改变会引起电流改变。它们不适合直接预测 28 nm、FinFET、FDSOI 的宽频 HD3，也不能把一个拟合的 $\lambda$ 当成全摆幅、全频率的固定器件属性。
 
@@ -176,27 +172,21 @@ BSIM4 的饱和电压模型中显式包含速度饱和等因素；这能说明�
 
 对正常方向工作的 NMOS：
 
-
 $$
 M_n(t)=V_{DS,n}(t)-V_{DSAT,n}(t).
 $$
 
-
 对 PMOS，先把模型量转换为对应正的饱和电压大小：
-
 
 $$
 M_p(t)=V_{SD,p}(t)-V_{SDAT,p}(t).
 $$
 
-
 对每个关键管记录：
-
 
 $$
 M_{\min}=\min_{t,\,\mathrm{PVT},\,\mathrm{load},\,\mathrm{input}}M(t).
 $$
-
 
 必须同时观察 $I_D(t)$、$g_m(t)$、$g_{ds}(t)$、body 电压和内部节点恢复。$M>0$ 说明模型意义下有饱和余量，不证明失真达标；$M$ 刚过零也不等于电路突然完全失效。现代模型过渡平滑，实际影响可能体现为压缩、电容变化、尾部拖长或环路增益降低。
 
@@ -206,21 +196,17 @@ Devarajan 等 2017 年设计明确报告约 $>150\,\mathrm{mV}$ 的 $V_{DS}-V_{D
 
 长沟道 NMOS 体效应常用近似：
 
-
 $$
 V_{TH}(V_{SB})=V_{TH0}+\gamma\left(\sqrt{2\phi_F+V_{SB}}-\sqrt{2\phi_F}\right).
 $$
-
 
 固定 body 时，source 跟随信号移动，$V_{SB}$ 变化，阈值也变化，产生增益损失和失真。定义小信号体跨导大小 $g_{mb}$ 后，固定 body 的 SF 增益通常包含 $g_{mb}$。
 
 DIBL 可用定性式表示：
 
-
 $$
 \Delta V_{TH}\simeq-\eta\Delta V_{DS}.
 $$
-
 
 因此 drain bootstrap 不只针对“$\lambda$ 非零”，也可能降低漏端变化通过 DIBL 产生的调制。Body 接 source 可降低体效应，但会使 well／deep-well 寄生跟随信号，新的非线性电容负载必须计入；bulk CMOS 的独立 NMOS body 通常需要隔离阱结构。FDSOI 的 back-gate 物理结构与 bulk CMOS 的导电体结不同，不能照搬连法和电压限值。
 
@@ -228,11 +214,9 @@ $$
 
 固定 $I_D$ 增大 $W$：通常提高 $g_m/I_D$，但也增加栅电容、结电容及前级负载。固定 $W$ 增大 $I_D$：可提高 $g_m$ 和驱动，代价是功耗、压降、自热，且未必总在最佳 $f_T$ 区域。增大 $L$：可能改善 $r_o$、匹配及某些静态失真，却增加电容、降低速度。
 
-
 $$
 f_T\approx\frac{g_m}{2\pi(C_{gs}+C_{gd})}
 $$
-
 
 只是简化尺度关系。实际应扫描 $L$、电流密度、$V_{DS}$、体偏置，查 $g_m/I_D$、$g_m/g_{ds}$、$f_T$、$C_{in}$ 与噪声，寻找满足输入电容约束的 Pareto 解。高 $g_m/I_D$ 并不自动等于高速最优。
 
@@ -242,11 +226,9 @@ $$
 
 若某个 track 相位只有一个子 ADC 接入，可先估计每侧：
 
-
 $$
 C_{L,\mathrm{track}}\approx C_s+C_{on,par}+\sum C_{off,par}+C_{wire}+C_{aux}.
 $$
-
 
 其中 $C_{aux}$ 包括由该节点直接驱动的 body、bootstrap 和其他支路。断开的支路通过关断开关寄生仍然可见；走线还有电阻、耦合电容和可能的电感。若采样窗口重叠，多个 $C_s$ 会同时接入。更精确的对象是**随时钟、信号和历史状态变化的多端口网络**，而不是一个固定 $C_L$。
 
@@ -254,20 +236,16 @@ $$
 
 线性固定电容：
 
-
 $$
 i_C(t)=C\frac{dv(t)}{dt}.
 $$
 
-
 如果电容随电压变化，应从电荷定义出发：
-
 
 $$
 i(t)=\frac{dQ(v)}{dt}=C_{\mathrm{diff}}(v)\frac{dv}{dt},
 \qquad C_{\mathrm{diff}}(v)=\frac{dQ}{dv}.
 $$
-
 
 PDK 的电容工作点量往往属于电荷导数；不能把它当作 $Q=C(v)v$ 中的比例系数，再额外加一遍 $v\,dC/dt$。完整 MOS 是多端电荷模型，还存在交叉偏导。
 
@@ -275,37 +253,29 @@ PDK 的电容工作点量往往属于电荷导数；不能把它当作 $Q=C(v)v$
 
 若每侧输出为：
 
-
 $$
 v_o(t)=V_{CM}+V_{p,se}\sin(2\pi f_{in}t),
 $$
 
-
 则固定对地负载电容需要：
-
 
 $$
 I_{pk}=2\pi f_{in}C_LV_{p,se}.
 $$
 
-
 对于对称差分信号：
-
 
 $$
 V_{p,se}=\frac{V_{pp,diff}}4,\qquad
 V_{rms,diff}=\frac{V_{pp,diff}}{2\sqrt2}.
 $$
 
-
 **算例**：每侧 $C_L=0.6\,\mathrm{pF}$、$f_{in}=4\,\mathrm{GHz}$、差分 $V_{pp}=1.2\,\mathrm V$，则每侧峰值 $0.3\,\mathrm V$，所需正弦电容电流约为：
-
 
 $$
 I_{pk}=2\pi\times4\times10^9\times0.6\times10^{-12}\times0.3
 \approx4.52\,\mathrm{mA}.
 $$
-
 
 这不是所需静态偏置电流的唯一答案：还要检查电流变化造成的失真、开关接通瞬间的电荷重分配、寄生、PVT 和正负方向驱动余量。如果主要电容跨在差分两端，须先转换到奇模半电路，不能套用“每侧对地 $0.6\,\mathrm{pF}$”的算例。
 
@@ -313,11 +283,9 @@ $$
 
 采样电容接入前后相差 $\Delta V$，需要转移：
 
-
 $$
 \Delta Q=C_s\Delta V,\qquad I_{avg}\ge\frac{C_s|\Delta V|}{t_{available}}.
 $$
-
 
 若近似为电阻主导的突然接通，初始电流可达 $\Delta V/R_{path}$。该峰值受到开关导通速度和寄生限制，与 $2\pi fCV_p$ 不是同一物理事件。设计应同时覆盖连续跟踪电流与离散重采样电流。
 
@@ -333,28 +301,22 @@ $$
 
 对幅度为 $\Delta V$ 的阶跃，一阶响应残差为：
 
-
 $$
 e(t)=\Delta V e^{-t/\tau}.
 $$
 
-
 若允许误差 $\epsilon=V_{FS}/2^{N+1}$，且阶跃等于该节点满量程 $V_{FS}$：
-
 
 $$
 \frac{|e(t)|}{V_{FS}}<2^{-(N+1)},\qquad
 \frac{t}{\tau}>(N+1)\ln2.
 $$
 
-
 12-bit、半 LSB、有效建立时间 $100\,\mathrm{ps}$ 给出：
-
 
 $$
 \tau<11.10\,\mathrm{ps},\qquad f_p>14.34\,\mathrm{GHz}.
 $$
-
 
 若每侧等效电容 $0.6\,\mathrm{pF}$，则总充电通路电阻需约小于 $18.5\,\Omega$。这包括 buffer、开关和走线的等效贡献；若开关本身已超过预算，仅把 buffer 做大不能完成目标。
 
@@ -383,11 +345,9 @@ VSS
 
 直流近似：
 
-
 $$
 V_{out}\approx V_{in}-V_{GS1}.
 $$
-
 
 这说明共模会移位，也说明 $V_{GS1}$ 的信号依赖性直接进入输出误差。PMOS SF 的极性相反，其输出通常相对输入向上平移。
 
@@ -395,19 +355,15 @@ $$
 
 在 drain、body 及偏置栅均为交流地，忽略电容时：
 
-
 $$
 A_v\approx\frac{g_m}{g_m+g_{mb}+g_{ds,1}+g_{o,bias}+G_L}.
 $$
 
-
 外部负载移除、输入理想交流接地时：
-
 
 $$
 R_{out}\approx\frac{1}{g_m+g_{mb}+g_{ds,1}+g_{o,bias}}.
 $$
-
 
 若 body 随 source 理想移动，体效应项不再按固定 body 形式出现。$R_{out}\approx1/g_m$ 是忽略其他电导后的近似；输入源阻抗有限、内部寄生显著时，$Z_{out}(f)$ 要由完整电路求得。
 
@@ -417,37 +373,29 @@ $$
 
 若输出为主导极点：
 
-
 $$
 f_{p,out}\approx\frac{1}{2\pi R_{out}C_{out}}.
 $$
 
-
 输入门极电流的一个简化表达为：
-
 
 $$
 i_{in}\approx sC_{gs}(v_{in}-v_{out})+sC_{gd}(v_{in}-v_d).
 $$
 
-
 drain 交流接地、低频跟随良好时，可理解为有效输入电容近似包含 $C_{gd}+C_{gs}(1-A_v)$。高频 $A_v$ 具有相位并下降，该“自举减小的输入电容”不再是固定实数；再叠加 ESD、走线和 bias，输入极点可能先限制带宽。
 
 ### 4.4 大信号充放电不对称
-
 
 $$
 C_L\frac{dv_o}{dt}=i_{M1}-I_B-i_{other}.
 $$
 
-
 对 NMOS SF，下降时主管趋向截止，能提供的放电电流大致受 $I_B$ 限制：
-
 
 $$
 |SR_{down}|\lesssim \frac{I_B}{C_L}.
 $$
-
 
 上升时主管可以暂时提供超过静态值的电流，但受输入过驱动、饱和裕量和电源限制。PMOS SF 的强弱方向相反。因此“增大 $g_m$”主要是小信号说法，“足够大的偏置保证两个方向建立”是大信号问题。
 
@@ -457,13 +405,11 @@ $$
 
 对于平方律，可以围绕静态电流写出：
 
-
 $$
 V_{OV}(I_B+\Delta i)\approx V_{OV0}
 \left[1+\frac12\frac{\Delta i}{I_B}-\frac18\left(\frac{\Delta i}{I_B}\right)^2
 +\frac1{16}\left(\frac{\Delta i}{I_B}\right)^3\right].
 $$
-
 
 这个局部展开解释了为何 $\Delta i/I_B$ 很大时失真迅速增加，也解释了“偏置刚好大于峰值负载电流”通常不能保证高 SFDR。它不提供先进工艺的精确谐波数值。
 
@@ -482,7 +428,7 @@ VDD → Ib → x → M1(D→S) → Vout → M2(D→S) → VSS
              ↑ gate=Vin             ↑ gate=x
 ```
 
-![01_fvf_comparison](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png)
+![01_fvf_comparison](/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png)
 
 *图 2：Huang 等，2022，原 Fig. 2，PDF 第 2 页。(a) 为 SF 加前馈补偿，不是裸 SF；(b) 为经典 FVF；(c) 为 AC 耦合扩展。对照电流源位置及反馈支路阅读。[论文 DOI](https://doi.org/10.1109/TCSII.2022.3188534)，Zotero：`B5HLXYYN`。*
 
@@ -501,11 +447,9 @@ VDD → Ib → x → M1(D→S) → Vout → M2(D→S) → VSS
 
 内部节点把源端误差转换为较大的电压变化，再由 $g_{m2}$ 形成纠正电流。高局部增益、低频条件下：
 
-
 $$
 R_{out,FVF}\approx\frac{1}{g_{m1}g_{m2}r_{x}},
 $$
-
 
 其中 $r_x$ 是内部节点实际有效阻抗，常由主管输出电阻与偏置源等并联决定。文献常简写 $r_x\approx r_{o1}$；如果 $g_{m1}\approx g_{m2}\approx g_m$，才得到数量级式 $1/(g_m^2r_o)$。
 
@@ -515,11 +459,9 @@ $$
 
 忽略寄生电流，有：
 
-
 $$
 i_L=I_B-i_{M2}.
 $$
-
 
 当负载需要正的供给电流时，$M_2$ 最多降到近截止，因此经典 NMOS FVF 的供给能力受 $I_B$ 限制；当需要吸收负载电流时，$M_2$ 可以增大电流，能力受自身尺寸、栅压和裕量限制。
 
@@ -529,17 +471,13 @@ $$
 
 以低电源为零，经典结构 $x=V_{GS2}$。要使 $M_1$ 与 $M_2$ 均有饱和裕量：
 
-
 $$
 V_{out}\ge V_{DSAT2}+M_{req,2},
 $$
 
-
-
 $$
 V_{out}\le V_{GS2}-V_{DSAT1}-M_{req,1}.
 $$
-
 
 上界与反馈管的 $V_{GS2}$ 绑定，可能比接近 $V_{DD}$ 的直觉上界窄得多；同时还要满足顶端电流源饱和条件。$V_{GS2}$ 本身随所需分流电流变化，真正的上下界也是动态的。
 
@@ -547,12 +485,10 @@ $$
 
 Huang 等 2022 年结构用电容闭合高频反馈，借助独立 DC bias 与叠接管解除经典 FVF 中某些直流电位绑定；并通过 drain 跟随及补偿电容进一步改善线性。这并非“加一颗电容就保持所有 DC 性能”。
 
-
 $$
 H_{AC}(s)\approx\alpha\frac{s\tau_c}{1+s\tau_c},\qquad
 \alpha\approx\frac{C_c}{C_c+C_{par}}.
 $$
-
 
 低频反馈可能变弱；中频受耦合比例影响；高频还受内部极点限制。需要额外检查上电偏置、长时间无输入、突发输入、基线恢复及低频信号范围。该论文按 $>100\,\mathrm{MHz}$ 输入范围设计耦合网络，因此不能直接当作精密 DC buffer。
 
@@ -564,7 +500,7 @@ $$
 
 SSF 通常指加入局部增益和主动输出支路的 super source follower。不同文献会称改进形式为 enhanced SSF、Class-AB SSF 或 AC-coupled SSF；部分机制与 FVF 重叠。分类时应记录：**谁感测误差、哪个节点提供增益、哪只管给负载供电、DC 偏置如何设置**，而不只看缩写。
 
-![02_ssf_essf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png)
+![02_ssf_essf](/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png)
 
 *图 3：Guo 等，2025，原 Fig. 1，PDF 第 1 页，左为传统 SSF，右为加入共栅级的 ESSF。原文结果属于后仿。该图用于识别结构，不代表 SSF 最早提出时间。[论文 DOI](https://doi.org/10.1109/ICTA68203.2025.11329604)，Zotero：`DLDWSRMX`。*
 
@@ -578,11 +514,9 @@ SSF 通常指加入局部增益和主动输出支路的 super source follower。
 
 若感测节点增益约为 $g_{m1}r_x$，辅助输出管跨导为 $g_{m3}$：
 
-
 $$
 R_{out,SSF}\approx\frac{1}{g_{m1}r_xg_{m3}}
 $$
-
 
 适用于局部增益足够大及相关管保持正常工作区的情况。这个数量级与 FVF 类似，不表示两者在摆幅、供电噪声、频率响应和大信号电流上等价。
 
@@ -590,18 +524,16 @@ $$
 
 传统 SSF 某个方向仍可能受固定电流源限制。Class-AB 扩展将误差信号同时送往供电和吸电流支路，在静态功耗较低时提供更大的瞬态电流。AC 耦合允许 DC 电流由偏置网络设置，而交流动态驱动由内部节点控制。
 
-![03_differential_ssf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png)
+![03_differential_ssf](/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png)
 
 *图 4：Shifman 等，2019，原 Fig. 4，PDF 第 2 页。(a) 为 Class-AB SSF，(b) 为差分改进结构。红色、绿色、橙色及蓝色线路对应原文的支路修改，阅读时同时追踪 bias、共模调节与交叉补偿。[论文 DOI](https://doi.org/10.1109/A-SSCC47793.2019.9056969)，Zotero：`MQDUICAW`。*
 
 对图 4(a) 的特定结构，论文给出：
 
-
 $$
 R_{out}\approx\frac{1}{g_{m1}r_{o1}(g_{m4}+\alpha g_{m3})},
 \qquad\alpha=\frac{C_1}{C_1+C_g}.
 $$
-
 
 其中 $\alpha$ 说明耦合电容不能任意缩小：如果栅寄生占比过大，动态增益下降。增大耦合电容又会增加面积、前级负载和低频恢复时间，且真实 $\alpha$ 会随频率和偏置变化。
 
@@ -609,11 +541,9 @@ $$
 
 高阻节点对电流失配敏感：
 
-
 $$
 \Delta V_x\approx\Delta I\,r_x.
 $$
-
 
 很小的偏置失配即可使 $x$ 明显偏移，甚至让反馈管进入截止或三极区。Shifman 等使用低频共模调节稳定内部节点，并分离静态电流源与动态转向支路，以改善供电噪声抑制。这里的 43-dB PSRR 不能理解为从 DC 到最高信号频率都恒定为 43 dB，也不能假定任意 SSF 都拥有同样 PSRR。
 
@@ -637,37 +567,29 @@ Push-Pull 泛指两个支路分别增强供给和吸收电流；可能基于源�
 
 上方 NMOS：drain 接高电源，source 接输出；下方 PMOS：source 接输出，drain 接低电源。两者 gate 接受同相输入变化，但直流偏置不同：
 
-
 $$
 V_{GN}=V_{in}+V_{LS,N},\qquad
 V_{GP}=V_{in}-V_{LS,P}.
 $$
-
-
 
 $$
 V_{GN}-V_{out}=V_{GS,N},\qquad
 V_{out}-V_{GP}=V_{SG,P}.
 $$
 
-
 因此门极间所需偏置差为：
-
 
 $$
 V_{GN}-V_{GP}=V_{GS,N}+V_{SG,P}.
 $$
 
-
 若把两个 gate 不经 level shift 直接短接，通常无法获得期望的低失真静态工作点。不能把普通反相器的偏置经验直接照搬到 PPSF。
 
 ### 7.3 信号上升和下降时的电流
 
-
 $$
 C_L\frac{dv_o}{dt}=i_N-i_P-i_{other}.
 $$
-
 
 输入上升：NMOS 的供给电流增加，PMOS 吸电流减小，合成正的负载电流；输入下降：NMOS 电流减小，PMOS 吸电流增加，合成负的负载电流。两个支路都响应输入，而不是其中一个永远是固定偏置负载。
 
@@ -675,20 +597,16 @@ $$
 
 在两个门极获得相同交流信号，忽略 body、有限 $r_o$ 及耦合衰减时：
 
-
 $$
 R_{out,PPSF}\approx\frac{1}{g_{mN}+g_{mP}}.
 $$
 
-
 更完整的简化小信号增益为：
-
 
 $$
 A_v\approx\frac{g_{mN}A_N+g_{mP}A_P}
 {g_{mN}+g_{mP}+g_{mb,N}+g_{mb,P}+g_{ds,N}+g_{ds,P}+G_L},
 $$
-
 
 其中 $A_N(s),A_P(s)$ 是两个 level-shift 路径的传输。Body 随 source 运动时需重新处理相应项。
 
@@ -708,7 +626,7 @@ $$
 
 ### 7.7 带 drain bootstrap 的 PPSF
 
-![04_ppsf_bootstrap](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png)
+![04_ppsf_bootstrap](/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png)
 
 *图 5：Devarajan 等，2017，原 Fig. 11，PDF 第 7 页／期刊第 3210 页。输出最近的互补跟随管外还有两层 cascode／bootstrap；右侧给出 level shifter。这里展示的是 input buffer，不是同页的 MDAC 放大器。[论文 DOI](https://doi.org/10.1109/JSSC.2017.2747758)，Zotero：`JI8G84VA`。*
 
@@ -757,12 +675,9 @@ SSF、FVF、Class-AB、bootstrap 并非互斥标签。例如 Class-AB ESSF 可�
 
 围绕工作点，令 $x=A\cos\omega t$：
 
-
 $$
 y=a_0+a_1x+a_2x^2+a_3x^3+\cdots.
 $$
-
-
 
 $$
 A_1\approx a_1A+\frac34a_3A^3,\qquad
@@ -770,13 +685,10 @@ A_2\approx\frac12a_2A^2,\qquad
 A_3\approx\frac14a_3A^3.
 $$
 
-
-
 $$
 HD_2=20\log_{10}\left|\frac{A_2}{A_1}\right|,\qquad
 HD_3=20\log_{10}\left|\frac{A_3}{A_1}\right|.
 $$
-
 
 这里 HD 使用相对基波的负 dBc 口径；SFDR 通常表示基波与最大杂散之间的正 dB 差值。低失真区域内，输入幅度每升高 1 dB，二次谐波绝对幅度约升高 2 dB、三次约升高 3 dB；相对基波的 HD2／HD3 分别约恶化 1／2 dB。偏离这个斜率说明高阶项、压缩、时变效应或噪声底开始显著。
 
@@ -784,11 +696,9 @@ $$
 
 对于完全相同的两支路：
 
-
 $$
 f(x)-f(-x)=2a_1x+2a_3x^3+\cdots.
 $$
-
 
 偶次项消失，奇次项保留。实际差分电路有器件、走线、输入幅度、相位与共模失配，因此 HD2 仍会出现。互补 N/P 对称与正负两支路差分对称是两个不同层次；不能把一种抵消当作另一种已经成立。
 
@@ -802,11 +712,9 @@ $$
 
 可用示意模型理解二者：
 
-
 $$
 e(t)\approx b_2v^2+b_3v^3+c_1v\dot v+c_2v^2\dot v+d_1\dot v^2+\cdots.
 $$
-
 
 这只是分类工具，不是所有 buffer 通用的闭式模型。高频误差可能同时含输入幅度与导数，纯 DC 三次多项式校准不一定能校正它。
 
@@ -814,19 +722,15 @@ $$
 
 若差分电容可展开为 $C(v)=C_0+C_1v+C_2v^2$，则：
 
-
 $$
 i=C_0\dot v+C_1v\dot v+C_2v^2\dot v.
 $$
 
-
 其中 $v\dot v$ 含二次谐波，$v^2\dot v$ 含基波和三次谐波。流经输入源阻抗产生：
-
 
 $$
 v_{err,in}(f)\approx-Z_s(f)i_{nonlinear}(f).
 $$
-
 
 所以不应仅在理想零阻源下证明“buffer 很线性”。对于封装电感较大的输入，非线性门极电流还会通过 $L\,di/dt$ 产生更严重的高频电压扰动。
 
@@ -834,11 +738,9 @@ $$
 
 连续时间的 $kf_{in}$ 会折叠到第一 Nyquist 区。设：
 
-
 $$
 r=f\bmod f_s,\qquad f_{alias}=\min(r,f_s-r).
 $$
-
 
 高次谐波可能折叠到基波、DC 或同一个 bin。选择测试频率时应避开这些重合。TI 增益／时间偏斜常在 $kf_s/M\pm f_{in}$ 出现杂散；偏置失配常在 $kf_s/M$ 出现杂散。最大杂散不一定是 HD3，SFDR 不等于“第三谐波指标”。
 
@@ -846,20 +748,16 @@ FFT 需分别说明：连续时间 buffer 输出、采样电容保持值、最�
 
 ### 9.6 THD、SNR、SNDR 和 SFDR
 
-
 $$
 THD=10\log_{10}\frac{\sum_{k\ge2}P_k}{P_1},
 \qquad
 SNR=10\log_{10}\frac{P_1}{P_{noise}},
 $$
 
-
-
 $$
 SNDR=10\log_{10}\frac{P_1}{P_{noise}+P_{dist}},\qquad
 SFDR=10\log_{10}\frac{P_1}{P_{spur,max}}.
 $$
-
 
 须规定谐波阶数、频带、窗口与 bin 归属。确定性无噪声 transient 的 FFT 剩余项不能直接当作真实 ADC 噪声底。包含多个谐波的拟合会吸收失真，其残差比值也不能称为完整 SNDR。
 
@@ -887,17 +785,13 @@ $$
 
 设 source 与 drain 的小信号分别为：
 
-
 $$
 v_s=H_s(s)v_{in},\qquad v_d=H_d(s)v_{in}.
 $$
 
-
-
 $$
 \Delta v_{DS}=[H_d(s)-H_s(s)]v_{in}.
 $$
-
 
 因此要同时匹配幅度和相位。若幅度相等但时延相差 $\Delta t$，高频近似 $|\Delta v_{DS}|\propto\omega|\Delta t|\,|v_{in}|$。辅助路径“带宽很高”仍可能留下相位失配；其噪声和失真也会调制主管。
 
@@ -907,25 +801,21 @@ Cascode 的本质不是简单“多堆一只管”。固定栅 cascode 可降低
 
 主负载需要 $i_L\approx C_L\dot v$。若复制路径提供 $i_{ff}\approx C_C\dot v$，则主管交流电流可近似减为：
 
-
 $$
 \Delta i_{main}\approx i_L-i_{ff}.
 $$
 
-
 理想匹配时 $C_C\approx C_L$，但实际还需匹配开关、电阻、相位与有效负载。时间变化的负载通常不能由一颗固定电容在所有采样相位完全复制。将误差表示为复数比例更有用：
-
 
 $$
 \Delta i_{main}(j\omega)\approx i_L(j\omega)[1-K_{ff}(j\omega)].
 $$
 
-
 其代价是输入或辅助驱动必须提供复制电流。Ali 等 2014 年论文把相对线性的复制电容电流与不希望信号源承受的非线性采样电流区分开；并进一步用 drain bootstrap 控制主管 $V_{DS}$。[原文 §III-A](https://doi.org/10.1109/JSSC.2014.2361339)，Zotero：`88KUWJYB`。
 
 ### 10.4 两级 cascade complementary SF
 
-![06_ccsf](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png)
+![06_ccsf](/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png)
 
 *图 6：Li 等，2024，原 Fig. 2，PDF 第 2 页／期刊第 963 页。左为 PMOS SF 级，右为 NMOS SF 级，并包含 drain 跟随、补偿电容和辅助运放。[论文 DOI](https://doi.org/10.1109/TVLSI.2024.3349564)，Zotero：`IZ8STV8W`。*
 
@@ -937,7 +827,7 @@ $$
 
 消除 $V_{SB}$ 变化并未消除 body 到 deep well／substrate 的寄生电容。若 body 与输出相连，这些非线性结电容直接加载输出。它们可能比主负载小得多，却主导高频 HD3。
 
-![05_body_buffer](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png)
+![05_body_buffer](/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png)
 
 *图 7：Scaletti 等，2023，原 Fig. 3，PDF 第 3 页。辅助 follower 驱动主输出管 body，承担相应非线性寄生电容电流。[论文 DOI](https://doi.org/10.1109/NEWCAS57931.2023.10198057)，Zotero：`PKP4WR5K`。*
 
@@ -947,13 +837,13 @@ $$
 
 交叉连接可以利用差分或互补节点的相关运动，调整 $V_{SB}$、输出电阻或寄生电容电流。必须依据实际节点的 AC 极性、DC 偏置和结结构判断。正负支路在差模下反相，互补堆栈上某些等效节点却可能同相；“交叉”不代表统一的补偿方向。
 
-![11_body_cross_coupling](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png)
+![11_body_cross_coupling](/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png)
 
 *图 8：Li 等，2025，原 Fig. 6，PDF 第 4 页。该结构在尾电流源等处引入交叉衬底补偿，不能与图 7 的主输出管 body-buffer 当成同一技术。[论文 DOI](https://doi.org/10.1587/elex.22.20250092)，Zotero：`RNRP3VQM`。*
 
 ### 10.7 SACC：补偿电流而非继续增加堆栈
 
-![07_sacc](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png)
+![07_sacc](/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png)
 
 *图 9：Cao 等，2024，原 Figs. 13–14，PDF 第 7 页／期刊第 4217 页。小尺寸补偿单元利用相反相位的输入产生补偿电流；曲线是静态仿真。[论文 DOI](https://doi.org/10.1109/JSSC.2024.3482567)，Zotero：`AMZFXGAJ`。*
 
@@ -961,12 +851,10 @@ $$
 
 弱反型电流的工程理解应保留电压尺度：
 
-
 $$
 I_{sub}\propto\frac WL\exp\left(\frac{V_{GS}-V_{TH}}{nU_T}\right),
 \qquad U_T=\frac{kT}{q}.
 $$
-
 
 指数不能写成带单位电压直接作指数；热电压 $U_T$ 也不要与阈值 $V_{TH}$ 混淆。局部拟合“像三次项”不代表它在整个摆幅及所有温度下恰为三次多项式。跨 PVT 应注明是否每个工艺角重新 trim、是否固定同一套 bias code。
 
@@ -991,31 +879,24 @@ $$
 
 级联两级相同一阶低通时：
 
-
 $$
 H(s)=\frac{A_0}{(1+s/\omega_p)^2},\qquad
 f_{-3dB,total}=f_p\sqrt{\sqrt2-1}\approx0.644f_p.
 $$
 
-
 两级各有 10-GHz 带宽，总体并不是 10 GHz。额外零点可能补偿幅度，但仍需检验相位、群延迟、噪声增益和时域尾部。对局部反馈的 FVF/SSF，还要包括内部高阻节点极点及耦合电容带来的低频转折。
 
 ### 11.3 建立过程拆成三段
-
 
 $$
 t_{available}=t_{sample}-t_{connect,eff},
 $$
 
-
-
 $$
 t_{required}\approx t_{slew}+t_{linear}+t_{tail}.
 $$
 
-
 开关实际导通晚于理想控制边沿；大信号初期可能被电流限制；接近目标后进入线性建立；最后还可能有慢共模、AC 耦合、介质吸收或热响应尾部。各段并非严格互斥，可作为诊断分解。
-
 
 $$
 t_{slew}\gtrsim\frac{C_L\Delta V_{slew}}{I_{available}},
@@ -1023,18 +904,15 @@ t_{slew}\gtrsim\frac{C_L\Delta V_{slew}}{I_{available}},
 t_{linear}\approx\tau\ln\frac{e_{start,linear}}{\epsilon}.
 $$
 
-
 误差门限定义为“首次进入并且在采样前保持在误差带内”，避免把欠阻尼振铃第一次穿过目标值当成已经建立。
 
 ### 11.4 正弦连续跟踪与阶跃不同
 
 线性一阶通路会对正弦产生增益衰减和相位延迟：
 
-
 $$
 H(j\omega)=\frac{1}{1+j\omega\tau}.
 $$
-
 
 若系统完全线性，增益和相位误差本身不产生 HD2/HD3。真实误差在于 $\tau$ 随输入、负载或时钟变化，以及起始条件的残留。建立分析应给出两种结果：相对理想输入的总误差；去掉统一固定增益与延迟后的非线性／记忆误差。不能为每个周期分别拟合延迟来掩盖采样误差。
 
@@ -1042,12 +920,10 @@ $$
 
 对于峰值为 $V_p$ 的正弦：
 
-
 $$
 SR_{required}=2\pi f_{in}V_p,\qquad
 f_{FP}\lesssim\frac{SR_{available}}{2\pi V_p}.
 $$
-
 
 接近这个极限之前，HD3 常已超过要求，因此它是能力上限估算，不是高线性设计边界。正负方向分开计算；Class-AB 的动态电流还受内部控制节点的摆动速度限制。
 
@@ -1065,33 +941,27 @@ FVF/SSF 至少检查局部环路；带 CMFB、replica servo 和有源 bootstrap 
 
 长沟道、强反型 MOS 的沟道热噪声常近似为：
 
-
 $$
 S_{i_d}(f)\approx4kT\gamma g_m,
 \qquad S_{v,in}\sim\frac{4kT\gamma}{g_m}.
 $$
 
-
 这里为单边 PSD 尺度关系。真实模型的 $\gamma$、诱导栅噪声及相关项应使用 PDK。尾电流源、辅助反馈管、LS 电阻、replica 和 CMFB 都可能贡献输出噪声；输入等效要除以对应信号传输的模平方。
 
 对理想互补 PPSF，忽略 body 和 bias：
-
 
 $$
 S_{v,out}\approx\frac{4kT(\gamma_Ng_{mN}+\gamma_Pg_{mP})}
 {(g_{mN}+g_{mP})^2}.
 $$
 
-
 它说明两管都产生噪声也同时降低输出阻抗，不能简单说“多一只 PMOS，噪声翻倍”。但加入实际 bias、源阻抗及带宽后，总积分噪声仍需重新评估。
 
 ### 12.2 降低白噪声密度不等于积分噪声同比下降
 
-
 $$
 \sigma_v^2=\int_0^\infty S_v(f)|H_n(f)|^2df.
 $$
-
 
 单极点对白噪声的等效噪声带宽为 $(\pi/2)f_{-3dB}$。若增加 $g_m$ 同时提高噪声带宽，密度下降可能被更宽积分范围部分抵消。不要只截取 1-MHz 处的噪声密度比较高速采样系统。
 
@@ -1099,11 +969,9 @@ $$
 
 理想采样电阻充分热平衡后，单个采样电容上的噪声为：
 
-
 $$
 \sigma_{samp}^2\approx\frac{kT}{C_s}.
 $$
-
 
 若两侧采样噪声不相关、每侧电容同为 $C_s$，差分方差约 $2kT/C_s$。$T=300\,\mathrm K$、每侧 $C_s=0.6\,\mathrm{pF}$，每侧约 $83.1\,\mu\mathrm V_{rms}$，差分约 $117.5\,\mu\mathrm V_{rms}$。
 
@@ -1113,12 +981,10 @@ $$
 
 连续时间宽带噪声经采样后折叠到基带。对于理想瞬时采样和双边 PSD，一个物理频率轴上的等效表达是：
 
-
 $$
 S_{sampled}(f)=\sum_{k=-\infty}^{\infty}S_{CT}(f+kf_s),
 \qquad -f_s/2\le f<f_s/2.
 $$
-
 
 实际采样窗口和周期时变网络还会改变噪声传递。应采用 sampled PNoise 或含实际时钟的 transient noise，并做噪声频率上限与 sideband 数的收敛检查。连续时间只积分到 $f_s/2$ 往往漏算折叠噪声。
 
@@ -1126,22 +992,18 @@ $$
 
 对不相关噪声的两级电压通路：
 
-
 $$
 \sigma_{in,total}^2\approx\sigma_{in,1}^2+
 \frac{\sigma_{in,2}^2}{|A_1|^2}.
 $$
 
-
 SF 增益不足 1 时，后级噪声折回输入会放大。共享 bias 或耦合结构可能使噪声相关，应使用交叉谱或完整电路计算。
 
 总允许输入等效噪声由目标 SNR 估计：
 
-
 $$
 \sigma_{allowed}=\frac{V_{rms,in}}{10^{SNR_{target}/20}}.
 $$
-
 
 若分配给 buffer 的是总噪声**功率**的 20%，则 buffer RMS 预算为 $\sqrt{0.2}\sigma_{allowed}$，不是 $0.2\sigma_{allowed}$。失真、离散杂散和随机噪声不总能按互不相关方差直接相加。
 
@@ -1149,11 +1011,9 @@ $$
 
 正弦输入、独立小随机时间误差条件下：
 
-
 $$
 SNR_{jitter}\approx-20\log_{10}(2\pi f_{in}\sigma_t).
 $$
-
 
 例如 $f_{in}=4\,\mathrm{GHz}$、仅为抖动分配 60-dB SNR，则 $\sigma_t\lesssim39.8\,\mathrm{fs}$。这个预算属于采样边沿与相关时基的总误差；不能通过增大 buffer 电流自动满足。确定性的边沿调制产生杂散，也不能用白噪声形式全部概括。
 
@@ -1183,17 +1043,15 @@ PSRR 可定义为 $20\log_{10}|v_{supply}/v_{out}|$，也有按信号增益归�
 
 ### 13.3 浮置保持节点的反向耦合
 
-![13_hold_kickback](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png)
+![13_hold_kickback](/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png)
 
 *图 10：Shifman 等，2019，原 Fig. 3，PDF 第 2 页。前级进入 hold 后，后级 buffer 输出继续移动，通过输入输出寄生电容改变已保持输入。[论文 DOI](https://doi.org/10.1109/A-SSCC47793.2019.9056969)，Zotero：`MQDUICAW`。*
 
 对简单两个电容模型：
 
-
 $$
 \Delta v_{held}\approx\frac{C_{io}}{C_H+C_{io}}\Delta v_o.
 $$
-
 
 若 $C_{io}\ll C_H$，约为 $(C_{io}/C_H)\Delta v_o$。这个误差取决于上一级采样结束时下一级尚未完成的运动量，可能携带前一轮数据或前一通道信息。
 
@@ -1205,11 +1063,11 @@ $$
 
 ### 13.5 动态 buffer 与预开启
 
-![09_hierarchy_interface](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png)
+![09_hierarchy_interface](/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png)
 
 *图 11：Markulić 等，2024，原 Fig. 2，PDF 第 2 页。分裂采样电容、电平设置、动态 PP-SF 和后级采样协同工作。[论文 DOI](https://doi.org/10.1109/VLSITechnologyandCir46783.2024.10631521)，Zotero：`GHM37WIL`。*
 
-![08_hierarchy_timing](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png)
+![08_hierarchy_timing](/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png)
 
 *图 12：同文原 Fig. 3，PDF 第 2 页。时钟、分布电容及布局共同决定实际 charge transfer 时间。图 11 与图 12 配合阅读。*
 
@@ -1219,11 +1077,9 @@ $$
 
 可用简化模型定位残留：
 
-
 $$
 y[n]=a_0x[n]+a_1x[n-1]+a_Mx[n-M]+\cdots.
 $$
-
 
 固定线性系数形成频响变化；当系数依赖信号、通道、时钟或温度时，会出现更复杂的失真与杂散。大步进交替序列、PRBS、长时间 DC 后突发以及不同通道访问顺序，比单一低频正弦更容易暴露记忆问题。
 
@@ -1237,21 +1093,17 @@ Buffer 输出很好，不代表采样值准确。应同时保存：pad 电压、
 
 长沟道、小 $V_{DS}$ 的近似：
 
-
 $$
 R_{on}\approx\frac{1}{\mu C_{ox}(W/L)(V_{GS}-V_{TH})}.
 $$
-
 
 Bootstrap 保持 $V_{GS}$ 近似恒定，可以减少电阻随输入变化，但 $V_{TH}$ 仍可能受 body/DIBL 调制，$C_{boot}$ 也会发生电荷共享。开关尺寸增大降低 $R_{on}$，同时增加栅驱动、clock feedthrough、off-state 电容及 buffer 负担。
 
 ### 14.3 Track 窗口不能只看理想时钟
 
-
 $$
 t_{track,eff}=t_{aperture}-t_{on,eff}.
 $$
-
 
 $t_{on,eff}$ 包含 bootstrap 开启延迟以及达到低 $R_{on}$ 所需的过程。若名义 track 为 $100\,\mathrm{ps}$，开启损失 $25\,\mathrm{ps}$，用于建立的窗口已减少四分之一。论文中的 fast turn-on、layout-customized bootstrap 正是在减少这部分开销。
 
@@ -1261,7 +1113,7 @@ Hold 时输入仍继续变化，经 $C_{off}$ 或开关寄生耦合到采样节�
 
 ### 14.5 有源 bootstrap：主信号与 gate 驱动同时跟踪
 
-![10_active_bootstrap](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png)
+![10_active_bootstrap](/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png)
 
 *图 13：Heel 等，2025，原 Fig. 9，PDF 第 7 页。主 buffer 驱动被采样信号，辅助 buffer 驱动 gate 跟踪路径，通过不同供电／偏置设置近似恒定的开关 $V_{GS}$。[论文 DOI](https://doi.org/10.1109/JSSC.2025.3598874)，Zotero：`62CPDB27`。*
 
@@ -1271,11 +1123,9 @@ Hold 时输入仍继续变化，经 $C_{off}$ 或开关寄生耦合到采样节�
 
 SHA-less pipeline 中，sub-ADC 和 MDAC 分别看输入，它们的采样时刻与模拟频响必须匹配。近似时间差导致：
 
-
 $$
 e_{aperture}\approx\frac{dv_{in}}{dt}\Delta t.
 $$
-
 
 即使两条理想时钟同步，输入 RC 或 buffer 路径不同，也会形成等效采样差。应比较实际采样值及残差范围，并验证 redundancy 是否足以吸收错误，而不是只调逻辑时钟延迟。
 
@@ -1291,22 +1141,18 @@ $$
 
 当 PCB、封装、输入匹配与信号频率使传输线、反射、寄生电感显著时，单一 $R_s+C_{in}$ 不足以描述输入。S 参数用于有规定参考阻抗及工作点的线性小信号网络。
 
-
 $$
 \begin{bmatrix}b_1\\b_2\end{bmatrix}
 =\begin{bmatrix}S_{11}&S_{12}\\S_{21}&S_{22}\end{bmatrix}
 \begin{bmatrix}a_1\\a_2\end{bmatrix}.
 $$
 
-
 实数参考阻抗 $Z_0$、其余端口匹配时：
-
 
 $$
 S_{11}=\frac{Z_{in}-Z_0}{Z_{in}+Z_0},\qquad
 Z_{in}=Z_0\frac{1+S_{11}}{1-S_{11}}.
 $$
-
 
 ### 15.2 指标含义
 
@@ -1319,11 +1165,9 @@ $$
 
 Return loss 定义为：
 
-
 $$
 RL=-20\log_{10}|S_{11}|.
 $$
-
 
 例如 $S_{11}=-10\,\mathrm{dB}$（幅度 dB 表示）意味着反射波幅度约 0.316、功率约 10%，return loss 为正 10 dB。端口电压要考虑入射和反射，不能把 dB 值直接当作输入电压衰减。
 
@@ -1478,7 +1322,7 @@ Monte Carlo 至少区分 global process variation 与 local mismatch，按工艺
 
 若 $n$ 次独立样本零失败，失败概率的约 95% 单边上界可粗估为 $3/n$。例如 200 次零失败仍只支持约 1.5% 的失败率上界量级，不能宣布 ppm 级良率；此外模型本身和覆盖条件也限制结论。
 
-![12_pvt_mc](/GarveyDing_AcademicPages/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png)
+![12_pvt_mc](/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png)
 
 *图 14：Li 等，2025，原 Figs. 12–13，PDF 第 5 页，包含 PVT 与 200 次 Monte Carlo。该图展示报告形式和特定条件下的分布，不是本文运行的仿真，也不是芯片良率证明。[论文 DOI](https://doi.org/10.1587/elex.22.20250092)，Zotero：`RNRP3VQM`。*
 
@@ -1695,51 +1539,51 @@ bondwire／bump 电感、输入 pad 电容、回流地及邻近引脚互感可�
 
 | # | 年份 | 标题／DOI | Zotero key | 阅读层级与用途 |
 |---|---|---|---|---|
-| 1 | 2019 | [A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm](https://doi.org/10.1109/A-SSCC47793.2019.9056969) | MQDUICAW | 核心：差分 Class-AB SSF；TH 间缓冲、PSRR 与 ISI；两份附件 |
-| 2 | 2022 | [A 12b 8GS/s Time-Interleaved 2b/cycle Pipelined-SAR ADC with Layout-Customized Bootstrap and Super- Source-Follower Based Open-Loop Residue Amplifier](https://doi.org/10.1109/A-SSCC56115.2022.9980717) | N7S2F5SW | 延伸：layout-customized bootstrap；标题 SSF 为残差放大器；两份附件 |
-| 3 | 2022 | [A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS](https://doi.org/10.1109/TCSII.2022.3188534) | B5HLXYYN | 核心：AC 耦合 FVF；DC 压头解耦、非线性电容补偿；ADC 实测 |
-| 4 | 2025 | [A 12.8GS/s Sub-Sampling ADC Front-End With 38GHz Input Bandwidth and >39dB SNDR for 1 to 32GHz in 22nm FDSOI](https://doi.org/10.1109/ISSCC49661.2025.10904786) | H5EAYBPS | 延伸：38-GHz 欠采样前端；优先连同期刊版 62CPDB27 阅读 |
-| 5 | 2024 | [A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer](https://doi.org/10.1109/JSSC.2024.3482567) | AMZFXGAJ | 核心：SACC 线性化 PPSF 与 global dither；分清 THD 仿真和 ADC 实测 |
-| 6 | 2023 | [An 8-GHz Bandwidth Push-Pull Input Buffer Based on Cascode Source Follower](https://doi.org/10.1109/ICCS59502.2023.10367338) | LNC88I8F | 核心：cascode/drain-bootstrap PPSF；原文仿真案例 |
-| 7 | 2024 | [A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications](https://doi.org/10.1109/VLSITechnologyandCir46783.2024.10631521) | GHM37WIL | 核心：分层采样、动态 PP-SF、预开启与分布电容 |
-| 8 | 2022 | [A 12-bit 10GS/s 16-channel time-interleaved ADC with a digital processing timing-skew background calibration in 5nm FinFET](https://doi.org/10.1109/VLSITechnologyandCir46769.2022.9830208) | 22EC9XFJ | 延伸：级联 input buffers 与 16 路交织；系统级负载问题 |
-| 9 | 2010 | [A 16-bit 250-MS/s IF sampling pipelined ADC with background calibration](https://doi.org/10.1109/JSSC.2010.2073194) | 4YWX7JWG | 延伸：BiCMOS IF ADC；复制交流电流线性化的早期代表，非纯 CMOS 同条件基准 |
-| 10 | 2020 | [A 12-b 18-GS/s RF sampling ADC with an integrated wideband track-and-hold amplifier and background calibration](https://doi.org/10.1109/JSSC.2020.3023882) | 3ILPCVZH | 核心：集成 THA，input/output PPSF、memory 与非线性校准 |
-| 11 | 2017 | [A 12-b 10-GS/s interleaved pipeline ADC in 28-nm CMOS technology](https://doi.org/10.1109/JSSC.2017.2747758) | JI8G84VA | 核心：公共 PPSF、多层 drain/body bootstrap、快速开启采样开关 |
-| 12 | 2016 | [A 14-bit 2.5GS/s and 5GS/s RF sampling ADC with background calibration and dither](https://doi.org/10.1109/VLSIC.2016.7573537) | 6FUJA82V | 延伸：高采样率 pipeline、dither 与 kickback/memory 校准 |
-| 13 | 2020 | [16.1 a 12b 18GS/s RF sampling ADC with an integrated wideband track-and-hold amplifier and background calibration](https://doi.org/10.1109/ISSCC19947.2020.9063011) | ZVCUCLPN | 延伸：18-GS/s THA ADC 会议版；关联 3ILPCVZH |
-| 14 | 2024 | [An energy-efficient pipeline-SAR ADC using linearized dynamic amplifiers and input buffer in 22nm FDSOI](https://doi.org/10.1109/OJCAS.2024.3509746) | W4W9MXFF | 延伸：线性化动态放大器兼作 input buffer；不归入裸 SF 性能比较 |
-| 15 | 2024 | [An 82dB-SNDR input-driving-relaxed noise-shaping SAR with amplifier-reused in-loop buffering and NTF leakage reshaping](https://doi.org/10.1109/CICC60959.2024.10528963) | VQRUXTRN | 延伸：NS-SAR 环内缓冲与放大器复用；低频精密架构协同 |
-| 16 | 2019 | [A 4MS/s 10b SAR ADC with integrated class-a buffers in 65nm CMOS with near rail-to-rail input using a single 1.2V supply](https://doi.org/10.1109/CICC.2019.8780150) | TUNAAEPC | 延伸：输入交换使每个 Class-A buffer 处理半幅；近轨到轨、低速场景 |
-| 17 | 2024 | [22.5 a 42GS/s 7b 16nm massively time-interleaved slope-ADC](https://doi.org/10.1109/ISSCC49657.2024.10454361) | R6EJFA72 | 延伸：大量交织 slope ADC；面积和层级信号分发 |
-| 18 | 2023 | [A novel push-pull input buffer for wideband ADCs with improved high-frequency linearity](https://doi.org/10.1109/NEWCAS57931.2023.10198057) | PKP4WR5K | 核心：辅助 body buffer 移走非线性阱电容负载；原理图 QPSS |
-| 19 | 2023 | [A 750mW 24GS/s 12b time-interleaved ADC for direct RF sampling in modern wireless systems](https://doi.org/10.1109/ISSCC42615.2023.10067793) | PC7XJPCI | 延伸：24-GS/s RF ADC 系统；输入 BW、噪声密度与功耗口径 |
-| 20 | 2023 | [10.4 a rail-to-rail 12MS 91.3dB SNDR 94.1dB DR two-step SAR ADC with integrated input buffer using predictive level-shifting](https://doi.org/10.1109/ISSCC42615.2023.10067703) | JGRSKTLS | 延伸：predictive level-shifting；精密轨到轨集成驱动 |
-| 21 | 2023 | [A 12b 1GS/s ADC with lightweight input buffer distortion background calibration achieving >75dB SFDR over PVT](https://doi.org/10.1109/CICC57935.2023.10121262) | JFA45H8T | 延伸：input buffer 失真后台校准；原始元数据摘要不等号需回原图核对 |
-| 22 | 2024 | [A wideband input buffer based on cascade complementary source follower](https://doi.org/10.1109/TVLSI.2024.3349564) | IZ8STV8W | 核心：两级 CCSF、补偿与辅助运放；后仿 |
-| 23 | 2018 | [An operational amplifier assisted input buffer and an improved bootstrapped switch for high-speed and high-resolution ADCs](https://doi.org/10.1109/ISCAS.2018.8351071) | INH286V4 | 延伸：运放辅助 buffer 与改进采样 bootstrap；仿真机制 |
-| 24 | 2025 | [A low-voltage input buffer with linearity-enhancement scheme for a 500MS/s Pipelined-SAR ADC achieving SFDR> 79dBc](https://doi.org/10.1016/j.mejo.2025.106918) | HSZ932F6 | 延伸：低压自适应 bias 与前台校准；不能仅凭题目判定测量边界 |
-| 25 | 2021 | [An input-buffer embedding dual-residue pipelined-SAR ADC with nonbinary capacitive interpolation](https://doi.org/10.1109/A-SSCC53895.2021.9634731) | HCG8BF8F | 延伸：buffer 嵌入 dual-residue pipeline-SAR；系统拓扑关联 |
-| 26 | 2020 | [Low-voltage high-linearity differential input buffer with CurrentAmplifier feed-forward compensation for high-speed ADCs](https://doi.org/10.1109/ICTA50426.2020.9332138) | G6KZINTI | 延伸：辅助 SF／电流放大器前馈补偿；两音仿真 |
-| 27 | 2024 | [22.1 a 12GS/s 12b 4× time-interleaved pipelined ADC with comprehensive calibration of TI errors and linearized input buffer](https://doi.org/10.1109/ISSCC49657.2024.10454350) | FBZ8DVAA | 延伸：SACC + global dither 会议版；关联 AMZFXGAJ |
-| 28 | 2022 | [A wideband high-linearity input buffer based on cascade complementary source follower](https://doi.org/10.1109/ICTA56932.2022.9962966) | ANGSAUNX | 延伸：CCSF 会议方案；关联 IZ8STV8W，参数可能有演进 |
-| 29 | 2018 | [A 39mW 7b 8GS/s 8-way TI ADC with cross-linearized input and bootstrapped sampling buffer front-end](https://doi.org/10.1109/ESSCIRC.2018.8494309) | 9DLIAPPX | 延伸：cross-linearized level shifter 和有源采样 bootstrap |
-| 30 | 2025 | [An easy-drive 16MS/s pipelined-SAR ADC using split coarse-fine input-buffer-sampling scheme and fast robust background inter-stage gain calibration](https://doi.org/10.1109/ISSCC49661.2025.10904526) | 8KQ4S4U4 | 延伸：split coarse-fine 缓冲采样；中速高精度 easy-drive |
-| 31 | 2014 | [A 14 bit 1 GS/s RF sampling pipelined ADC with background calibration](https://doi.org/10.1109/JSSC.2014.2361339) | 88KUWJYB | 核心：SF 复制电容前馈 + drain bootstrap；输入电流路径 |
-| 32 | 2023 | [17.1 a 2x-lnterleaved 9b 2.8G8S/s 5b/cycle SAR ADC with linearized configurable V2T buffer achieving >50dB SNDR at 3GHz input](https://doi.org/10.1109/ISSCC42615.2023.10067627) | 6YR4CMCH | 延伸：可配置 V2T buffer；先区分电压缓冲与电压时间转换 |
-| 33 | 2025 | [A 12.8-GS/s time-interleaved sub-sampling ADC front end with 38-GHz input bandwidth and >39-dB SNDR for 1–32 GHz in 22-nm FDSOI](https://doi.org/10.1109/JSSC.2025.3598874) | 62CPDB27 | 核心：匹配网络、PPSF 与有源 bootstrap；多十 GHz 欠采样实测 |
-| 34 | 2023 | [A 1.2-mA fast-charge input buffer with CLS for 4-MS/s SC oversampling ADC achieving +1-2.5-ppm/FSR INL](https://doi.org/10.1109/ICTA60488.2023.10364291) | 4FVUXHNU | 延伸：fast-charge + CLS；低速高精度 SC 负载参考 |
-| 35 | 2025 | [A multi-step ADC with lightweight input buffer distortion, sub-stage coarse-fine gain, and sampling skew background calibrations](https://doi.org/10.1109/TCSI.2025.3571064) | 3X7GXCLC | 延伸：多级 ADC 综合校准；失真、粗细增益与采样偏斜 |
-| 36 | 2025 | [18.5 a rail-to-rail 3rd-order noise-shaping SAR ADC achieving 105.4dB SFDR with integrated input buffer using continuous-time correlated level shifting](https://doi.org/10.1109/ISSCC49661.2025.10904773) | 3AMKCD9G | 延伸：连续时间 CLS 集成 buffer；精密 NS-SAR |
-| 37 | 2024 | [A wideband front-end with integrated high-voltage assisted input buffer for high-speed ADC](https://doi.org/10.1587/elex.21.20240640) | HX7AH9JH | 延伸：片上高压辅助、输入匹配与电感补偿 |
-| 38 | 2022 | [An Input Buffer with 85dB SFDR for High-Speed Pipeline ADC](https://doi.org/10.1109/ICTA56932.2022.9962993) | 24NJ98YZ | 延伸：输出驱动的两级 bootstrap；减小源／封装所承受非线性电流 |
-| 39 | 2024 | [A 1.25-GS/s 14-bit pipelined ADC using a current-feedback flipped input buffer and large dither technique to achieve high linearity](https://doi.org/10.1587/elex.21.20240457) | FECPS4YU | 延伸：current-feedback flipped buffer 与 large dither 协同 |
-| 40 | 2025 | [An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process](https://doi.org/10.1587/elex.22.20250092) | RNRP3VQM | 核心：运放 bootstrap、交叉 body；后仿、PVT 和 MC 图 |
-| 41 | 2025 | [A 24-GHz Bandwidth 58.8-dB SNDR Input Buffer Based on Class-AB Enhanced Super Source Follower](https://doi.org/10.1109/ICTA68203.2025.11329604) | DLDWSRMX | 核心：Class-AB ESSF 与 AC-FVF 双环；24-GHz 后仿案例 |
-| 42 | 2025 | [An Input Buffer with Replica-Based Nonlinearity Compensation for High-Speed ADCs](https://doi.org/10.1109/ICTA68203.2025.11329780) | 4VVZMRMD | 延伸：replica 非线性电流到采样 CM；关联 E4HP4VRY |
-| 43 | 2026 | [A 14-bit 3 GS/s pipelined ADC featuring an input buffer with replica-based nonlinearity compensation in 28-nm CMOS technology](https://doi.org/10.1016/j.mejo.2025.107015) | E4HP4VRY | 核心：replica-to-CM 补偿；最终电容差分值线性化，ADC 实测 |
-| 44 | 2026 | [11.5 A Compact 7b 175GS/s Linearized Time-Interleaved Slope ADC with Switched Input Buffers](https://doi.org/10.1109/ISSCC49663.2026.11409101) | 77HKX23V | 延伸：switched input buffers 与 2048 路层级 slope ADC |
-| 45 | 2026 | [A high-linearity input buffer and early-trigger scheme for GS/s pipelined ADCs](https://doi.org/10.1016/j.mejo.2026.107233) | QRCJT5DZ | 延伸：ping-pong bootstrap、varactor、early-trigger；摘要明确为仿真 |
+| 1 | 2019 | [A 1.64mW Differential Super Source-Follower Buffer with 9.7GHz BW and 43dB PSRR for Time-Interleaved ADC Applications in 10nm](https://doi.org/10.1109/A-SSCC47793.2019.9056969) | [MQDUICAW](zotero://select/library/items/MQDUICAW) | 核心：差分 Class-AB SSF；TH 间缓冲、PSRR 与 ISI；两份附件 |
+| 2 | 2022 | [A 12b 8GS/s Time-Interleaved 2b/cycle Pipelined-SAR ADC with Layout-Customized Bootstrap and Super- Source-Follower Based Open-Loop Residue Amplifier](https://doi.org/10.1109/A-SSCC56115.2022.9980717) | [N7S2F5SW](zotero://select/library/items/N7S2F5SW) | 延伸：layout-customized bootstrap；标题 SSF 为残差放大器；两份附件 |
+| 3 | 2022 | [A 6-GHz bandwidth input buffer based on AC-coupled flipped source follower for 12-bit 8-GS/s ADC in 28-nm CMOS](https://doi.org/10.1109/TCSII.2022.3188534) | [B5HLXYYN](zotero://select/library/items/B5HLXYYN) | 核心：AC 耦合 FVF；DC 压头解耦、非线性电容补偿；ADC 实测 |
+| 4 | 2025 | [A 12.8GS/s Sub-Sampling ADC Front-End With 38GHz Input Bandwidth and >39dB SNDR for 1 to 32GHz in 22nm FDSOI](https://doi.org/10.1109/ISSCC49661.2025.10904786) | [H5EAYBPS](zotero://select/library/items/H5EAYBPS) | 延伸：38-GHz 欠采样前端；优先连同期刊版 62CPDB27 阅读 |
+| 5 | 2024 | [A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer](https://doi.org/10.1109/JSSC.2024.3482567) | [AMZFXGAJ](zotero://select/library/items/AMZFXGAJ) | 核心：SACC 线性化 PPSF 与 global dither；分清 THD 仿真和 ADC 实测 |
+| 6 | 2023 | [An 8-GHz Bandwidth Push-Pull Input Buffer Based on Cascode Source Follower](https://doi.org/10.1109/ICCS59502.2023.10367338) | [LNC88I8F](zotero://select/library/items/LNC88I8F) | 核心：cascode/drain-bootstrap PPSF；原文仿真案例 |
+| 7 | 2024 | [A 10GS/s hierarchical time-interleaved ADC for RF-sampling applications](https://doi.org/10.1109/VLSITechnologyandCir46783.2024.10631521) | [GHM37WIL](zotero://select/library/items/GHM37WIL) | 核心：分层采样、动态 PP-SF、预开启与分布电容 |
+| 8 | 2022 | [A 12-bit 10GS/s 16-channel time-interleaved ADC with a digital processing timing-skew background calibration in 5nm FinFET](https://doi.org/10.1109/VLSITechnologyandCir46769.2022.9830208) | [22EC9XFJ](zotero://select/library/items/22EC9XFJ) | 延伸：级联 input buffers 与 16 路交织；系统级负载问题 |
+| 9 | 2010 | [A 16-bit 250-MS/s IF sampling pipelined ADC with background calibration](https://doi.org/10.1109/JSSC.2010.2073194) | [4YWX7JWG](zotero://select/library/items/4YWX7JWG) | 延伸：BiCMOS IF ADC；复制交流电流线性化的早期代表，非纯 CMOS 同条件基准 |
+| 10 | 2020 | [A 12-b 18-GS/s RF sampling ADC with an integrated wideband track-and-hold amplifier and background calibration](https://doi.org/10.1109/JSSC.2020.3023882) | [3ILPCVZH](zotero://select/library/items/3ILPCVZH) | 核心：集成 THA，input/output PPSF、memory 与非线性校准 |
+| 11 | 2017 | [A 12-b 10-GS/s interleaved pipeline ADC in 28-nm CMOS technology](https://doi.org/10.1109/JSSC.2017.2747758) | [JI8G84VA](zotero://select/library/items/JI8G84VA) | 核心：公共 PPSF、多层 drain/body bootstrap、快速开启采样开关 |
+| 12 | 2016 | [A 14-bit 2.5GS/s and 5GS/s RF sampling ADC with background calibration and dither](https://doi.org/10.1109/VLSIC.2016.7573537) | [6FUJA82V](zotero://select/library/items/6FUJA82V) | 延伸：高采样率 pipeline、dither 与 kickback/memory 校准 |
+| 13 | 2020 | [16.1 a 12b 18GS/s RF sampling ADC with an integrated wideband track-and-hold amplifier and background calibration](https://doi.org/10.1109/ISSCC19947.2020.9063011) | [ZVCUCLPN](zotero://select/library/items/ZVCUCLPN) | 延伸：18-GS/s THA ADC 会议版；关联 3ILPCVZH |
+| 14 | 2024 | [An energy-efficient pipeline-SAR ADC using linearized dynamic amplifiers and input buffer in 22nm FDSOI](https://doi.org/10.1109/OJCAS.2024.3509746) | [W4W9MXFF](zotero://select/library/items/W4W9MXFF) | 延伸：线性化动态放大器兼作 input buffer；不归入裸 SF 性能比较 |
+| 15 | 2024 | [An 82dB-SNDR input-driving-relaxed noise-shaping SAR with amplifier-reused in-loop buffering and NTF leakage reshaping](https://doi.org/10.1109/CICC60959.2024.10528963) | [VQRUXTRN](zotero://select/library/items/VQRUXTRN) | 延伸：NS-SAR 环内缓冲与放大器复用；低频精密架构协同 |
+| 16 | 2019 | [A 4MS/s 10b SAR ADC with integrated class-a buffers in 65nm CMOS with near rail-to-rail input using a single 1.2V supply](https://doi.org/10.1109/CICC.2019.8780150) | [TUNAAEPC](zotero://select/library/items/TUNAAEPC) | 延伸：输入交换使每个 Class-A buffer 处理半幅；近轨到轨、低速场景 |
+| 17 | 2024 | [22.5 a 42GS/s 7b 16nm massively time-interleaved slope-ADC](https://doi.org/10.1109/ISSCC49657.2024.10454361) | [R6EJFA72](zotero://select/library/items/R6EJFA72) | 延伸：大量交织 slope ADC；面积和层级信号分发 |
+| 18 | 2023 | [A novel push-pull input buffer for wideband ADCs with improved high-frequency linearity](https://doi.org/10.1109/NEWCAS57931.2023.10198057) | [PKP4WR5K](zotero://select/library/items/PKP4WR5K) | 核心：辅助 body buffer 移走非线性阱电容负载；原理图 QPSS |
+| 19 | 2023 | [A 750mW 24GS/s 12b time-interleaved ADC for direct RF sampling in modern wireless systems](https://doi.org/10.1109/ISSCC42615.2023.10067793) | [PC7XJPCI](zotero://select/library/items/PC7XJPCI) | 延伸：24-GS/s RF ADC 系统；输入 BW、噪声密度与功耗口径 |
+| 20 | 2023 | [10.4 a rail-to-rail 12MS 91.3dB SNDR 94.1dB DR two-step SAR ADC with integrated input buffer using predictive level-shifting](https://doi.org/10.1109/ISSCC42615.2023.10067703) | [JGRSKTLS](zotero://select/library/items/JGRSKTLS) | 延伸：predictive level-shifting；精密轨到轨集成驱动 |
+| 21 | 2023 | [A 12b 1GS/s ADC with lightweight input buffer distortion background calibration achieving >75dB SFDR over PVT](https://doi.org/10.1109/CICC57935.2023.10121262) | [JFA45H8T](zotero://select/library/items/JFA45H8T) | 延伸：input buffer 失真后台校准；原始元数据摘要不等号需回原图核对 |
+| 22 | 2024 | [A wideband input buffer based on cascade complementary source follower](https://doi.org/10.1109/TVLSI.2024.3349564) | [IZ8STV8W](zotero://select/library/items/IZ8STV8W) | 核心：两级 CCSF、补偿与辅助运放；后仿 |
+| 23 | 2018 | [An operational amplifier assisted input buffer and an improved bootstrapped switch for high-speed and high-resolution ADCs](https://doi.org/10.1109/ISCAS.2018.8351071) | [INH286V4](zotero://select/library/items/INH286V4) | 延伸：运放辅助 buffer 与改进采样 bootstrap；仿真机制 |
+| 24 | 2025 | [A low-voltage input buffer with linearity-enhancement scheme for a 500MS/s Pipelined-SAR ADC achieving SFDR> 79dBc](https://doi.org/10.1016/j.mejo.2025.106918) | [HSZ932F6](zotero://select/library/items/HSZ932F6) | 延伸：低压自适应 bias 与前台校准；不能仅凭题目判定测量边界 |
+| 25 | 2021 | [An input-buffer embedding dual-residue pipelined-SAR ADC with nonbinary capacitive interpolation](https://doi.org/10.1109/A-SSCC53895.2021.9634731) | [HCG8BF8F](zotero://select/library/items/HCG8BF8F) | 延伸：buffer 嵌入 dual-residue pipeline-SAR；系统拓扑关联 |
+| 26 | 2020 | [Low-voltage high-linearity differential input buffer with CurrentAmplifier feed-forward compensation for high-speed ADCs](https://doi.org/10.1109/ICTA50426.2020.9332138) | [G6KZINTI](zotero://select/library/items/G6KZINTI) | 延伸：辅助 SF／电流放大器前馈补偿；两音仿真 |
+| 27 | 2024 | [22.1 a 12GS/s 12b 4× time-interleaved pipelined ADC with comprehensive calibration of TI errors and linearized input buffer](https://doi.org/10.1109/ISSCC49657.2024.10454350) | [FBZ8DVAA](zotero://select/library/items/FBZ8DVAA) | 延伸：SACC + global dither 会议版；关联 AMZFXGAJ |
+| 28 | 2022 | [A wideband high-linearity input buffer based on cascade complementary source follower](https://doi.org/10.1109/ICTA56932.2022.9962966) | [ANGSAUNX](zotero://select/library/items/ANGSAUNX) | 延伸：CCSF 会议方案；关联 IZ8STV8W，参数可能有演进 |
+| 29 | 2018 | [A 39mW 7b 8GS/s 8-way TI ADC with cross-linearized input and bootstrapped sampling buffer front-end](https://doi.org/10.1109/ESSCIRC.2018.8494309) | [9DLIAPPX](zotero://select/library/items/9DLIAPPX) | 延伸：cross-linearized level shifter 和有源采样 bootstrap |
+| 30 | 2025 | [An easy-drive 16MS/s pipelined-SAR ADC using split coarse-fine input-buffer-sampling scheme and fast robust background inter-stage gain calibration](https://doi.org/10.1109/ISSCC49661.2025.10904526) | [8KQ4S4U4](zotero://select/library/items/8KQ4S4U4) | 延伸：split coarse-fine 缓冲采样；中速高精度 easy-drive |
+| 31 | 2014 | [A 14 bit 1 GS/s RF sampling pipelined ADC with background calibration](https://doi.org/10.1109/JSSC.2014.2361339) | [88KUWJYB](zotero://select/library/items/88KUWJYB) | 核心：SF 复制电容前馈 + drain bootstrap；输入电流路径 |
+| 32 | 2023 | [17.1 a 2x-lnterleaved 9b 2.8G8S/s 5b/cycle SAR ADC with linearized configurable V2T buffer achieving >50dB SNDR at 3GHz input](https://doi.org/10.1109/ISSCC42615.2023.10067627) | [6YR4CMCH](zotero://select/library/items/6YR4CMCH) | 延伸：可配置 V2T buffer；先区分电压缓冲与电压时间转换 |
+| 33 | 2025 | [A 12.8-GS/s time-interleaved sub-sampling ADC front end with 38-GHz input bandwidth and >39-dB SNDR for 1–32 GHz in 22-nm FDSOI](https://doi.org/10.1109/JSSC.2025.3598874) | [62CPDB27](zotero://select/library/items/62CPDB27) | 核心：匹配网络、PPSF 与有源 bootstrap；多十 GHz 欠采样实测 |
+| 34 | 2023 | [A 1.2-mA fast-charge input buffer with CLS for 4-MS/s SC oversampling ADC achieving +1-2.5-ppm/FSR INL](https://doi.org/10.1109/ICTA60488.2023.10364291) | [4FVUXHNU](zotero://select/library/items/4FVUXHNU) | 延伸：fast-charge + CLS；低速高精度 SC 负载参考 |
+| 35 | 2025 | [A multi-step ADC with lightweight input buffer distortion, sub-stage coarse-fine gain, and sampling skew background calibrations](https://doi.org/10.1109/TCSI.2025.3571064) | [3X7GXCLC](zotero://select/library/items/3X7GXCLC) | 延伸：多级 ADC 综合校准；失真、粗细增益与采样偏斜 |
+| 36 | 2025 | [18.5 a rail-to-rail 3rd-order noise-shaping SAR ADC achieving 105.4dB SFDR with integrated input buffer using continuous-time correlated level shifting](https://doi.org/10.1109/ISSCC49661.2025.10904773) | [3AMKCD9G](zotero://select/library/items/3AMKCD9G) | 延伸：连续时间 CLS 集成 buffer；精密 NS-SAR |
+| 37 | 2024 | [A wideband front-end with integrated high-voltage assisted input buffer for high-speed ADC](https://doi.org/10.1587/elex.21.20240640) | [HX7AH9JH](zotero://select/library/items/HX7AH9JH) | 延伸：片上高压辅助、输入匹配与电感补偿 |
+| 38 | 2022 | [An Input Buffer with 85dB SFDR for High-Speed Pipeline ADC](https://doi.org/10.1109/ICTA56932.2022.9962993) | [24NJ98YZ](zotero://select/library/items/24NJ98YZ) | 延伸：输出驱动的两级 bootstrap；减小源／封装所承受非线性电流 |
+| 39 | 2024 | [A 1.25-GS/s 14-bit pipelined ADC using a current-feedback flipped input buffer and large dither technique to achieve high linearity](https://doi.org/10.1587/elex.21.20240457) | [FECPS4YU](zotero://select/library/items/FECPS4YU) | 延伸：current-feedback flipped buffer 与 large dither 协同 |
+| 40 | 2025 | [An input buffer with opamp-based bootstrap circuit and cross-coupled substrate technique for 1.5-GS/s pipelined ADC in 40-nm CMOS process](https://doi.org/10.1587/elex.22.20250092) | [RNRP3VQM](zotero://select/library/items/RNRP3VQM) | 核心：运放 bootstrap、交叉 body；后仿、PVT 和 MC 图 |
+| 41 | 2025 | [A 24-GHz Bandwidth 58.8-dB SNDR Input Buffer Based on Class-AB Enhanced Super Source Follower](https://doi.org/10.1109/ICTA68203.2025.11329604) | [DLDWSRMX](zotero://select/library/items/DLDWSRMX) | 核心：Class-AB ESSF 与 AC-FVF 双环；24-GHz 后仿案例 |
+| 42 | 2025 | [An Input Buffer with Replica-Based Nonlinearity Compensation for High-Speed ADCs](https://doi.org/10.1109/ICTA68203.2025.11329780) | [4VVZMRMD](zotero://select/library/items/4VVZMRMD) | 延伸：replica 非线性电流到采样 CM；关联 E4HP4VRY |
+| 43 | 2026 | [A 14-bit 3 GS/s pipelined ADC featuring an input buffer with replica-based nonlinearity compensation in 28-nm CMOS technology](https://doi.org/10.1016/j.mejo.2025.107015) | [E4HP4VRY](zotero://select/library/items/E4HP4VRY) | 核心：replica-to-CM 补偿；最终电容差分值线性化，ADC 实测 |
+| 44 | 2026 | [11.5 A Compact 7b 175GS/s Linearized Time-Interleaved Slope ADC with Switched Input Buffers](https://doi.org/10.1109/ISSCC49663.2026.11409101) | [77HKX23V](zotero://select/library/items/77HKX23V) | 延伸：switched input buffers 与 2048 路层级 slope ADC |
+| 45 | 2026 | [A high-linearity input buffer and early-trigger scheme for GS/s pipelined ADCs](https://doi.org/10.1016/j.mejo.2026.107233) | [QRCJT5DZ](zotero://select/library/items/QRCJT5DZ) | 延伸：ping-pong bootstrap、varactor、early-trigger；摘要明确为仿真 |
 
 ### B.1 完整书目（本地元数据）
 
@@ -1848,31 +1692,21 @@ bondwire／bump 电感、输入 pad 电容、回流地及邻近引脚互感可�
 
 | 本文图号 | 图像文件 | Zotero key | 原图号 | PDF 页码 |
 |---|---|---|---|---|
-| 1 | `学习记录/attachment/高速ADC_Input_Buffer/14_fanout.png` | B5HLXYYN | Fig. 1 | 2 |
-| 2 | `学习记录/attachment/高速ADC_Input_Buffer/01_fvf_comparison.png` | B5HLXYYN | Fig. 2 | 2 |
-| 3 | `学习记录/attachment/高速ADC_Input_Buffer/02_ssf_essf.png` | DLDWSRMX | Fig. 1 | 1 |
-| 4 | `学习记录/attachment/高速ADC_Input_Buffer/03_differential_ssf.png` | MQDUICAW | Fig. 4 | 2 |
-| 5 | `学习记录/attachment/高速ADC_Input_Buffer/04_ppsf_bootstrap.png` | JI8G84VA | Fig. 11 | 7 |
-| 6 | `学习记录/attachment/高速ADC_Input_Buffer/06_ccsf.png` | IZ8STV8W | Fig. 2 | 2 |
-| 7 | `学习记录/attachment/高速ADC_Input_Buffer/05_body_buffer.png` | PKP4WR5K | Fig. 3 | 3 |
-| 8 | `学习记录/attachment/高速ADC_Input_Buffer/11_body_cross_coupling.png` | RNRP3VQM | Fig. 6 | 4 |
-| 9 | `学习记录/attachment/高速ADC_Input_Buffer/07_sacc.png` | AMZFXGAJ | Figs. 13–14 | 7 |
-| 10 | `学习记录/attachment/高速ADC_Input_Buffer/13_hold_kickback.png` | MQDUICAW | Fig. 3 | 2 |
-| 11 | `学习记录/attachment/高速ADC_Input_Buffer/09_hierarchy_interface.png` | GHM37WIL | Fig. 2 | 2 |
-| 12 | `学习记录/attachment/高速ADC_Input_Buffer/08_hierarchy_timing.png` | GHM37WIL | Fig. 3 | 2 |
-| 13 | `学习记录/attachment/高速ADC_Input_Buffer/10_active_bootstrap.png` | 62CPDB27 | Fig. 9 | 7 |
-| 14 | `学习记录/attachment/高速ADC_Input_Buffer/12_pvt_mc.png` | RNRP3VQM | Figs. 12–13 | 5 |
+| 1 | `学习记录/高速 ADC Input Buffer/attachment/14_fanout.png` | B5HLXYYN | Fig. 1 | 2 |
+| 2 | `学习记录/高速 ADC Input Buffer/attachment/01_fvf_comparison.png` | B5HLXYYN | Fig. 2 | 2 |
+| 3 | `学习记录/高速 ADC Input Buffer/attachment/02_ssf_essf.png` | DLDWSRMX | Fig. 1 | 1 |
+| 4 | `学习记录/高速 ADC Input Buffer/attachment/03_differential_ssf.png` | MQDUICAW | Fig. 4 | 2 |
+| 5 | `学习记录/高速 ADC Input Buffer/attachment/04_ppsf_bootstrap.png` | JI8G84VA | Fig. 11 | 7 |
+| 6 | `学习记录/高速 ADC Input Buffer/attachment/06_ccsf.png` | IZ8STV8W | Fig. 2 | 2 |
+| 7 | `学习记录/高速 ADC Input Buffer/attachment/05_body_buffer.png` | PKP4WR5K | Fig. 3 | 3 |
+| 8 | `学习记录/高速 ADC Input Buffer/attachment/11_body_cross_coupling.png` | RNRP3VQM | Fig. 6 | 4 |
+| 9 | `学习记录/高速 ADC Input Buffer/attachment/07_sacc.png` | AMZFXGAJ | Figs. 13–14 | 7 |
+| 10 | `学习记录/高速 ADC Input Buffer/attachment/13_hold_kickback.png` | MQDUICAW | Fig. 3 | 2 |
+| 11 | `学习记录/高速 ADC Input Buffer/attachment/09_hierarchy_interface.png` | GHM37WIL | Fig. 2 | 2 |
+| 12 | `学习记录/高速 ADC Input Buffer/attachment/08_hierarchy_timing.png` | GHM37WIL | Fig. 3 | 2 |
+| 13 | `学习记录/高速 ADC Input Buffer/attachment/10_active_bootstrap.png` | 62CPDB27 | Fig. 9 | 7 |
+| 14 | `学习记录/高速 ADC Input Buffer/attachment/12_pvt_mc.png` | RNRP3VQM | Figs. 12–13 | 5 |
 
 ### C.3 适用范围
 
 本笔记用于原理学习和建立设计／验证方法。所有近似式均应回到具体拓扑、PDK 和采样时序验证。查阅时优先按 Zotero key 和 DOI 回到原文，并以完整测试条件解读指标；书目中的标称 ADC 位数不等于实际 ENOB，论文中的 buffer 芯片级系统结果也不等于孤立电路的性能。
-
-
-## 相关笔记
-
-- [电路噪声：从 MOS 器件到系统设计](/GarveyDing_AcademicPages/blog/circuit-noise/)
-- [电路零极点：原理、分析与稳定性](/GarveyDing_AcademicPages/blog/circuit-poles-and-zeros/)
-- [PVT 对 MOS 管性能参数的影响](/GarveyDing_AcademicPages/blog/mos-pvt/)
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
-- [TI-ADC Time-Skew 校准：原理、方法与演进](/GarveyDing_AcademicPages/blog/ti-adc-time-skew/)
-- [CLS 技术：原理、变种与设计](/GarveyDing_AcademicPages/blog/correlated-level-shifting/)

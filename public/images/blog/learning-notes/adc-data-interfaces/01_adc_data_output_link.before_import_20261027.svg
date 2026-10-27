@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+<title>ADC 数据输出链路</title>
+<rect width="1200" height="680" fill="#fbfdff"/>
+<text x="600" y="52" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#173d4d">ADC 数据输出链路</text>
+<text x="600" y="88" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" fill="#527080">从量化结果到接收端：数据、时钟与链路协议协同</text>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#527487"/></marker></defs>
+<g fill="#EAF3F7" stroke="#2A6F86" stroke-width="2">
+<rect x="45" y="220" width="190" height="135" rx="18"/><rect x="315" y="220" width="220" height="135" rx="18"/><rect x="615" y="125" width="230" height="130" rx="18" fill="#EAF6EF"/><rect x="615" y="355" width="230" height="130" rx="18" fill="#FFF4E7"/><rect x="930" y="220" width="225" height="135" rx="18" fill="#F2EEFA"/>
+</g>
+<g font-family="Microsoft YaHei, sans-serif" text-anchor="middle" fill="#163b4a"><text x="140" y="265" font-size="22" font-weight="700">ADC 核心</text><text x="140" y="302" font-size="17">采样与量化</text><text x="140" y="328" font-size="17">并行数字码</text><text x="425" y="265" font-size="22" font-weight="700">数据整理</text><text x="425" y="302" font-size="17">编码 / 位宽</text><text x="425" y="328" font-size="17">帧与通道映射</text><text x="730" y="170" font-size="22" font-weight="700">并行接口</text><text x="730" y="207" font-size="17">CMOS / LVDS</text><text x="730" y="231" font-size="17">多位宽并行输出</text><text x="730" y="400" font-size="22" font-weight="700">串行接口</text><text x="730" y="437" font-size="17">SerDes / JESD</text><text x="730" y="461" font-size="17">Lane 映射与编码</text><text x="1042" y="265" font-size="22" font-weight="700">接收端</text><text x="1042" y="302" font-size="17">FPGA / ASIC</text><text x="1042" y="328" font-size="17">对齐后送入处理</text></g>
+<g fill="none" stroke="#527487" stroke-width="3" marker-end="url(#a)"><path d="M235 287 L315 287"/><path d="M535 255 L575 255 L575 190 L615 190"/><path d="M535 320 L575 320 L575 420 L615 420"/><path d="M845 190 L885 190 L885 255 L930 255"/><path d="M845 420 L885 420 L885 320 L930 320"/></g>
+<rect x="365" y="535" width="470" height="65" rx="16" fill="#F5F8FA" stroke="#93AAB4" stroke-width="2"/>
+<text x="600" y="575" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" fill="#365564">时钟与控制：DCLK / FCO / SYNC / SYSREF 按接口选择</text>
+<text x="600" y="650" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" fill="#71858e">示意图；具体信号名与协议层次取决于所选接口标准。</text></svg>

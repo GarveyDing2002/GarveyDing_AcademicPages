@@ -1,23 +1,27 @@
 ---
 title: ADC 架构：分类、比较与选型
-date: 2026-03-27
+date: '2026-10-26'
 excerpt: 从采样机制、速度、精度、功耗和应用场景对 ADC 架构进行分类、比较与选型。
 tags:
-  - 学习记录
-  - adc
-  - architecture
+- 学习记录
+- adc
+- architecture
 ---
 
-> **核心定位**
+# ADC 架构：分类、比较与选型
+
+> [!abstract] 核心定位
 > 从采样机制、速度、精度、功耗和应用场景对 ADC 架构进行分类、比较与选型。
 
 ---
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **4 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 架构分类与总体框架
    - 1.1 架构速览
@@ -31,6 +35,11 @@ tags:
    - 4.1 一句话总结
 
 ## 1. 架构分类与总体框架
+
+![01_adc_architecture_map](/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.svg)
+
+*图：ADC 架构选择应同时考虑速度、精度、功耗和输入场景。*
+
 
 ### 1.1 架构速览
 
@@ -197,10 +206,75 @@ tags:
 
 低速高精度优先考虑积分型和 ΔΣ；中速低功耗优先考虑 SAR；高速中高精度优先考虑 Pipeline/Pipeline-SAR；超高速优先考虑 Flash、Time-Interleaved 和 Time-domain；先进 CMOS 下的核心趋势是 SAR 化、时间域化、噪声整形化、动态放大化和数字校准化。
 
+## 2026 扩展专题：从性能空间到现代混合架构（新增）
 
-## 相关笔记
+> [!info] 证据范围与图示说明
+> 原始分类主表和既有结论保留。本节补充**架构推导、系统预算、论文验证的代表实例与工程判断**。图为重新绘制的原创机制示意，不是 IEEE 原论文截图；文献指标按出版物所述标记，其他数值仅为明确假设下的算例。参考 [Murmann ADC Survey 1997–2026](https://github.com/bmurmann/ADC-survey) 与 [IEEE 1241-2023](https://standards.ieee.org/ieee/1241/6797/)。
 
-- [ADC 数据输出接口：架构与设计](/GarveyDing_AcademicPages/blog/adc-data-interfaces/)
-- [CLS 技术：原理、变种与设计](/GarveyDing_AcademicPages/blog/correlated-level-shifting/)
-- [Dither-Based Calibration：原理、架构与建模](/GarveyDing_AcademicPages/blog/dither-calibration/)
-- [ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
+### A1. 不能只用「精度–采样率」两轴选型
+
+现代架构选型至少具有六个独立维度：**带内信号带宽**、**采样率与 OSR**、**目标 SNDR / SFDR**、**输入频率与模拟前端带宽**、**允许的转换延迟**、**功耗/面积与工艺供电约束**。对高速 ADC，`Fs=20 GS/s` 并不代表可在 `Fin=10 GHz` 保持同一 ENOB；在未给出输入频率时，不应比较两个高速 ADC 的“最佳 SNDR”。另外，多路 TI 是**系统并行组织方式**，可与 SAR、pipeline、flash、NS-SAR 等叠加，而不是与这些转换机制互斥的一类。
+
+![2026_05_专项机制图](/images/blog/learning-notes/adc-architectures/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_多维架构地图](/images/blog/learning-notes/adc-architectures/2026_01_多维架构地图.svg)
+
+从采样保持的角度，至少应建立如下预算：
+
+$$\mathrm{SNR}_{\mathrm{jitter}}=-20\log_{10}(2\pi f_{\mathrm{in}}\sigma_t),\qquad \sigma_t\ll (2\pi f_{\mathrm{in}})^{-1}.$$
+
+此式适用于**正弦输入、随机且与输入独立的有效采样时间误差**。TI 通道间的确定性 skew 会产生周期性 spur，不能直接作为同一个随机 jitter RMS 填入上述式子。量化噪声近似：满量程正弦下理想 Nyquist ADC 的 `SNR_Q≈6.02N+1.76 dB`；对于 1-bit 以上高阶噪声整形结构，需要通过 NTF、OSR 与量化器非线性重新计算，不能照搬该式。
+
+### A2. 同样 12-bit，三种截然不同的系统瓶颈
+
+|候选架构|时钟/模拟瓶颈|优势|真正的系统代价|适合进一步追问|
+|---|---|---|---|---|
+|单通道高速度 SAR|每一 bit 的 `t_cmp+t_logic+t_DAC`，总转换时窗|低静态功耗，数字友好|参考恢复、开关线性、比较器亚稳态、CDAC 面积|冗余、异步、分段、可变比较时间|
+|2-stage Pipeline-SAR|第一级量化 + 余差建立 + 第二级量化的重叠时序|在速度/功耗/精度间折中|MDAC 增益/建立/噪声、级间共模、stage mismatch|级间增益校准、动态放大器、CLS|
+|TI-(Pipeline-)SAR|子 ADC 内部时序之外还有前端/时钟扇出|扩展总体吞吐|相位噪声、时间偏斜、带宽失配、输入驱动/THA|层次化采样、时偏/带宽校准、接口吞吐|
+
+**案例——两级 Pipeline-SAR 解析**：假设第一级 5 bit，残差理想增益 `G=16`，第二级拥有 8 bit 加冗余，不意味着输出“5+8=13-bit 绝对有效精度”。最终可用位数由残差范围、数字重叠范围、参考满量程以及噪声/非线性共同决定。令第一级子 DAC 为 `V_DAC1`，则 `V_res=G(V_in−V_DAC1)+e_amp`。数字拼接实质是把细级量化值换算回输入端：
+
+$$\widehat V_{\rm in}=V_{\rm DAC1}+\frac{\widehat V_{\rm res}}{G_{\rm est}}.$$
+
+若 `G_est≠G`，残差相关误差即使在前级 CDAC 理想时也会造成码依赖谐波。因此转换架构不能与校准策略脱离考虑。Lee 与 Flynn 2011 年的 SAR-assisted two-stage pipeline 是可读的经典结构论文；2022 年 DACLS ring amplifier 案例说明动态余差放大与 CLS 结合的方向。[R2][R3]
+
+### A3. 噪声整形 SAR 与 ΔΣ 为什么既相似又不同
+
+两者共有的数学目标是：通过环路或误差反馈把量化噪声的传递函数 `NTF(z)` 在信号带内压低。典型一阶误差反馈写为 `Y(z)=X(z)+(1−z^{-1})E(z)`；若环路实现改变，这并不自动成立。**NS-SAR**常用 SAR CDAC/比较器同时完成多位量化与误差提取，集成在逐次逼近周期中；**ΔΣ**主要依靠持续时间域或离散时间积分器的高 OSR 闭环调制。两者可以组合，也不能仅根据“使用积分器”或“有噪声整形”一词断定 ADC 类型。设计时要检查环路状态摆幅、延迟、非理想 NTF、比较器残余噪声及 out-of-band noise。详见 Pavan、Schreier、Temes 的系统教材。[R4]
+
+![2026_02_量化与误差整形](/images/blog/learning-notes/adc-architectures/2026_02_量化与误差整形.svg)
+
+### A4. 读论文和筛选架构时必须统一的指标
+
+1. **SNDR / ENOB**：记录 `Fin`、FFT 点数、窗函数、输入幅度与是否 Nyquist；`ENOB=(SNDR−1.76)/6.02`。
+2. **FoM**：Walden `FoM_W=P/(2^{ENOB}F_s)`，Schreier `FoM_S=SNDR+10log10(BW/P)`；两者偏好不同，不能仅按一个 FoM 排序。
+3. **系统开销**：对 TI 架构，将 PLL/MPCG、前端 buffer/THA、数字后台校准、输出 PHY 逐项计入；很多论文的核 ADC 功耗与整个系统功耗边界不相同。
+4. **验证边界**：分别列出 schematic/post-layout、测试芯片实测和计算值；标出 `FSR` 是单端还是差分峰峰值。
+
+![2026_03_架构决策流程](/images/blog/learning-notes/adc-architectures/2026_03_架构决策流程.svg)
+
+**研究追问**：选定目标为高速 12-bit 时，先做系统噪声/非线性/抖动预算，再据此反推 ① 每级位数与冗余 ② 余差增益与建立时间 ③ 时钟层级与 skew ④ 片上数字输出/采集方式。避免“先选最前沿结构，再寻找指标”造成不必要的结构复杂度。
+
+### A5. 新增经过核验的核心文献与资料
+
+- [R1] B. Murmann, *ADC Performance Survey 1997–2026*, Stanford，持续更新的 ISSCC/VLSI 数据集合。<https://github.com/bmurmann/ADC-survey>。
+- [R2] C.-C. Lee and M. P. Flynn, “A SAR-Assisted Two-Stage Pipeline ADC,” *IEEE JSSC*, 46(4), 2011, DOI: [10.1109/JSSC.2011.2108133](https://doi.org/10.1109/JSSC.2011.2108133)。
+- [R3] J.-C. Wang and T.-H. Kuo, “A 72-dB SNDR 130-MS/s 0.8-mW Pipelined-SAR ADC Using a Distributed Averaging Correlated Level Shifting Ring Amplifier,” *IEEE JSSC*, 2022, DOI: [10.1109/JSSC.2022.3196743](https://doi.org/10.1109/JSSC.2022.3196743)。
+- [R4] S. Pavan, R. Schreier, and G. C. Temes, *Understanding Delta-Sigma Data Converters*, 2nd ed., Wiley-IEEE Press, 2017, DOI: [10.1002/9781119258308](https://doi.org/10.1002/9781119258308)。
+- [R5] B. Murmann, “The successive approximation register ADC: a versatile building block for ultra-low-power to ultra-high-speed applications,” *IEEE Communications Magazine*, 2016, DOI: [10.1109/MCOM.2016.7452270](https://doi.org/10.1109/MCOM.2016.7452270)。
+- [R6] J. L. McCreary, *Successive Approximation Analog-to-Digital Conversion Techniques in MOS Integrated Circuits*, UC Berkeley technical report, 1975. [机构存档](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1975/7366.html)。
+- [R7] IEEE Std 1241-2023, *IEEE Standard for Terminology and Test Methods for Analog-to-Digital Converters*. [官方标准](https://standards.ieee.org/ieee/1241/6797/)。
+- [R8] B. P. Hershberg et al., “Ring Amplifiers for Switched-Capacitor Circuits,” *ISSCC*, 2012, DOI: [10.1109/ISSCC.2012.6177090](https://doi.org/10.1109/ISSCC.2012.6177090)。
+
+**论文配图线索**：R2 的 architecture / residue stage；R3 的 DACLS ring amplifier 和 timing；R4 的 NTF 示意。由于未随本次材料提供对应论文 PDF 和再分发授权，此处仅提供原文定位，不冒用论文原图；上方三张为本笔记新绘制示意。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/adc-architectures/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

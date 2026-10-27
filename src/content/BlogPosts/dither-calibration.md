@@ -1,15 +1,17 @@
 ---
 title: Dither-Based Calibration：原理、架构与建模
-date: 2026-04-01
+date: '2026-10-26'
 excerpt: 按误差对象、注入位置和统计提取方法梳理 Dither-Based Calibration，并给出行为建模路线。
 tags:
-  - 学习记录
-  - adc
-  - dither
-  - background-calibration
+- 学习记录
+- adc
+- dither
+- background-calibration
 ---
 
-> **核心定位**
+# Dither-Based Calibration：原理、架构与建模
+
+> [!abstract] 核心定位
 > 按误差对象、注入位置和统计提取方法梳理 Dither-Based Calibration，并给出行为建模路线。
 
 ---
@@ -18,16 +20,18 @@ tags:
 
 聚焦：级间增益误差、位权/电容失配、比较器失调、时间偏斜、增益非线性与相关数字后台校准
 
-整理与撰写：OpenAI ChatGPT 日期：2026年4月
+
 
 |说明：本报告优先覆盖IEEE旗舰期刊/会议（JSSC、ISSCC、VLSI、TCAS-I/II、TVLSI、CICC等）中的dither相关ADC校准工作；同时少量补充非IEEE但高度相关的论文，用于补全技术脉络、实现细节与方法比较。|
 |---|
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **6 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 总体框架：研究范围、基本原理与统计基础
    - 1.1 执行摘要
@@ -53,6 +57,18 @@ tags:
 
 ## 1. 总体框架：研究范围、基本原理与统计基础
 
+```mermaid
+flowchart LR
+    A[待校准误差] --> B[注入已知 Dither]
+    B --> C[ADC 输出观测]
+    C --> D[相关或回归估计]
+    D --> E[更新数字补偿]
+    E -->|下一轮| B
+```
+
+*图：基于已知扰动的估计—补偿闭环；收敛与扰动开销需分别验证。*
+
+
 ### 1.1 执行摘要
 
 基于dither的ADC校准，本质上是在不打断正常转换的前提下，向输入端、残差通路、CDAC、比较器阈值、参考时钟或输入缓冲等关键节点注入可控伪随机扰动，再利用相关检测、统计平均、数字混频、窗口检测、LMS/符号LMS或自相关提取等方法，把原本与输入信号强耦合、难以直接观测的误差参数“搬运”到可测量的统计量上。因此，dither既是一种“激励”，也是一种“解耦工具”：它一方面为参数辨识提供持续存在的观测通道，另一方面通过随机化把确定性失真打散为噪声状项，从而降低spur并减轻输入依赖性。
@@ -64,7 +80,7 @@ tags:
 
 ### 1.2 检索策略、范围与阅读方法
 
-本次整理以“ADC + dither + calibration”为主线检索词，围绕pipeline ADC、pipelined-SAR ADC、two-step SAR ADC、time-interleaved SAR/pipe-SAR ADC四类架构展开，重点筛选IEEE Journal of Solid-State Circuits（JSSC）、ISSCC、VLSI Symposium、IEEE Transactions on Circuits and Systems I/II（TCAS-I/II）、IEEE Transactions on Very Large Scale Integration Systems（TVLSI）以及少量与实现高度相关的CICC/ISCAS工作。
+文献检索以“ADC + dither + calibration”为主线检索词，围绕pipeline ADC、pipelined-SAR ADC、two-step SAR ADC、time-interleaved SAR/pipe-SAR ADC四类架构展开，重点筛选IEEE Journal of Solid-State Circuits（JSSC）、ISSCC、VLSI Symposium、IEEE Transactions on Circuits and Systems I/II（TCAS-I/II）、IEEE Transactions on Very Large Scale Integration Systems（TVLSI）以及少量与实现高度相关的CICC/ISCAS工作。
 
 由于浏览环境不能稳定直接打开IEEE Xplore全文，本报告采用“多源交叉核验”的方式保证文献信息可靠性：一方面使用机构知识库、作者主页、大学论文仓储、DOI元数据页面、会议摘要页与开源镜像页面确认题目、作者、期刊/会议、年份、卷期和DOI；另一方面结合可访问的论文摘要、教程讲义和综述页提炼方法要点，避免仅凭二手转述下结论。
 
@@ -228,7 +244,7 @@ Ali等人的14-bit 1-GS/s RF-sampling pipelined ADC表明，相关型背景校�
 第五组矛盾是“模型优雅”与“芯片可落地”。很多行为级上很好用的校准量，在晶体管级并不容易稳定实现；反过来，一些芯片级实现非常高效，但其抽象模型并不漂亮。做研究时，最容易忽略的是这两者的落差。你在Matlab里看到的一个“完美收敛”统计量，落到版图后可能被电容失配、开关注入、边沿漂移或多相时钟耦合破坏。因此，建模时尽量把注入幅值失配、序列不匹配、数字延时偏差、比较器噪声和有限统计窗口一并纳入。
 
 
-### 5.2 对你当前研究方向的具体启发
+### 5.2 对 ADC 研究与设计的启发
 
 结合你关注的pipelined-SAR ADC、后台LMS、比较器交替结构与time-skew问题，我认为最值得优先深入的研究抓手有四个。
 
@@ -416,8 +432,83 @@ Ali等人的14-bit 1-GS/s RF-sampling pipelined ADC表明，相关型背景校�
 
 误区十：只停留在读论文层面，不做最小可复现实验。对你当前的研究方向，最有价值的做法不是一次性搭很复杂的晶体管级系统，而是先做三层模型：第一层是理想统计模型，用于验证相关性与收敛；第二层是含量化、失配、延迟和有限位宽的行为模型；第三层再把关键模拟非理想逐项注入。这样能迅速判断某篇论文的核心思想究竟是数学上可行、工程上可行，还是仅在特定假设下成立。
 
+## 2026 深化：可观测性、相关性偏差与硬件实现（新增）
 
-## 相关笔记
+> [!note] 本节定位
+> 原笔记已有完整 dither 技术谱系。本节更进一步把 **选择何处注入、为什么能估计、何时失效、如何同时做到数字可消除与模拟不扰动**写成可用于 MATLAB/RTL/电路协同设计的统一模型。所有数值算例为模型推导而非文献实测。
 
-- [CLS 技术：原理、变种与设计](/GarveyDing_AcademicPages/blog/correlated-level-shifting/)
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
+### D1. 从系统辨识角度推导 PN+LMS 的成立条件
+
+设已知、零均值、与有效输入统计独立的 dither 为 `p[n]∈{−1,+1}`，注入后观测为
+
+$$y[n]=s[n]+\theta a p[n]+v[n],$$
+
+其中 `s[n]` 为正常信号，`θ` 为未知的目标通路参数，`a` 为已标定的 dither 电压/位权，`v[n]` 是不与 PN 相关的随机项。理想下交叉相关：
+
+$$E\{y[n]p[n]\}=\theta a E\{p^2[n]\}+E\{s[n]p[n]\}+E\{v[n]p[n]\}=\theta a.$$
+
+因此 `θ_hat=(1/(aN))Σ y[n]p[n]` 是简单的无偏估计，**但仅在输入独立、注入增益已知、没有码相关裁切/饱和、且正确样本对齐时成立**。若目标是消除级间增益误差，必须考虑数字后减的 PN 重构项、实际残差增益、冗余范围与级间延时，而不仅是“PN 与输出相乘平均”。
+
+![2026_05_专项机制图](/images/blog/learning-notes/dither-calibration/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_dither观测链](/images/blog/learning-notes/dither-calibration/2026_01_dither观测链.svg)
+
+### D2. 什么因素会形成无法通过延长平均消除的系统偏差
+
+把真实观测改写为 `y=s+θap+αsp+bp[n−d]+q`。则 `E[yp]` 中除了 `θa` 外，还可能出现 `αE[s]`、PN 自相关延迟项和**与 PN 有关的量化误差**。平均次数 `N↑` 能缩小零均值统计误差（常见情况标准差约随 `1/√N` 降低），却不能压低 `E[sp]≠0`、饱和、输入相关窗口筛选、时序错位或注入通路增益变化形成的 bias。
+
+因此**所有后台校准论文**都值得问：
+
+1. dither **由什么物理量注入**：CDAC 电荷、比较器阈值、残差、输入/参考或采样时间？
+2. 与信号的独立性如何保证？正负 PN 是否具有相同电容路径与 common-mode？
+3. 输出是否可按“已知权重”**完全数字扣除**，还是会有 PN 泄漏与折叠？
+4. 校准窗口是否依赖当前输入码，形成 selection bias？
+5. 误差参数是 DC 值还是随输入幅度/温度/频率变化？
+
+### D3. CDAC dither 与比较器阈值 dither 不等价
+
+|注入点|实际扰动|有利之处|典型风险|何种校准目标更合适|
+|---|---|---|---|---|
+|前级 CDAC bottom-plate|残差电荷/电压|电压量可设计、数字扣除相对直接|失配、电容耦合、余差超量程|级间增益、位权|
+|比较器参考/阈值|决策边界移动|有利于观测边缘/亚稳态统计|只有接近决策边缘才影响码，输入依赖更强|阈值 offset、决策边界检测|
+|参考电压|所有 DAC 权重同时被调制|注入覆盖广|参考噪声、恢复、耦合到多 bit|参考/增益联合校准|
+|采样时刻/时钟|微小时间偏移|可直接激励 time-skew 敏感方向|注入路径本身抖动、时钟线性与范围|TI skew/phase 校准|
+
+双点注入并非必然优于单点。若比较器阈值 dither 仅在特定输入区间有效，先检查有效样本选择是否**无偏**；只有同时考虑码冗余、DNL 和 PN 通路失配，才能比较收敛率和输入扰动。对于已有 PN+LMS 单点校准，最直接的试验是比较“开/关阈值注入”和“有/无窗口”的四种组合在多频输入下的偏置和收敛速度。
+
+![2026_02_注入位置比较](/images/blog/learning-notes/dither-calibration/2026_02_注入位置比较.svg)
+
+### D4. 一套最小可复现实验：MATLAB/Verilog-A/RTL 三层
+
+**行为层**：定义实际 `G=G0(1+ε)`、`a_actual=a_nom(1+δa)`、有限 PN 序列长度 `N`、数字输出量化以及 pipeline latency `d`。用 `error[n]` 更新 `Ghat[n+1]=Ghat[n]+μ·p[n−d]·error[n]`（梯度方向和归一化取决于误差定义）。在校准使能前、中、后分别测 `Ghat` 的均值/方差和 FFT。测试窄带低频、接近 Nyquist、宽带噪声、DC 与大幅接近 full scale。
+
+**晶体管层**：锁定 PN 对应的实际采样事件，量测两种 PN 极性时各电容、电荷注入、残差输出瞬态与参考恢复的差异。别把“PN 码值相等”误认为“注入电压严格相等”。
+
+**RTL/顶层**：保留 PN generator 与 ADC 码的关联 ID，在 pipelining 后统一打拍，验证每一路 `p[n]` 对准的是哪一次 `y[n]`；检验 `W_PN` 正负选择、输出数字扣除、有限位宽舍入/饱和，并随机化数字 delay 模拟 CDC 缺陷。
+
+![2026_03_LMS收敛验证](/images/blog/learning-notes/dither-calibration/2026_03_LMS收敛验证.svg)
+
+### D5. 从论文阅读走向结构创新：可比较的研究假设
+
+每次只改变一个因素：注入位置；单/双点；窗口策略；PN 幅度；归一化步长；是否同时估计参考变化；是否与 metastability sensor 联合。报告统一以“**收敛样本数、稳态估计偏差、标准差、ENOB/SFDR 的低/高频变化、额外功耗/面积**”作横轴比较。若提出“大步长快速跟踪”，应同时报告稳态噪声和 spur；若声称 input-independent，应检验高频满幅输入、准周期 PN/输入相关性及 saturation。
+
+### D6. 核心新增文献和跨专题资料
+
+- [D1] A. N. Karanicolas, H.-S. Lee, and K. L. Bacrania, “A 15-b 1-Msample/s Digitally Self-Calibrated Pipeline ADC,” *IEEE JSSC*, 1993. [DOI:10.1109/4.261994](https://doi.org/10.1109/4.261994)；[MIT 作者存档 PDF](https://hslee.mit.edu/wp-content/uploads/2005/02/1207kara.pdf)。
+- [D2] B. Widrow and M. E. Hoff, “Adaptive Switching Circuits,” Stanford/IRE workshop, 1960. [NTIS 档案](https://ntrl.ntis.gov/NTRL/dashboard/searchResults/titleDetail/AD241531.xhtml)。（LMS 方法论基础，而非 ADC 芯片论文。）
+- [D3] S. M. Jamal et al., “A 10-b 120-Msample/s Time-Interleaved Analog-to-Digital Converter With Digital Background Calibration,” *IEEE JSSC*, 2002. [DOI:10.1109/JSSC.2002.804327](https://doi.org/10.1109/JSSC.2002.804327)（经典相关型 TI 失配校准；题名、年份与内容可从公开全文核查）。
+- [D4] Y. Cao et al., “A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer,” *IEEE JSSC*, 2024. [DOI:10.1109/JSSC.2024.3482567](https://doi.org/10.1109/JSSC.2024.3482567)。
+- [D5] M. Gu et al., “Timing-Skew Calibration Techniques in Time-Interleaved ADCs,” *IEEE OJSSCS*, 2025. [DOI:10.1109/OJSSCS.2024.3519486](https://doi.org/10.1109/OJSSCS.2024.3519486)。（综述的在线 DOI 年份为 2024，刊期为 2025。）
+- [D6] C. C. Enz and G. C. Temes, “Circuit Techniques for Reducing the Effects of Op-Amp Imperfections…,” *Proceedings of the IEEE*, 1996. [DOI:10.1109/5.542410](https://doi.org/10.1109/5.542410)。
+
+**配图与证据**：D1 的典型背景校准 pipeline 框图、D4 的 global dither 注入框图应优先回到论文核查；本节三张 SVG 以独立机制解释为目的，不是论文截屏。原笔记正文中未提供 DOI 的条目需继续经 Crossref/IEEE 核实后再补齐，避免制造“已核验”的假象。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/dither-calibration/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

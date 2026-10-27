@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+<rect width="1200" height="520" fill="white"/>
+<g stroke="#253246" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M80 270 H250 M330 270 H480 V322"/><circle cx="270" cy="270" r="10" fill="white"/><circle cx="310" cy="270" r="10" fill="white"/><path d="M274 268 L311 245"/>
+<path d="M480 322 V352 M440 352 H520 M440 369 H520 M480 369 V417 M455 418 H505 M464 429 H496 M474 440 H486"/>
+<path d="M288 245 V155 H450" stroke-dasharray="11 8"/>
+<rect x="456" y="102" width="270" height="112" rx="15" stroke="#29699b" stroke-width="4"/>
+<path d="M500 155 H549 M549 155 V135 M549 155 V175 M549 175 H573 M549 135 H573 M573 155 H690"/>
+<path d="M726 155 H810 V270 H980" stroke="#29699b" stroke-dasharray="12 8"/>
+<path d="M920 270 H980 M996 260 L1045 235 M996 280 L1045 305" stroke="#253246"/>
+</g>
+<g fill="#172335" font-family="Arial, sans-serif" font-size="28">
+<text x="78" y="245">Vin</text><text x="360" y="243">Vsample</text><text x="500" y="82">Bootstrap driver</text><text x="550" y="199" font-size="21">Cb precharged to VDD</text><text x="985" y="232">Gate</text><text x="440" y="486" font-size="23">Sampling capacitor Cs</text><text x="62" y="63" font-size="35">Track phase: Vg ≈ Vin + VDD</text><text x="62" y="110" font-size="26">Vgs ≈ VDD; body effect and parasitics remain</text>
+</g></svg>

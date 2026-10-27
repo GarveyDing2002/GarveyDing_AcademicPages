@@ -1,15 +1,17 @@
 ---
 title: TSMC 28 nm CMOS 片上无源器件：电阻、电容与电感
-date: 2026-07-09
+date: '2026-10-26'
 excerpt: 比较 TSMC 28 nm CMOS 中电阻、电容和电感的实现、寄生、匹配与高速 ADC 选型。
 tags:
-  - 学习记录
-  - adc
-  - tsmc28nm
-  - 无源器件
+- 学习记录
+- adc
+- tsmc28nm
+- 无源器件
 ---
 
-> **核心定位**
+# TSMC 28 nm CMOS 片上无源器件：电阻、电容与电感
+
+> [!abstract] 核心定位
 > 比较 TSMC 28 nm CMOS 中电阻、电容和电感的实现、寄生、匹配与高速 ADC 选型。
 
 ---
@@ -25,10 +27,12 @@ tags:
 ---
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **5 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 片上电阻
    - 1.1 片上电阻
@@ -46,17 +50,24 @@ tags:
 
 ## 1. 片上电阻
 
+```mermaid
+flowchart LR
+    A[定义精度、频段、Q 值与面积] --> B[选择电阻 / 电容 / 电感实现]
+    B --> C[纳入衬底、边缘与互连寄生]
+    C --> D[检查偏压、频率、PVT 与失配]
+    D --> E[按目标 PDK 完成 PEX / EM 验证]
+```
+
+*图：片上无源器件从规格到版图验证的选型流程；器件参数以目标 PDK 为准。*
+
+
 ### 1.1 片上电阻
 
 #### 电阻的基本表达式
 
 规则矩形电阻近似为：
 
-
-$$
-R=R_{\mathrm{sh}}\frac{L}{W}+R_{\mathrm{contact}}+R_{\mathrm{terminal}}
-$$
-
+$$R=R_{\mathrm{sh}}\frac{L}{W}+R_{\mathrm{contact}}+R_{\mathrm{terminal}}$$
 
 其中：
 
@@ -209,19 +220,11 @@ $$
 
 直接使用一段金属走线作为电阻：
 
-
-$$
-R=\rho \frac{L}{Wt}
-$$
-
+$$R=\rho \frac{L}{Wt}$$
 
 或者仍然按方块电阻表示：
 
-
-$$
-R=R_{\mathrm{sh,metal}}\frac{L}{W}
-$$
-
+$$R=R_{\mathrm{sh,metal}}\frac{L}{W}$$
 
 不同金属层厚度不同：
 
@@ -262,17 +265,13 @@ $$
 
 小阻值金属电阻需要特别注意：
 
-
-$$
-R_{\mathrm{total}}
+$$R_{\mathrm{total}}
 =
 R_{\mathrm{metal}}
 +
 R_{\mathrm{via}}
 +
-R_{\mathrm{contact}}
-$$
-
+R_{\mathrm{contact}}$$
 
 例如设计一个几欧姆的电阻时，通孔阵列本身的电阻可能已经不可忽略。应使用多排 via，并进行后仿真或 EM 分析。
 
@@ -282,13 +281,9 @@ $$
 
 MOS 管在线性区可以近似成可调电阻：
 
-
-$$
-R_{\mathrm{on}}\approx
+$$R_{\mathrm{on}}\approx
 \frac{1}
-{\mu C_{\mathrm{ox}}\frac WL(V_{GS}-V_{TH})}
-$$
-
+{\mu C_{\mathrm{ox}}\frac WL(V_{GS}-V_{TH})}$$
 
 ##### 类型
 
@@ -346,21 +341,13 @@ $$
 
 MIM 即：
 
-
-$$
-\text{Metal-Insulator-Metal}
-$$
-
+$$\text{Metal-Insulator-Metal}$$
 
 ##### 实现方式
 
 在两层专用金属极板之间放置较薄、较稳定的绝缘介质：
 
-
-$$
-C=\varepsilon\frac{A}{d}
-$$
-
+$$C=\varepsilon\frac{A}{d}$$
 
 通常：
 
@@ -406,11 +393,7 @@ $$
 
 MOM 即：
 
-
-$$
-\text{Metal-Oxide-Metal}
-$$
-
+$$\text{Metal-Oxide-Metal}$$
 
 这里的“oxide”主要是普通金属层之间的层间介质。MOM 通常利用金属边缘之间的边缘电场形成电容。
 
@@ -536,11 +519,7 @@ MOS 电容可能处于：
 
 因此其电容随端电压变化：
 
-
-$$
-C=C(V)
-$$
-
+$$C=C(V)$$
 
 ##### 特点
 
@@ -576,13 +555,9 @@ $$
 
 PN 结反偏时具有耗尽层电容：
 
-
-$$
-C_j(V)=
+$$C_j(V)=
 \frac{C_{j0}}
-{\left(1+\frac{V_R}{\phi_0}\right)^m}
-$$
-
+{\left(1+\frac{V_R}{\phi_0}\right)^m}$$
 
 ##### 实现方式
 
@@ -680,11 +655,7 @@ $$
 
 电感串联电阻近似为：
 
-
-$$
-R_s=\rho\frac{l}{wt}
-$$
-
+$$R_s=\rho\frac{l}{wt}$$
 
 提高金属厚度 $t$ 和宽度 $w$ 可以减小串联电阻，从而提高 Q 值。
 
@@ -702,19 +673,11 @@ $$
 
 品质因数：
 
-
-$$
-Q=\frac{\operatorname{Im}(Z)}{\operatorname{Re}(Z)}
-$$
-
+$$Q=\frac{\operatorname{Im}(Z)}{\operatorname{Re}(Z)}$$
 
 在低到中等频率下，可以近似写为：
 
-
-$$
-Q\approx\frac{\omega L}{R_s}
-$$
-
+$$Q\approx\frac{\omega L}{R_s}$$
 
 但实际 Q 不会随频率无限上升，因为高频时：
 
@@ -726,11 +689,7 @@ $$
 
 最终在自谐振频率 SRF 附近：
 
-
-$$
-\operatorname{Im}(Z)=0
-$$
-
+$$\operatorname{Im}(Z)=0$$
 
 超过 SRF 后，器件表现得更像电容，而不是电感。
 
@@ -774,11 +733,7 @@ $$
 
 因此，“叠更多金属层”不一定更好，需要综合比较：
 
-
-$$
-L,\quad Q,\quad f_{\mathrm{SRF}},\quad R_s,\quad A
-$$
-
+$$L,\quad Q,\quad f_{\mathrm{SRF}},\quad R_s,\quad A$$
 
 ---
 
@@ -811,11 +766,7 @@ $$
 
 变压器本质上是两个互感电感：
 
-
-$$
-M=k\sqrt{L_1L_2}
-$$
-
+$$M=k\sqrt{L_1L_2}$$
 
 其中 $k$ 是耦合系数。
 
@@ -976,11 +927,7 @@ $$
 
 优先级通常为：
 
-
-$$
-\boxed{\text{MOM 或 MIM}}
-$$
-
+$$\boxed{\text{MOM 或 MIM}}$$
 
 ##### 小单位电容、高速低功耗
 
@@ -1014,19 +961,11 @@ $$
 
 推荐：
 
-
-$$
-\boxed{\text{MIM/MOM}}
-$$
-
+$$\boxed{\text{MIM/MOM}}$$
 
 不推荐用 MOSCAP 直接承担高线性采样电容，因为：
 
-
-$$
-C=C(V)
-$$
-
+$$C=C(V)$$
 
 会将输入电压转换为信号相关电容，从而产生谐波失真。
 
@@ -1045,11 +984,7 @@ $$
 
 推荐：
 
-
-$$
-\boxed{\text{Poly 或 High-R Poly}}
-$$
-
+$$\boxed{\text{Poly 或 High-R Poly}}$$
 
 适合：
 
@@ -1093,11 +1028,7 @@ $$
 
 若输入 buffer 带宽达到十几 GHz，电感峰化可能有效；但必须进行：
 
-
-$$
-\boxed{\text{PEX + EM + 封装联合仿真}}
-$$
-
+$$\boxed{\text{PEX + EM + 封装联合仿真}}$$
 
 仅使用 schematic 中的理想电感模型是不够的。
 
@@ -1108,16 +1039,12 @@ $$
 
 #### 电阻
 
-
-$$
-R,\quad R_{\mathrm{sh}},\quad
+$$R,\quad R_{\mathrm{sh}},\quad
 \sigma_R/R,\quad
 TCR,\quad VCR,\quad
 C_{\mathrm{par}},\quad
 I_{\max},\quad
-\text{noise}
-$$
-
+\text{noise}$$
 
 其中：
 
@@ -1129,28 +1056,20 @@ $$
 
 #### 电容
 
-
-$$
-C,\quad C/A,\quad
+$$C,\quad C/A,\quad
 \sigma_C/C,\quad
 TC,\quad VC,\quad
 Q,\quad f_{\mathrm{SRF}},\quad
-C_{\mathrm{bottom}}
-$$
-
+C_{\mathrm{bottom}}$$
 
 ---
 
 #### 电感
 
-
-$$
-L,\quad Q(f),\quad
+$$L,\quad Q(f),\quad
 R_s(f),\quad f_{\mathrm{SRF}},\quad
 k,\quad A,\quad
-S_{11},S_{21}
-$$
-
+S_{11},S_{21}$$
 
 ---
 
@@ -1215,9 +1134,66 @@ $$
 7. **先进工艺中，寄生参数有时会与目标无源器件本身处于同一数量级，尤其是数 fF CDAC 和几欧姆金属电阻。**
 8. **最终判断依据应是对应 TSMC 28 nm PDK 中的器件模型、统计模型、DRC 推荐结构和硅验证数据，而不是通用经验值。**
 
+## 2026 深化：从 PCell 名义值到 EM/PEX 后的真实等效网络（新增）
 
-## 相关笔记
+> [!important] 工艺证据边界
+> 这里所有示意均为**通用先进 bulk CMOS / BEOL 方法**，不是 TSMC 28 nm 工艺提供的具体器件清单。具体 MIM/MOM 层叠、最高金属 TM 厚度、工艺电阻类型、密度、Q 值、允许电压、电流密度与 EM 保证必须查看已授权 PDK、DRM、器件模型及对应 metal stack。不得把公开论文的某个工艺典型值当作所用 28 nm PDK 的保证值。
 
-- [PVT 对 MOS 管性能参数的影响](/GarveyDing_AcademicPages/blog/mos-pvt/)
-- [Bandgap 基准源：架构与设计](/GarveyDing_AcademicPages/blog/bandgap-reference/)
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
+### R1. 从理想 R/C/L 转成带损耗的高频模型
+
+片上电阻不仅有 `R_sh·L/W`，还包含接触电阻、温度系数、寄生到衬底电容和分布式 RC；高频时一段长 Poly 不再是理想集总电阻。MOM 的边缘场电容依赖相邻金属、fill 和布线环境，MIM 更接近平板近似但仍有底板/边缘寄生；MOSCAP 的强非线性源于器件工作状态以及 C-V 曲线。螺旋电感可以采用简化 `L_s、R_s、C_ox、R_sub/C_sub` 模型，但提取 L/Q/自谐振频率时应从完整二端口 `Z/Y/S` 和 port 参考平面出发。[R1][R2][R3]
+
+![2026_05_专项机制图](/images/blog/learning-notes/cmos28-passive-devices/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_寄生网络](/images/blog/learning-notes/cmos28-passive-devices/2026_01_寄生网络.svg)
+
+### R2. 采样 CDAC 重点：匹配、寄生和寄生的**可校准性**
+
+一套 5-bit first stage 的 CDAC，关键不是仅把单位电容选择得足够大：单位电容面积、差分阵列对称、top-plate 寄生、reference-line resistance 和切换顺序均影响线性度/建立。若顶板寄生为 `C_p`，反馈系数可能近似 `β=C_f/(C_f+C_s+C_p+...)`，而非简单 `1/G`。这使较小 `C_unit` 虽降低面积/开关负载，却可能加大寄生占比与 mismatch。CDAC 的 Monte Carlo 应包括两个层次：随机单元偏差和系统性走线/边缘梯度；背景位权校准可以消除部分静态误差，但**不能恢复每次因参考未建立、码相关重分配或时钟馈通导致的动态误差**。
+
+推荐四次交叉对比：schematic ideal-C → PCell model → PEX extracted → 带供电/参考/clock routing 的完整链路。对电容阵列特征码（mid-scale、大进位码、极大输入斜率）逐次测 `top-plate` 与 `Vref` 的建立轨迹，并导出 INL/HD2/HD3，而非只比较总有效 C。
+
+### R3. 长高频走线何时必须按传输线而非 lumped RC 建模
+
+衡量电气长度：`βl=2π f l/v_p`；当路径延迟占信号周期比例不可忽略（工程预警常可从 `l≈λ/10` 级别开始，阈值并非固定标准）时，应考虑分布 RLGC、阻抗不连续与反射。对 on-chip 微带/共面走线，损耗包括导体趋肤/近邻效应、介质/硅衬底耦合；return current 的路径与信号本身同样重要。
+
+使用 `S11/S21` 判断输入匹配和传输损耗，需**明确 50 Ω 为端口参考阻抗，不等于每一段链路都应采用 50 Ω 物理特征阻抗**。对负载为 THA 采样网络的长线，应把实际切换电容与时变输入阻抗加入 EM/SP 联合仿真。差分偶/奇模、de-embedding 与金属填充对 port 的影响在验证记录中不可省略。
+
+![2026_02_高速互连模型](/images/blog/learning-notes/cmos28-passive-devices/2026_02_高速互连模型.svg)
+
+### R4. 电感的 Q、SRF 与等效 L 不是独立可随意指定的指标
+
+常以 `Q(ω)=Im{Z_in(ω)}/Re{Z_in(ω)}` 定义某个一端口阻抗对应的品质因子（在电感性工作区），但**靠近自谐振**时 `Im{Z}` 可变号，等效 L/Q 的解释要格外谨慎。所谓“物理螺旋匝数一定越多 L 越大且 Q 越高”不成立：增加匝数通常也增加串联电阻、寄生和底板耦合。图案地屏蔽（PGS）可缓解衬底损耗，同时也可能引入涡流/屏蔽层寄生，必须以 EM 仿真验证设计细节。经典文献依次可读 Long & Copeland 1997、Yue & Wong 1998、Niknejad & Meyer 1998。[R1–R3]
+
+### R5. 从版图到仿真的三层流程
+
+|级别|方法|能看到什么|看不到什么|
+|---|---|---|---|
+|电路图 + PDK compact models|Spectre/S-parameter|器件 PCell 模型固有寄生和非线性|自定义长线、周边布局、复杂互耦|
+|RC/耦合提取 (Calibre PEX/DSPF)|带寄生节点的 SPICE|一般互连 RC、寄生 C、时序和静态建立|高频磁场电流分布/分布电感完整精度|
+|3D/2.5D EM (EMX/HFSS/ADS Momentum 等)|S 参数/宽带等效网表|趋肤、相邻导体互感、返回路径、衬底损耗|晶体管非线性自身仍须混合仿真|
+
+不能简单认为 “Calibre View 一定比 DSPF 精确”；二者可能来自同一提取数据，差异来自网表结构、寄生简化、端口、模型绑定和仿真选项。若要得到高频长线性能，应将 EM/SNP 子网络嵌入 Spectre，与真实电路、buffer output impedance 和 sampling kickback 联合。
+
+![2026_03_EM协同流程](/images/blog/learning-notes/cmos28-passive-devices/2026_03_EM协同流程.svg)
+
+### R6. 经典参考文献与教材
+
+- [R1] J. R. Long and M. A. Copeland, “The Modeling, Characterization, and Design of Monolithic Inductors for Silicon RF IC's,” *IEEE JSSC*, 1997. [DOI:10.1109/4.557634](https://doi.org/10.1109/4.557634)。
+- [R2] C. P. Yue and S. S. Wong, “On-Chip Spiral Inductors With Patterned Ground Shields for Si-Based RF ICs,” *IEEE JSSC*, 1998. [DOI:10.1109/4.668989](https://doi.org/10.1109/4.668989)。
+- [R3] A. M. Niknejad and R. G. Meyer, “Analysis, Design, and Optimization of Spiral Inductors and Transformers for Si RF ICs,” *IEEE JSSC*, 1998. [DOI:10.1109/4.720393](https://doi.org/10.1109/4.720393)。
+- [R4] M. J. M. Pelgrom, A. C. J. Duinmaijer, and A. P. G. Welbers, “Matching Properties of MOS Transistors,” *IEEE JSSC*, 1989. [DOI:10.1109/JSSC.1989.572629](https://doi.org/10.1109/JSSC.1989.572629)。
+- [R5] J. L. McCreary, *Successive Approximation Analog-to-Digital Conversion Techniques in MOS Integrated Circuits*, UC Berkeley, 1975. [高校机构存档](https://www2.eecs.berkeley.edu/Pubs/TechRpts/1975/7366.html)。
+- [R6] A. M. Niknejad, Berkeley ASITIC 与 spiral inductor 研究线索（由 R3 论文综述延伸；具体工具版本、许可证需单独确认）。
+
+**论文原图建议**：R1 的等效电感模型及 Q；R2 的 PGS 结构；R3 的电磁/等效电路。此处所插图为本专题重绘示意，不包含任何保密版图或 PDK 截图。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/cmos28-passive-devices/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

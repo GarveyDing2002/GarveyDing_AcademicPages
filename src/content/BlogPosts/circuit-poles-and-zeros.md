@@ -1,25 +1,29 @@
 ---
 title: 电路零极点：原理、分析与稳定性
-date: 2026-07-09
+date: '2026-10-26'
 excerpt: 从 s 平面、时域响应和频率响应理解零极点，并落实到稳定性、补偿和建立时间设计。
 tags:
-  - 学习记录
-  - 模拟集成电路
-  - analog-ic
-  - 零极点
-  - 稳定性
+- 学习记录
+- 模拟集成电路
+- analog-ic
+- 零极点
+- 稳定性
 ---
 
-> **核心定位**
+# 电路零极点：原理、分析与稳定性
+
+> [!abstract] 核心定位
 > 从 s 平面、时域响应和频率响应理解零极点，并落实到稳定性、补偿和建立时间设计。
 
 ---
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **8 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 零极点基础：物理意义、时域与 s 平面
    - 1.1 零极点为什么重要
@@ -66,15 +70,24 @@ tags:
 
 ## 1. 零极点基础：物理意义、时域与 s 平面
 
+```mermaid
+flowchart LR
+    A[明确输入、输出与传递函数] --> B[求极点和零点位置]
+    B --> C[检查 Bode 幅频与相频]
+    C --> D[检查阶跃、过冲和慢尾]
+    D --> E[结合反馈、负载与 PVT 判断稳定性]
+```
+
+*图：零极点分析需把频域、时域和反馈稳定性放在同一检查流程中。*
+
+
 ### 1.1 零极点为什么重要
 
 对于线性时不变电路，其输入和输出之间通常可以用传递函数表示：
 
-
 $$
-H(s)=\frac{Y(s)}{X(s)} =K\frac{\prod_{i=1}^{m}(s-z_i)} {\prod_{j=1}^{n}(s-p_j)}
+H(s)=\frac{Y(s)}{X(s)} =K\frac{\prod_{i=1}^{m}(s-z_i)} {\prod_{j=1}^{n}(s-p_j)}  
 $$
-
 
 
 
@@ -134,11 +147,9 @@ $$
 
 当传递函数分母为零时：
 
-
 $$
-D(s)=0
+D(s)=0  
 $$
-
 
 
 
@@ -157,31 +168,25 @@ $$
 
 对于简单极点 $p_i$，时域自然响应一般包含：
 
-
 $$
-e^{p_i t}
+e^{p_i t}  
 $$
-
 
 
 
 如果：
 
-
 $$
-p_i=-\sigma
+p_i=-\sigma  
 $$
-
 
 
 
 则响应为：
 
-
 $$
-e^{-\sigma t}
+e^{-\sigma t}  
 $$
-
 
 
 
@@ -189,41 +194,33 @@ $$
 
 如果：
 
-
 $$
-p_i=-\sigma+j\omega_d
+p_i=-\sigma+j\omega_d  
 $$
-
 
 
 
 以及其共轭极点：
 
-
 $$
-p_i^*=-\sigma-j\omega_d
+p_i^*=-\sigma-j\omega_d  
 $$
-
 
 
 
 则时域中出现：
 
-
 $$
-e^{-\sigma t}\cos(\omega_d t)
+e^{-\sigma t}\cos(\omega_d t)  
 $$
-
 
 
 
 或：
 
-
 $$
-e^{-\sigma t}\sin(\omega_d t)
+e^{-\sigma t}\sin(\omega_d t)  
 $$
-
 
 
 
@@ -246,11 +243,9 @@ $$
 
 当传递函数分子为零时：
 
-
 $$
-N(s)=0
+N(s)=0  
 $$
-
 
 
 
@@ -307,21 +302,17 @@ $$
 
 假设一个稳定、真有理传递函数可以展开为：
 
-
 $$
-H(s)=D+\sum_i \frac{A_i}{s-p_i}
+H(s)=D+\sum_i \frac{A_i}{s-p_i}  
 $$
-
 
 
 
 则冲激响应为：
 
-
 $$
-h(t)=D\delta(t)+\sum_i A_i e^{p_i t}
+h(t)=D\delta(t)+\sum_i A_i e^{p_i t}  
 $$
-
 
 
 
@@ -338,11 +329,9 @@ $$
 
 对于重复极点，时域中还会出现：
 
-
 $$
-t e^{pt},\quad t^2e^{pt},\quad \cdots
+t e^{pt},\quad t^2e^{pt},\quad \cdots  
 $$
-
 
 
 
@@ -375,21 +364,17 @@ $$
 
 设：
 
-
 $$
-p=-\sigma,\qquad \sigma>0
+p=-\sigma,\qquad \sigma>0  
 $$
-
 
 
 
 时域项为：
 
-
 $$
-e^{-\sigma t}
+e^{-\sigma t}  
 $$
-
 
 
 
@@ -408,11 +393,9 @@ $$
 
 时间常数为：
 
-
 $$
-\tau=\frac{1}{\sigma}
+\tau=\frac{1}{\sigma}  
 $$
-
 
 
 
@@ -420,21 +403,17 @@ $$
 
 设：
 
-
 $$
-p=+\sigma,\qquad \sigma>0
+p=+\sigma,\qquad \sigma>0  
 $$
-
 
 
 
 时域项为：
 
-
 $$
-e^{+\sigma t}
+e^{+\sigma t}  
 $$
-
 
 
 
@@ -463,21 +442,17 @@ $$
 
 如果极点为：
 
-
 $$
-p=j\omega_0
+p=j\omega_0  
 $$
-
 
 
 
 则时域响应是持续振荡：
 
-
 $$
-\cos(\omega_0t)
+\cos(\omega_0t)  
 $$
-
 
 
 
@@ -498,21 +473,17 @@ $$
 
 如果虚轴极点是重复极点，例如：
 
-
 $$
-\frac{1}{(s^2+\omega_0^2)^2}
+\frac{1}{(s^2+\omega_0^2)^2}  
 $$
-
 
 
 
 则响应中会出现：
 
-
 $$
-t\sin(\omega_0t)
+t\sin(\omega_0t)  
 $$
-
 
 
 
@@ -522,41 +493,33 @@ $$
 
 原点极点：
 
-
 $$
-p=0
+p=0  
 $$
-
 
 
 
 对应积分器：
 
-
 $$
-H(s)=\frac{1}{s}
+H(s)=\frac{1}{s}  
 $$
-
 
 
 
 对阶跃输入：
 
-
 $$
-Y(s)=\frac{1}{s^2}
+Y(s)=\frac{1}{s^2}  
 $$
-
 
 
 
 得到斜坡输出：
 
-
 $$
-y(t)=t
+y(t)=t  
 $$
-
 
 
 
@@ -584,11 +547,9 @@ $$
 
 两个原点极点为：
 
-
 $$
-\frac{1}{s^2}
+\frac{1}{s^2}  
 $$
-
 
 
 
@@ -603,21 +564,17 @@ $$
 
 最典型的一阶低通系统为：
 
-
 $$
-H(s)=\frac{1}{1+s/\omega_p}
+H(s)=\frac{1}{1+s/\omega_p}  
 $$
-
 
 
 
 其中：
 
-
 $$
-\omega_p=\frac{1}{\tau}
+\omega_p=\frac{1}{\tau}  
 $$
-
 
 
 
@@ -625,11 +582,9 @@ $$
 
 对单位阶跃输入：
 
-
 $$
-y(t)=1-e^{-t/\tau}
+y(t)=1-e^{-t/\tau}  
 $$
-
 
 
 
@@ -672,21 +627,17 @@ $$
 
 相位变化并不是在极点频率处突然发生，而是大致从：
 
-
 $$
-0.1\omega_p
+0.1\omega_p  
 $$
-
 
 
 
 开始，到：
 
-
 $$
-10\omega_p
+10\omega_p  
 $$
-
 
 
 
@@ -718,11 +669,9 @@ $$
 
 假设系统具有两个实极点：
 
-
 $$
-H(s)=\frac{1} {(1+s/\omega_{p1})(1+s/\omega_{p2})}
+H(s)=\frac{1} {(1+s/\omega_{p1})(1+s/\omega_{p2})}  
 $$
-
 
 
 
@@ -730,11 +679,9 @@ $$
 
 如果：
 
-
 $$
-\omega_{p2}\gg\omega_{p1}
+\omega_{p2}\gg\omega_{p1}  
 $$
-
 
 
 
@@ -742,11 +689,9 @@ $$
 
 此时系统在较长时间尺度下近似为：
 
-
 $$
-H(s)\approx \frac{1}{1+s/\omega_{p1}}
+H(s)\approx \frac{1}{1+s/\omega_{p1}}  
 $$
-
 
 
 
@@ -756,11 +701,9 @@ $$
 
 如果两个极点接近：
 
-
 $$
-\omega_{p2}\approx\omega_{p1}
+\omega_{p2}\approx\omega_{p1}  
 $$
-
 
 
 
@@ -788,21 +731,17 @@ $$
 
 当两个极点完全重合：
 
-
 $$
-H(s)=\frac{1}{(1+s/\omega_p)^2}
+H(s)=\frac{1}{(1+s/\omega_p)^2}  
 $$
-
 
 
 
 单位阶跃响应为：
 
-
 $$
-y(t)=1-(1+\omega_pt)e^{-\omega_pt}
+y(t)=1-(1+\omega_pt)e^{-\omega_pt}  
 $$
-
 
 
 
@@ -810,31 +749,25 @@ $$
 
 这是因为重复极点的时域项不仅有：
 
-
 $$
-e^{-\omega_pt}
+e^{-\omega_pt}  
 $$
-
 
 
 
 还有：
 
-
 $$
-t e^{-\omega_pt}
+t e^{-\omega_pt}  
 $$
-
 
 
 
 一般来说，n 重极点会产生：
 
-
 $$
-t^{n-1}e^{-\omega_pt}
+t^{n-1}e^{-\omega_pt}  
 $$
-
 
 
 
@@ -849,11 +782,9 @@ $$
 
 标准二阶低通传递函数为：
 
-
 $$
-H(s)= \frac{\omega_n^2} {s^2+2\zeta\omega_n s+\omega_n^2}
+H(s)= \frac{\omega_n^2} {s^2+2\zeta\omega_n s+\omega_n^2}  
 $$
-
 
 
 
@@ -868,21 +799,17 @@ $$
 
 二者关系为：
 
-
 $$
-Q=\frac{1}{2\zeta}
+Q=\frac{1}{2\zeta}  
 $$
-
 
 
 
 极点为：
 
-
 $$
-p_{1,2} = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2}
+p_{1,2} = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2}  
 $$
-
 
 
 
@@ -907,21 +834,17 @@ $$
 
 两个极点重合：
 
-
 $$
-p_1=p_2=-\omega_n
+p_1=p_2=-\omega_n  
 $$
-
 
 
 
 阶跃响应为：
 
-
 $$
-y(t)=1-(1+\omega_nt)e^{-\omega_nt}
+y(t)=1-(1+\omega_nt)e^{-\omega_nt}  
 $$
-
 
 
 
@@ -933,21 +856,17 @@ $$
 
 定义阻尼振荡频率：
 
-
 $$
-\omega_d= \omega_n\sqrt{1-\zeta^2}
+\omega_d= \omega_n\sqrt{1-\zeta^2}  
 $$
-
 
 
 
 单位阶跃响应为：
 
-
 $$
-y(t)= 1-e^{-\zeta\omega_nt} \left[ \cos(\omega_dt) + \frac{\zeta}{\sqrt{1-\zeta^2}} \sin(\omega_dt) \right]
+y(t)= 1-e^{-\zeta\omega_nt} \left[ \cos(\omega_dt) + \frac{\zeta}{\sqrt{1-\zeta^2}} \sin(\omega_dt) \right]  
 $$
-
 
 
 
@@ -966,11 +885,9 @@ $$
 
 二阶欠阻尼系统的峰值过冲比例为：
 
-
 $$
-M_p= e^{-\frac{\pi\zeta} {\sqrt{1-\zeta^2}}}
+M_p= e^{-\frac{\pi\zeta} {\sqrt{1-\zeta^2}}}  
 $$
-
 
 
 
@@ -988,21 +905,17 @@ $$
 
 峰值时间：
 
-
 $$
-t_p=\frac{\pi}{\omega_d}
+t_p=\frac{\pi}{\omega_d}  
 $$
-
 
 
 
 2%建立时间常近似为：
 
-
 $$
-t_s\approx\frac{4}{\zeta\omega_n}
+t_s\approx\frac{4}{\zeta\omega_n}  
 $$
-
 
 
 
@@ -1012,11 +925,9 @@ $$
 
 当：
 
-
 $$
-\zeta<\frac{1}{\sqrt{2}}
+\zeta<\frac{1}{\sqrt{2}}  
 $$
-
 
 
 
@@ -1024,21 +935,17 @@ $$
 
 谐振频率：
 
-
 $$
-\omega_r= \omega_n\sqrt{1-2\zeta^2}
+\omega_r= \omega_n\sqrt{1-2\zeta^2}  
 $$
-
 
 
 
 谐振峰值：
 
-
 $$
-M_r= \frac{1}{2\zeta\sqrt{1-\zeta^2}}
+M_r= \frac{1}{2\zeta\sqrt{1-\zeta^2}}  
 $$
-
 
 
 
@@ -1055,11 +962,9 @@ $$
 
 当：
 
-
 $$
-\zeta=0
+\zeta=0  
 $$
-
 
 
 
@@ -1067,11 +972,9 @@ $$
 
 当：
 
-
 $$
-\zeta<0
+\zeta<0  
 $$
-
 
 
 
@@ -1086,21 +989,17 @@ $$
 
 左半平面实零点可写为：
 
-
 $$
-1+\frac{s}{\omega_z}
+1+\frac{s}{\omega_z}  
 $$
-
 
 
 
 其零点位置为：
 
-
 $$
-s=-\omega_z
+s=-\omega_z  
 $$
-
 
 
 
@@ -1142,11 +1041,9 @@ $$
 
 考虑：
 
-
 $$
-H(s)= \frac{1+s/\omega_z} {(1+s/\omega_p)^2}
+H(s)= \frac{1+s/\omega_z} {(1+s/\omega_p)^2}  
 $$
-
 
 
 
@@ -1187,21 +1084,17 @@ $$
 
 右半平面实零点可写为：
 
-
 $$
-1-\frac{s}{\omega_z}
+1-\frac{s}{\omega_z}  
 $$
-
 
 
 
 对应零点：
 
-
 $$
-s=+\omega_z
+s=+\omega_z  
 $$
-
 
 
 
@@ -1211,11 +1104,9 @@ $$
 
 右半平面零点的幅频响应与左半平面零点完全相同：
 
-
 $$
-\left|1-j\frac{\omega}{\omega_z}\right| = \left|1+j\frac{\omega}{\omega_z}\right|
+\left|1-j\frac{\omega}{\omega_z}\right| = \left|1+j\frac{\omega}{\omega_z}\right|  
 $$
-
 
 
 
@@ -1246,11 +1137,9 @@ $$
 
 例如：
 
-
 $$
-H(s)=\frac{1-s/\omega_z}{1+s/\omega_p}
+H(s)=\frac{1-s/\omega_z}{1+s/\omega_p}  
 $$
-
 
 
 
@@ -1258,21 +1147,17 @@ $$
 
 单位阶跃响应可以写为：
 
-
 $$
-y(t)= 1- \left( 1+\frac{\omega_p}{\omega_z} \right) e^{-\omega_pt}
+y(t)= 1- \left( 1+\frac{\omega_p}{\omega_z} \right) e^{-\omega_pt}  
 $$
-
 
 
 
 在 t=0^+：
 
-
 $$
-y(0^+)=-\frac{\omega_p}{\omega_z}
+y(0^+)=-\frac{\omega_p}{\omega_z}  
 $$
-
 
 
 
@@ -1293,11 +1178,9 @@ $$
 
 实际电路经常没有直接输入—输出通路，可用：
 
-
 $$
-H(s)= \frac{1-s/\omega_z} {(1+s/\omega_p)^2}
+H(s)= \frac{1-s/\omega_z} {(1+s/\omega_p)^2}  
 $$
-
 
 
 
@@ -1307,11 +1190,9 @@ $$
 
 对于单位阶跃：
 
-
 $$
-y'(0^+) = \lim_{s\rightarrow\infty}sH(s) = -\frac{\omega_p^2}{\omega_z}
+y'(0^+) = \lim_{s\rightarrow\infty}sH(s) = -\frac{\omega_p^2}{\omega_z}  
 $$
-
 
 
 
@@ -1338,11 +1219,9 @@ $$
 
 实际设计中，通常希望：
 
-
 $$
-\omega_{\mathrm{UGB}}\ll\omega_{z,\mathrm{RHP}}
+\omega_{\mathrm{UGB}}\ll\omega_{z,\mathrm{RHP}}  
 $$
-
 
 
 
@@ -1367,11 +1246,9 @@ Miller电容不仅形成极点分裂，也可能通过前馈电流产生右半�
 
 在典型两级运放中：
 
-
 $$
-\omega_{z,\mathrm{RHP}} \approx \frac{g_{m2}}{C_C}
+\omega_{z,\mathrm{RHP}} \approx \frac{g_{m2}}{C_C}  
 $$
-
 
 
 
@@ -1396,31 +1273,25 @@ $$
 
 原点零点意味着分子中包含：
 
-
 $$
-s
+s  
 $$
-
 
 
 
 典型高通系统为：
 
-
 $$
-H(s)=\frac{s/\omega_p}{1+s/\omega_p}
+H(s)=\frac{s/\omega_p}{1+s/\omega_p}  
 $$
-
 
 
 
 其零点位于原点，极点位于：
 
-
 $$
-s=-\omega_p
+s=-\omega_p  
 $$
-
 
 
 
@@ -1428,21 +1299,17 @@ $$
 
 对单位阶跃：
 
-
 $$
-Y(s) = \frac{1}{s} \frac{s/\omega_p}{1+s/\omega_p} = \frac{1}{s+\omega_p}
+Y(s) = \frac{1}{s} \frac{s/\omega_p}{1+s/\omega_p} = \frac{1}{s+\omega_p}  
 $$
-
 
 
 
 因此：
 
-
 $$
-y(t)=e^{-\omega_pt}
+y(t)=e^{-\omega_pt}  
 $$
-
 
 
 
@@ -1482,41 +1349,33 @@ $$
 
 当零点为：
 
-
 $$
-z_{1,2}=\pm j\omega_z
+z_{1,2}=\pm j\omega_z  
 $$
-
 
 
 
 分子中包含：
 
-
 $$
-s^2+\omega_z^2
+s^2+\omega_z^2  
 $$
-
 
 
 
 在：
 
-
 $$
-\omega=\omega_z
+\omega=\omega_z  
 $$
-
 
 
 
 有：
 
-
 $$
-H(j\omega_z)=0
+H(j\omega_z)=0  
 $$
-
 
 
 
@@ -1526,11 +1385,9 @@ $$
 
 典型传递函数为：
 
-
 $$
-H(s)= \frac{s^2+\omega_z^2} {s^2+\frac{\omega_p}{Q}s+\omega_p^2}
+H(s)= \frac{s^2+\omega_z^2} {s^2+\frac{\omega_p}{Q}s+\omega_p^2}  
 $$
-
 
 
 
@@ -1571,21 +1428,17 @@ $$
 
 对于实系数电路，复数零点必须以共轭形式出现：
 
-
 $$
-z_{1,2} = -\zeta_z\omega_z \pm j\omega_z\sqrt{1-\zeta_z^2}
+z_{1,2} = -\zeta_z\omega_z \pm j\omega_z\sqrt{1-\zeta_z^2}  
 $$
-
 
 
 
 对应分子为：
 
-
 $$
-1+ 2\zeta_z\frac{s}{\omega_z} + \frac{s^2}{\omega_z^2}
+1+ 2\zeta_z\frac{s}{\omega_z} + \frac{s^2}{\omega_z^2}  
 $$
-
 
 
 
@@ -1637,31 +1490,25 @@ $$
 
 一个典型全通因子为：
 
-
 $$
-A(s)= \frac{1-s/\omega_z} {1+s/\omega_z}
+A(s)= \frac{1-s/\omega_z} {1+s/\omega_z}  
 $$
-
 
 
 
 其幅度为：
 
-
 $$
-|A(j\omega)|=1
+|A(j\omega)|=1  
 $$
-
 
 
 
 但相位为：
 
-
 $$
-\angle A(j\omega) = -2\tan^{-1}\left(\frac{\omega}{\omega_z}\right)
+\angle A(j\omega) = -2\tan^{-1}\left(\frac{\omega}{\omega_z}\right)  
 $$
-
 
 
 
@@ -1678,41 +1525,33 @@ $$
 
 考虑：
 
-
 $$
-H(s)= K\frac{1+s/\omega_z} {1+s/\omega_p}
+H(s)= K\frac{1+s/\omega_z} {1+s/\omega_p}  
 $$
-
 
 
 
 单位阶跃响应为：
 
-
 $$
-y(t) = K+ K\left( \frac{\omega_p}{\omega_z}-1 \right) e^{-\omega_pt}
+y(t) = K+ K\left( \frac{\omega_p}{\omega_z}-1 \right) e^{-\omega_pt}  
 $$
-
 
 
 
 其最终值为：
 
-
 $$
-y(\infty)=K
+y(\infty)=K  
 $$
-
 
 
 
 初始值为：
 
-
 $$
-y(0^+)=K\frac{\omega_p}{\omega_z}
+y(0^+)=K\frac{\omega_p}{\omega_z}  
 $$
-
 
 
 
@@ -1720,21 +1559,17 @@ $$
 
 如果：
 
-
 $$
-\omega_z<\omega_p
+\omega_z<\omega_p  
 $$
-
 
 
 
 则：
 
-
 $$
-\frac{\omega_p}{\omega_z}>1
+\frac{\omega_p}{\omega_z}>1  
 $$
-
 
 
 
@@ -1757,21 +1592,17 @@ $$
 
 如果：
 
-
 $$
-\omega_p<\omega_z
+\omega_p<\omega_z  
 $$
-
 
 
 
 则：
 
-
 $$
-\frac{\omega_p}{\omega_z}<1
+\frac{\omega_p}{\omega_z}<1  
 $$
-
 
 
 
@@ -1797,31 +1628,25 @@ $$
 
 如果传递函数中存在：
 
-
 $$
-H(s)= \frac{s-z} {(s-p_1)(s-p_2)}
+H(s)= \frac{s-z} {(s-p_1)(s-p_2)}  
 $$
-
 
 
 
 且：
 
-
 $$
-z=p_2
+z=p_2  
 $$
-
 
 
 
 则数学上有：
 
-
 $$
-H(s)=\frac{1}{s-p_1}
+H(s)=\frac{1}{s-p_1}  
 $$
-
 
 
 
@@ -1863,11 +1688,9 @@ $$
 
 设：
 
-
 $$
-\omega_z\approx\omega_p
+\omega_z\approx\omega_p  
 $$
-
 
 
 
@@ -1890,11 +1713,9 @@ $$
 
 例如：
 
-
 $$
-y(t)=1-Ae^{-t/\tau_f}-\varepsilon e^{-t/\tau_s}
+y(t)=1-Ae^{-t/\tau_f}-\varepsilon e^{-t/\tau_s}  
 $$
-
 
 
 
@@ -1926,11 +1747,9 @@ $$
 
 假设系统中有右半平面极点：
 
-
 $$
-p=+\omega_p
+p=+\omega_p  
 $$
-
 
 
 
@@ -1938,11 +1757,9 @@ $$
 
 虽然外部输入—输出传递函数中可能看不到该极点，但内部状态仍然可能包含：
 
-
 $$
-e^{+\omega_pt}
+e^{+\omega_pt}  
 $$
-
 
 
 
@@ -1965,21 +1782,17 @@ $$
 
 对于：
 
-
 $$
-H(s)=\frac{1}{(s+a)^m}
+H(s)=\frac{1}{(s+a)^m}  
 $$
-
 
 
 
 时域中会出现：
 
-
 $$
-t^{m-1}e^{-at}
+t^{m-1}e^{-at}  
 $$
-
 
 
 
@@ -1996,21 +1809,17 @@ $$
 
 在频域中，m 重实极点最终贡献：
 
-
 $$
--20m\text{ dB/dec}
+-20m\text{ dB/dec}  
 $$
-
 
 
 
 以及：
 
-
 $$
--90m^\circ
+-90m^\circ  
 $$
-
 
 
 
@@ -2020,21 +1829,17 @@ $$
 
 m 重左半平面零点最终贡献：
 
-
 $$
-+20m\text{ dB/dec}
++20m\text{ dB/dec}  
 $$
-
 
 
 
 以及：
 
-
 $$
-+90m^\circ
++90m^\circ  
 $$
-
 
 
 
@@ -2051,11 +1856,9 @@ $$
 
 设传递函数为：
 
-
 $$
-H(s)=\frac{N(s)}{D(s)}
+H(s)=\frac{N(s)}{D(s)}  
 $$
-
 
 
 
@@ -2063,11 +1866,9 @@ $$
 
 定义相对阶数：
 
-
 $$
-r=n-m
+r=n-m  
 $$
-
 
 
 
@@ -2077,11 +1878,9 @@ $$
 
 对于单位阶跃：
 
-
 $$
-y(0^+)=\lim_{s\rightarrow\infty}H(s)
+y(0^+)=\lim_{s\rightarrow\infty}H(s)  
 $$
-
 
 
 
@@ -2104,21 +1903,17 @@ $$
 
 若：
 
-
 $$
-y(0^+)=0
+y(0^+)=0  
 $$
-
 
 
 
 则：
 
-
 $$
-y'(0^+)= \lim_{s\rightarrow\infty}sH(s)
+y'(0^+)= \lim_{s\rightarrow\infty}sH(s)  
 $$
-
 
 
 
@@ -2148,31 +1943,25 @@ $$
 
 对于 Y(s)：
 
-
 $$
-y(0^+)= \lim_{s\rightarrow\infty}sY(s)
+y(0^+)= \lim_{s\rightarrow\infty}sY(s)  
 $$
-
 
 
 
 对于单位阶跃输入：
 
-
 $$
-Y(s)=\frac{H(s)}{s}
+Y(s)=\frac{H(s)}{s}  
 $$
-
 
 
 
 因此：
 
-
 $$
-y(0^+)= \lim_{s\rightarrow\infty}H(s)
+y(0^+)= \lim_{s\rightarrow\infty}H(s)  
 $$
-
 
 
 
@@ -2189,21 +1978,17 @@ $$
 
 更一般地：
 
-
 $$
-y'(0^+) = \lim_{s\rightarrow\infty} s\left[sY(s)-y(0^+)\right]
+y'(0^+) = \lim_{s\rightarrow\infty} s\left[sY(s)-y(0^+)\right]  
 $$
-
 
 
 
 对于单位阶跃，若 y(0^+)=0：
 
-
 $$
-y'(0^+)= \lim_{s\rightarrow\infty}sH(s)
+y'(0^+)= \lim_{s\rightarrow\infty}sH(s)  
 $$
-
 
 
 
@@ -2213,21 +1998,17 @@ $$
 
 若系统最终稳定：
 
-
 $$
-y(\infty) = \lim_{s\rightarrow0}sY(s)
+y(\infty) = \lim_{s\rightarrow0}sY(s)  
 $$
-
 
 
 
 对于单位阶跃：
 
-
 $$
-y(\infty)=H(0)
+y(\infty)=H(0)  
 $$
-
 
 
 
@@ -2269,11 +2050,9 @@ $$
 
 反馈系统闭环传递函数为：
 
-
 $$
-T(s)=\frac{L(s)}{1+L(s)}
+T(s)=\frac{L(s)}{1+L(s)}  
 $$
-
 
 
 
@@ -2281,11 +2060,9 @@ $$
 
 闭环极点由：
 
-
 $$
-1+L(s)=0
+1+L(s)=0  
 $$
-
 
 
 
@@ -2299,11 +2076,9 @@ $$
 
 若环路增益在总相位接近：
 
-
 $$
--180^\circ
+-180^\circ  
 $$
-
 
 
 
@@ -2377,11 +2152,9 @@ $$
 
 一个高阻输出节点通常形成：
 
-
 $$
-\omega_p\approx\frac{1}{R_{\mathrm{out}}C_{\mathrm{out}}}
+\omega_p\approx\frac{1}{R_{\mathrm{out}}C_{\mathrm{out}}}  
 $$
-
 
 
 
@@ -2424,11 +2197,9 @@ Miller补偿的主要作用是极点分裂：
 
 但补偿电容的前馈路径可能产生右半平面零点：
 
-
 $$
-\omega_{z,\mathrm{RHP}} \approx \frac{g_{m2}}{C_C}
+\omega_{z,\mathrm{RHP}} \approx \frac{g_{m2}}{C_C}  
 $$
-
 
 
 
@@ -2436,11 +2207,9 @@ $$
 
 若在Miller电容前串联电阻 $R_z$，零点位置常可近似写成：
 
-
 $$
-\omega_z \approx \frac{1} {C_C\left(1/g_{m2}-R_z\right)}
+\omega_z \approx \frac{1} {C_C\left(1/g_{m2}-R_z\right)}  
 $$
-
 
 
 
@@ -2507,21 +2276,17 @@ LDO常见的零极点包括：
 
 输出极点近似为：
 
-
 $$
-\omega_{p,\mathrm{out}} \approx \frac{1}{R_{\mathrm{load}}C_{\mathrm{out}}}
+\omega_{p,\mathrm{out}} \approx \frac{1}{R_{\mathrm{load}}C_{\mathrm{out}}}  
 $$
-
 
 
 
 ESR零点为：
 
-
 $$
-\omega_{z,\mathrm{ESR}} = \frac{1}{R_{\mathrm{ESR}}C_{\mathrm{out}}}
+\omega_{z,\mathrm{ESR}} = \frac{1}{R_{\mathrm{ESR}}C_{\mathrm{out}}}  
 $$
-
 
 
 
@@ -2554,51 +2319,41 @@ ESR零点是左半平面零点，可以补偿输出极点带来的相位滞后�
 
 采样开关导通电阻与采样电容形成：
 
-
 $$
-\omega_p = \frac{1}{R_{\mathrm{on}}C_S}
+\omega_p = \frac{1}{R_{\mathrm{on}}C_S}  
 $$
-
 
 
 
 采样电压的建立误差为：
 
-
 $$
-\varepsilon(t)=e^{-t/(R_{\mathrm{on}}C_S)}
+\varepsilon(t)=e^{-t/(R_{\mathrm{on}}C_S)}  
 $$
-
 
 
 
 对于 N bit精度，如果按满量程阶跃并要求误差小于半个LSB：
 
-
 $$
-e^{-t_s/\tau} < \frac{1}{2^{N+1}}
+e^{-t_s/\tau} < \frac{1}{2^{N+1}}  
 $$
-
 
 
 
 则：
 
-
 $$
-t_s> (N+1)\ln 2\cdot\tau
+t_s> (N+1)\ln 2\cdot\tau  
 $$
-
 
 
 
 例如12 bit：
 
-
 $$
-t_s>13\ln2\cdot\tau \approx9.01\tau
+t_s>13\ln2\cdot\tau \approx9.01\tau  
 $$
-
 
 
 
@@ -2627,11 +2382,9 @@ $$
 
 级间放大器建立误差通常包含：
 
-
 $$
-e(t) = \sum_i A_i e^{p_i t}
+e(t) = \sum_i A_i e^{p_i t}  
 $$
-
 
 
 
@@ -2676,21 +2429,17 @@ $$
 
 对于12 bit ADC，半LSB相对满量程约为：
 
-
 $$
-\frac{1}{8192} \approx0.0122\%
+\frac{1}{8192} \approx0.0122\%  
 $$
-
 
 
 
 如果慢尾部幅度为：
 
-
 $$
-0.1\%
+0.1\%  
 $$
-
 
 
 
@@ -2707,11 +2456,9 @@ $$
 
 应直接画出：
 
-
 $$
-\left| \frac{V_{\mathrm{out}}(t)-V_{\mathrm{final}}} {V_{\mathrm{FS}}} \right|
+\left| \frac{V_{\mathrm{out}}(t)-V_{\mathrm{final}}} {V_{\mathrm{FS}}} \right|  
 $$
-
 
 
 
@@ -2732,21 +2479,17 @@ $$
 
 例如一阶低通：
 
-
 $$
-|H(j\omega)|^2= \frac{1}{1+(\omega/\omega_p)^2}
+|H(j\omega)|^2= \frac{1}{1+(\omega/\omega_p)^2}  
 $$
-
 
 
 
 其等效噪声带宽为：
 
-
 $$
-\mathrm{ENBW} = \frac{\pi}{2}f_p
+\mathrm{ENBW} = \frac{\pi}{2}f_p  
 $$
-
 
 
 
@@ -2773,11 +2516,9 @@ $$
 
 运放闭环噪声分析中，应观察噪声增益：
 
-
 $$
-NG(s)=1+\frac{Z_f(s)}{Z_g(s)}
+NG(s)=1+\frac{Z_f(s)}{Z_g(s)}  
 $$
-
 
 
 
@@ -2824,19 +2565,15 @@ $$
 
 因此会出现信号相关的动态响应：
 
-
 $$
-p_i=p_i(V_{\mathrm{in}},V_{\mathrm{out}})
+p_i=p_i(V_{\mathrm{in}},V_{\mathrm{out}})  
 $$
-
-
 
 
 
 $$
-z_i=z_i(V_{\mathrm{in}},V_{\mathrm{out}})
+z_i=z_i(V_{\mathrm{in}},V_{\mathrm{out}})  
 $$
-
 
 
 
@@ -2889,21 +2626,17 @@ $$
 
 常见近似关系：
 
-
 $$
-\omega_p\approx\frac{1}{RC}
+\omega_p\approx\frac{1}{RC}  
 $$
-
 
 
 
 或：
 
-
 $$
-\omega_p\approx\frac{g_m}{C}
+\omega_p\approx\frac{g_m}{C}  
 $$
-
 
 
 
@@ -2969,21 +2702,17 @@ $$
 
 对于一个简单实极点：
 
-
 $$
-p=-\omega_p
+p=-\omega_p  
 $$
-
 
 
 
 时间常数：
 
-
 $$
-\tau=\frac{1}{\omega_p}
+\tau=\frac{1}{\omega_p}  
 $$
-
 
 
 
@@ -3045,11 +2774,9 @@ $$
 
 当输入阶跃较大时，电路可能先进入摆率限制：
 
-
 $$
-\frac{dV}{dt} \approx \frac{I_{\max}}{C}
+\frac{dV}{dt} \approx \frac{I_{\max}}{C}  
 $$
-
 
 
 
@@ -3057,11 +2784,9 @@ $$
 
 之后进入小信号线性建立阶段，才由零极点决定：
 
-
 $$
-e(t) = \sum_i A_i e^{p_i t}
+e(t) = \sum_i A_i e^{p_i t}  
 $$
-
 
 
 
@@ -3098,11 +2823,9 @@ $$
 
 #### 单左半平面实极点
 
-
 $$
-H(s)=\frac{1}{1+s/\omega_p}
+H(s)=\frac{1}{1+s/\omega_p}  
 $$
-
 
 
 
@@ -3382,11 +3105,9 @@ $$
 
 高阻节点通常容易形成低频极点：
 
-
 $$
-\omega_p\approx\frac{1}{R_{\mathrm{node}}C_{\mathrm{node}}}
+\omega_p\approx\frac{1}{R_{\mathrm{node}}C_{\mathrm{node}}}  
 $$
-
 
 
 
@@ -3511,11 +3232,9 @@ $$
 
 定义：
 
-
 $$
-e(t)= \frac{V_{\mathrm{out}}(t)-V_{\mathrm{final}}} {V_{\mathrm{FS}}}
+e(t)= \frac{V_{\mathrm{out}}(t)-V_{\mathrm{final}}} {V_{\mathrm{FS}}}  
 $$
-
 
 
 
@@ -3534,21 +3253,17 @@ $$
 
 对于12 bit半LSB：
 
-
 $$
-|e(t)|<1.22\times10^{-4}
+|e(t)|<1.22\times10^{-4}  
 $$
-
 
 
 
 对于14 bit半LSB：
 
-
 $$
-|e(t)|<3.05\times10^{-5}
+|e(t)|<3.05\times10^{-5}  
 $$
-
 
 
 
@@ -3580,11 +3295,9 @@ $$
 
 对于高速高精度ADC，零极点分析的最终目标不是单纯追求最大带宽，而是：
 
-
 $$
-\text{在规定时间内，稳定并线性地建立到目标误差以内}
+\text{在规定时间内，稳定并线性地建立到目标误差以内}  
 $$
-
 
 
 
@@ -3719,8 +3432,63 @@ $$
 
 3. **高精度电路不能只看带宽和相位裕度，还必须检查完整时域建立误差与慢尾部。**
 
+## 2026 深化：从极点位置到完整建立误差、环路断点和多环耦合（新增）
 
-## 相关笔记
+> [!note] 补充原则
+> 原笔记的 s 平面、零极点定义完整。本节着重回答工程实践中更容易出错的问题：**Bode/PM 好看却不够精确、STB 断点不当、差模与共模环路互相影响、动态 RingAmp 非 LTI**。以下示例为模型推导而非具体 PDK 测量。
 
-- [ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
-- [Bandgap 基准源：架构与设计](/GarveyDing_AcademicPages/blog/bandgap-reference/)
+### P1. 10-bit 和 12-bit 不是同一个 settling 指标
+
+若某闭环一阶系统的归一化初始误差为 1，末端 settling error 为 `e^{-T/τ}`，则要求误差小于半 LSB、`N` bit 理想全幅精度时：
+
+$$\exp(-T/\tau)\leq 2^{-(N+1)}\Rightarrow T/\tau\geq(N+1)\ln2.$$
+
+对 `N=12`，需要至少 `9.01 τ`；对 `N=14` 则需要 `10.40 τ`。这仅是**无静态偏差、无 slew、单极点、误差初值恰好等于 full scale** 的理想估算。二阶过冲、增益非线性、动态开关瞬态、有限 DC 增益和 slow tail 都会使实际收敛比这个简单估算差。
+
+### P2. 极点—零点双重态：为什么 PM 不差仍会出慢尾
+
+考虑
+
+$$H(s)=\frac{1+s/\omega_z}{(1+s/\omega_{p1})(1+s/\omega_{p2})},\qquad \omega_z\approx\omega_{p2}.$$
+
+在理想的 LTI 频域若 `ω_z=ω_p2` 可代数抵消，然而硬件里寄生、PVT 和电容失配使两者略微不等，产生幅值很小但时间常数大的“慢尾”。如果 FFT 的谐波尚可，而 step response 在最后几十皮秒总是接近精度边界，考虑记录**瞬态残差的对数幅度图**，放大尾部而不只观察 10–90% 上升时间。CMFB 的 slow pole、bias settling、被寄生弱耦合的高阻节点是常见来源。
+
+![2026_05_专项机制图](/images/blog/learning-notes/circuit-poles-and-zeros/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_慢尾双重态](/images/blog/learning-notes/circuit-poles-and-zeros/2026_01_慢尾双重态.svg)
+
+### P3. STB 断环位置：需要保留 DC 工作点和实际加载
+
+Spectre `stb/iprobe` 的目标是给定 DC 或周期工作点下的环路返回比；不要像手算那样直接切断导线导致偏置消失。选择断点时要求：保留实际负载、保持关键节点电压/共模；注入点覆盖要分析的整个环路；检查可能的多重反馈路径是否跨过断点造成环路遗漏。对 fully differential OTA，要分别测量 **DMFB（差模主反馈）和 CMFB（共模反馈）**，并在不同的输出共模及负载点检查稳定性。对带采样相位的 SC 放大器，静态 STB 只是某一固定开关状态的近似；应结合真实时钟 transient，并在可行时使用 periodic stability 方法。
+
+![2026_02_反馈环路与断点](/images/blog/learning-notes/circuit-poles-and-zeros/2026_02_反馈环路与断点.svg)
+
+### P4. RHP 零点不是补偿用的“正向相位超前”
+
+二级 Miller 补偿中，补偿电容前馈电流路径可能引入右半平面零点（特定近似常写 `ω_z≈g_m2/C_c`）；RHP 零点提供与 LHP 零点相反的相位贡献，通常降低稳定性裕度。采用 nulling resistor 能移动零点的位置：当 `R_z` 从较小值上升至一定范围时，零点可能从 RHP 推向无穷远，再转成 LHP。但精确位置和可用性取决于拓扑、`r_o`、负载、局部环路与寄生。不能仅按 `R_z=1/g_m2` 设定后假设所有 corners 都稳定。
+
+### P5. 大信号 startup / slewing 与小信号零极点必须分开
+
+RingAmp、动态比较器及高速 MDAC 的工作点常经历启动、过驱动、限幅和末段小信号线性建立。其动态阶段并无单一固定的 `A(s)`。一种可执行的方法是：记录 `Vout(t)`、关键内部节点/每级电流；在输出距离终值较远、中等、接近 LSB 处分别估计局部衰减斜率；扫描输入幅值和共模，识别是否出现供电饱和或跨导退化。若 transient error 呈双指数，说明不能用一个 UGB 解释全过程。
+
+![2026_03_稳定性验证流程](/images/blog/learning-notes/circuit-poles-and-zeros/2026_03_稳定性验证流程.svg)
+
+### P6. 推荐参照文献与教材
+
+- [P1] K. Bult and G. J. G. M. Geelen, “A Fast-Settling CMOS Op Amp for SC Circuits With 90-dB DC Gain,” *IEEE JSSC*, 1990. [DOI:10.1109/4.62165](https://doi.org/10.1109/4.62165)。
+- [P2] B. P. Hershberg et al., “Ring Amplifiers for Switched-Capacitor Circuits,” *ISSCC*, 2012. [DOI:10.1109/ISSCC.2012.6177090](https://doi.org/10.1109/ISSCC.2012.6177090)。
+- [P3] C. C. Enz and G. C. Temes, “Circuit Techniques for Reducing the Effects of Op-Amp Imperfections…,” *Proceedings of the IEEE*, 1996. [DOI:10.1109/5.542410](https://doi.org/10.1109/5.542410)。
+- [P4] B. Razavi, *Design of Analog CMOS Integrated Circuits*, 2nd ed., McGraw-Hill, 2017. [出版社](https://www.mheducation.com/highered/product/Design-of-Analog-CMOS-Integrated-Circuits-Razavi.html)。
+- [P5] J.-C. Wang and T.-H. Kuo, “A 72-dB SNDR 130-MS/s 0.8-mW Pipelined-SAR ADC Using a Distributed Averaging Correlated Level Shifting Ring Amplifier,” *IEEE JSSC*, 2022. [DOI:10.1109/JSSC.2022.3196743](https://doi.org/10.1109/JSSC.2022.3196743)。
+
+**论文配图建议**：P1 的 settling 轨迹、P2 的 RingAmp 时变放大路径、P5 的 DACLS 时序图。注意这一节三图不代表其原论文波形，为独立教学图示。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/circuit-poles-and-zeros/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

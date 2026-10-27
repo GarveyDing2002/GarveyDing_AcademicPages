@@ -1,31 +1,32 @@
 ---
 title: TI-ADC Time-Skew 校准：原理、方法与演进
-date: 2026-09-01
-excerpt: 从误差机理、检测方法、修正方式、代表性芯片和方法选型五个维度，系统梳理 TI-ADC time-skew
-  校准的技术演进，并明确区分论文实测、仿真结果与跨文献归纳。
+date: '2026-10-26'
+excerpt: 从误差机理、检测方法、修正方式、代表性芯片和方法选型五个维度，系统梳理 TI-ADC time-skew 校准的技术演进，并明确区分论文实测、仿真结果与跨文献归纳。
 tags:
-  - 学习记录
-  - adc
-  - ti-adc
-  - time-skew
-  - calibration
-  - literature-review
+- 学习记录
+- adc
+- ti-adc
+- time-skew
+- calibration
+- literature-review
 ---
 
-> **核心定位**
+# TI-ADC Time-Skew 校准：原理、方法与演进
+
+> [!abstract] 核心定位
 > 从误差机理、检测方法、修正方式、代表性芯片和方法选型五个维度，系统梳理 TI-ADC time-skew 校准的技术演进，并明确区分论文实测、仿真结果与跨文献归纳。
 
-> **文献来源**
-> 本文基于 Zotero 分类 `主题分类 > Calibration > time skew` 的 70 条记录、71 个 PDF 附件和 14 条精读笔记整理。完整条目及 DOI 见[附录 B](#附录-bzotero-time-skew-分类全部-70-条记录)。
+> [!info] 文献来源
+> 本文基于 Zotero 分类 `主题分类 > Calibration > time skew` 的 70 条记录、71 个 PDF 附件和 14 条精读笔记整理。完整条目及 DOI 见[[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B]]。
 
-> **一句话判断**
+> [!important] 一句话判断
 > Time-skew 校准的真正难点不是“把一个时间差估得足够精确”，而是在正常输入、参考通道或注入信号中构造一个对 skew **有符号、近似单调、且不被增益/带宽/前端扰动淹没**的可观测量；修正精度最终还受 DCDL/FIR 分辨率、检测器系统偏差和随机 jitter 的共同限制。
 
-> **阅读路径**
-> - 先读[第 2 节](#2-time-skew-的来源及系统影响)，建立“周期性确定性 skew、随机 jitter、频率相关 aperture mismatch”三者的边界；
-> - 再读[第 3 节](#3-校准系统的统一框架)和[第 5 节](#5-典型误差检测方法)，理解可观测量、更新律与失效条件；
-> - 做电路/算法选型时直接看[第 7 节](#7-方法横向比较)、[第 9 节](#9-方法选型指南)和[第 10 节](#10-设计与验证检查表)；
-> - 查具体论文数据时看[第 8 节](#8-代表性实现及论文报告结果)与[附录 B](#附录-bzotero-time-skew-分类全部-70-条记录)。
+> [!tip] 阅读路径
+> - 先读[[#2. Time skew 的来源及系统影响|第 2 节]]，建立“周期性确定性 skew、随机 jitter、频率相关 aperture mismatch”三者的边界；
+> - 再读[[#3. 校准系统的统一框架|第 3 节]]和[[#5. 典型误差检测方法|第 5 节]]，理解可观测量、更新律与失效条件；
+> - 做电路/算法选型时直接看[[#7. 方法横向比较|第 7 节]]、[[#9. 方法选型指南|第 9 节]]和[[#10. 设计与验证检查表|第 10 节]]；
+> - 查具体论文数据时看[[#8. 代表性实现及论文报告结果|第 8 节]]与[[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B]]。
 
 ## 摘要
 
@@ -42,6 +43,28 @@ tags:
 3. 检测器与修正器必须分开评价；方向型 detector 适合闭环 DCDL，幅值型 estimator 才能自然驱动数字导数/FIR。
 4. 延长平均只能降低随机估计误差，不能消除参考路径、dither 路径、bandwidth mismatch 或 actuator 非线性造成的系统偏置。
 5. 近年的主线不是单纯追求更低 skew 数字，而是让所有通道并行、保持恒定输入阻抗、覆盖过 Nyquist、共享真实输入路径，并把频率相关 aperture mismatch 纳入联合校正。
+
+
+## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
+
+- [[#1. 文献范围、方法与证据边界|1. 文献范围、方法与证据边界]]
+- [[#2. Time skew 的来源及系统影响|2. Time skew 的来源及系统影响]]
+- [[#3. 校准系统的统一框架|3. 校准系统的统一框架]]
+- [[#4. 发展历程|4. 发展历程]]
+- [[#5. 典型误差检测方法|5. 典型误差检测方法]]
+- [[#6. 误差修正方法|6. 误差修正方法]]
+- [[#7. 方法横向比较|7. 方法横向比较]]
+- [[#8. 代表性实现及论文报告结果|8. 代表性实现及论文报告结果]]
+- [[#9. 方法选型指南|9. 方法选型指南]]
+- [[#10. 设计与验证检查表|10. 设计与验证检查表]]
+- [[#11. 研究趋势与尚未解决的问题|11. 研究趋势与尚未解决的问题]]
+- [[#12. 结论|12. 结论]]
+- [[#附录 A：分类中的重复版本和外围条目|附录 A：分类中的重复版本和外围条目]]
+- [[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B：Zotero time skew 分类全部 70 条记录]]
+- [[#附录 C：核心参考文献快捷入口|附录 C：核心参考文献快捷入口]]
 
 ## 1. 文献范围、方法与证据边界
 
@@ -90,14 +113,11 @@ tags:
 
 设总采样率为 $f_s$，理想采样周期为 $T_s=1/f_s$，由 $N$ 个子 ADC 交织。第 $m$ 个子 ADC 的理想采样时刻为
 
-
 $$
 t_{m,k}^{\mathrm{ideal}}=(kN+m)T_s,\qquad m=0,\ldots,N-1 .
 $$
 
-
 若该通道存在等效采样时刻误差 $\Delta t_m$，实际输出的一阶模型为
-
 
 $$
 \begin{aligned}
@@ -108,24 +128,19 @@ y_m[k]
 \end{aligned}
 $$
 
-
 这个展开给出 time-skew 校准的基本物理图像：误差是“通道相关的时间系数”与“输入瞬时斜率”的乘积。对正弦输入 $x(t)=A\sin(2\pi f_{\mathrm{in}}t)$，误差幅度尺度为
-
 
 $$
 |e_t|\sim 2\pi f_{\mathrm{in}}A|\Delta t_m|.
 $$
 
-
 因此，同一个 100 fs 的时差在 100 MHz 输入时可能不可见，在 5 GHz 输入时却会直接限制高分辨率 ADC 的 SFDR。
 
 校准能够识别的是通道间的**相对采样位置**，而不是整个 ADC 相对外部世界的绝对时刻。若所有通道同时增加同一个延迟 $t_0$，输出只是整体平移，并不会产生交织 spur。工程上通常采用以下任一“规范条件”消除这一自由度：
 
-
 $$
 \sum_{m=0}^{N-1}\Delta t_m=0,
 $$
-
 
 或把某一路定义为参考，令 $\Delta t_0=0$。因此，$N$ 路系统只有 $N-1$ 个独立相对 skew。比较不同论文的“skew 数值”时必须确认作者报告的是单通道偏差、两路相对时差、相邻采样间隔误差，还是各通道相对均值的 RMS；这些定义相差最多可到两倍或带有 $\sqrt{N}$ 量级的换算。
 
@@ -133,16 +148,13 @@ $$
 
 把合并后的全速序列写成
 
-
 $$
 y[n]\approx x(nT_s)+\delta[n]x'(nT_s),
 \qquad
 \delta[n+N]=\delta[n],
 $$
 
-
 其中 $\delta[n]=\Delta t_{n\bmod N}$ 是以 $N$ 为周期的确定性序列。对它作 $N$ 点离散傅里叶展开：
-
 
 $$
 \delta[n]=\sum_{q=0}^{N-1}c_qe^{j2\pi qn/N},
@@ -151,9 +163,7 @@ c_q=\frac{1}{N}\sum_{m=0}^{N-1}
 \Delta t_me^{-j2\pi qm/N}.
 $$
 
-
 这一步非常关键：time-skew spur 的大小不是只由“最大通道偏差”决定，而是由 skew 空间分布在各个交织模式上的傅里叶系数 $c_q$ 决定。对单音输入，一阶误差项把输入搬移到
-
 
 $$
 f_{\mathrm{spur}}
@@ -161,33 +171,27 @@ f_{\mathrm{spur}}
 \qquad q=1,\ldots,N-1 .
 $$
 
-
 若忽略折叠方向和实信号的共轭项，第 $q$ 个 skew 模式的 spur/信号幅度近似为
-
 
 $$
 \rho_q\approx 2\pi f_{\mathrm{in}}|c_q|,
 $$
 
-
 因而
-
 
 $$
 \mathrm{Spur}_q\,[\mathrm{dBc}]
 \approx20\log_{10}\!\left(2\pi f_{\mathrm{in}}|c_q|\right).
 $$
 
-
 $c_0$ 是所有通道的公共延迟，只造成整体相位变化；$q\ge1$ 才形成交织 spur。这个表示也解释了为什么“每路 skew RMS 相同”的两颗芯片可能具有不同的最坏 SFDR：如果误差集中在某一个离散空间模式上，其单根 spur 会比误差分散在多个模式时更高。
 
-> **公式的使用边界**
+> [!warning] 公式的使用边界
 > 上式是一阶、小 skew、单一恒定时间偏差模型。不同文献对两路系统的 $\Delta t$ 定义不同：有的用两路相对时差，有的用每路相对理想网格的偏差，有的用相邻间隔 $T_s\pm\Delta t$。因此不要脱离论文定义直接比较公式前的系数 1、2 或 $1/2$。
 
 ### 2.3 从目标 SFDR 反推残余 skew
 
 若目标是让某个最坏 skew 模式低于 $S$ dBc，一阶估算为
-
 
 $$
 |c_q|_{\max}
@@ -195,16 +199,13 @@ $$
 \frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}.
 $$
 
-
 例如，仅作数量级说明，若希望在 $f_{\mathrm{in,max}}=5.7\ \mathrm{GHz}$ 时把一阶 time-skew spur 压到 −74 dBc 以下，则最坏模式系数需约小于
-
 
 $$
 |c_q|_{\max}\lesssim
 \frac{10^{-74/20}}{2\pi\cdot5.7\times10^9}
 \approx5.6\ \mathrm{fs}.
 $$
-
 
 这不是“每路 DCDL 必须有 5.6 fs 步长”的直接结论：模式系数和通道误差的映射取决于 $N$ 与误差空间分布，且实际 SFDR 还可能由量化、谐波、带宽失配、参考路径 feedthrough 和随机 jitter 限制。但它能快速说明为什么 10 GS/s、12-bit 级系统会把校准推到几十飞秒甚至个位数飞秒的系统误差预算。
 
@@ -216,11 +217,9 @@ Time skew 不是只由时钟树长度差造成的；应把“控制采样结束�
 
 相位发生器、分频器、占空比校正、时钟缓冲器、走线寄生和不同负载会使各路采样时钟偏离理想相位。时间误差与相位误差的换算为
 
-
 $$
 \Delta t=\frac{\Delta\phi}{360^\circ f_{\mathrm{clk}}}.
 $$
-
 
 以 10 GHz 时钟为例，1° 相位误差约为 278 fs。时钟路径还可能把电源噪声转换成数据相关或随机的边沿位移，因此 DCDL 能调掉平均相位，却不能自动消除新增的随机 jitter。
 
@@ -228,12 +227,10 @@ $$
 
 采样开关的有效关断时刻不等于数字时钟的逻辑阈值交越时刻。MOS 阈值、bootstrap 波形、栅极驱动斜率、body effect、信号相关导通电阻和 drain feedthrough 都会改变 aperture。若时钟边沿在阈值附近的斜率为 $S_{\mathrm{clk}}$，阈值失配 $\Delta V_{\mathrm{th}}$ 的一阶等效时间误差为
 
-
 $$
 \Delta t_{\mathrm{eq}}\approx
 \frac{\Delta V_{\mathrm{th}}}{S_{\mathrm{clk}}}.
 $$
-
 
 这说明只在时钟输入端测相位并不足以证明实际采样时刻已经匹配。
 
@@ -241,11 +238,9 @@ $$
 
 输入缓冲器、封装/走线、ESD、开关导通电阻和采样电容的差异会产生通道相关传递函数。可写成
 
-
 $$
 H_m(f)=H_0(f)\,[1+\epsilon_m(f)]e^{-j2\pi f\Delta t_m(f)}.
 $$
-
 
 当工作频带远低于前端极点，$\epsilon_m(f)$ 很小且 $\Delta t_m(f)$ 近似常数，调采样边沿是合理的；当输入接近前端带宽时，$\epsilon_m(f)$ 和群延迟差均随频率变化，单个 DCDL 码只能在某一频率附近抵消线性相位项。此时应把问题称为 bandwidth/aperture mismatch，并考虑每通道均衡或 fractional-delay/filter correction，而不是继续把所有误差都归结为标量 time skew。
 
@@ -278,12 +273,10 @@ flowchart TD
 
 随机 jitter 的正弦输入上限常用
 
-
 $$
 \mathrm{SNR}_{\mathrm{jitter}}\approx
 -20\log_{10}\left(2\pi f_{\mathrm{in}}\sigma_t\right).
 $$
-
 
 与确定性 skew 不同，随机 jitter 主要增加噪声；随机化通道顺序或参考采样时刻虽然能把周期 spur 摊平，却没有消除误差能量，因此可能改善 SFDR 而不改善 SNDR。
 
@@ -313,13 +306,11 @@ flowchart LR
 
 在已接近锁定点的小 skew 范围内，多数检测器都可抽象为
 
-
 $$
 z_i[\ell]
 =K_i\Delta t_{i,\mathrm{res}}[\ell]
 +b_i+\nu_i[\ell],
 $$
-
 
 其中：
 
@@ -331,7 +322,6 @@ $$
 
 以符号累加器为例，更新律可写成
 
-
 $$
 u_i[\ell+1]
 =\operatorname{sat}\!\left(
@@ -339,15 +329,12 @@ u_i[\ell]-\mu\operatorname{sgn}(K_i)\operatorname{sgn}(z_i[\ell])
 \right),
 $$
 
-
 而 DCDL 近似产生
-
 
 $$
 t_{i,\mathrm{corr}}[\ell]
 =t_{\mathrm{LSB}}u_i[\ell].
 $$
-
 
 若检测器给出误差幅度而不只是符号，也可以用 LMS、归一化 LMS、binary/coarse-fine search 或 Kalman/随机梯度更新。算法名称不同，但闭环都必须同时满足：
 
@@ -393,14 +380,11 @@ $$
 
 有限样本统计的标准差通常近似按
 
-
 $$
 \sigma_{\hat z}(M)\propto\frac{1}{\sqrt{M}}
 $$
 
-
 下降。把随机误差再减半，往往需要约四倍有效样本；但系统偏置 $b_i$ 不会随平均时间消失。残余 skew 可用下式作一阶预算：
-
 
 $$
 \sigma_{t,\mathrm{res}}^2
@@ -411,19 +395,15 @@ $$
 +\sigma_{t,\mathrm{path}}^2.
 $$
 
-
 其中 $\sigma_{t,\mathrm{path}}\approx|b_i/K_i|$ 表示参考/信号路径差造成的等效时间偏差。对步长为 $t_{\mathrm{LSB}}$ 的单调 DCDL，若锁定码在一个量化区间内近似均匀，量化残差 RMS 的粗略估计为
-
 
 $$
 \sigma_{t,\mathrm{quant}}\approx\frac{t_{\mathrm{LSB}}}{\sqrt{12}},
 $$
 
-
 而静态最坏值通常按 $t_{\mathrm{LSB}}/2$ 检查。若控制码持续在相邻码间翻转，还需把由码切换引入的调制 spur 和附加 jitter 单独计入。
 
 平均窗口越长，$\sigma_{t,\mathrm{est}}$ 越低，但校准环跟踪 PVT 漂移的带宽越窄。高速采样率不等于快速校准：参考通道可能只在 $f_s/21$ 工作，window detector 可能只选中几千分之一的样本，算法一次更新又可能需要多个 trial code。应同时报告：
-
 
 $$
 T_{\mathrm{conv}}
@@ -431,7 +411,6 @@ T_{\mathrm{conv}}
 =\frac{N_{\mathrm{effective\ samples}}}
 {p_{\mathrm{valid}}f_{\mathrm{obs}}},
 $$
-
 
 其中 $p_{\mathrm{valid}}$ 是有效事件概率，$f_{\mathrm{obs}}$ 是观察路径的实际采样率。
 
@@ -586,26 +565,20 @@ Wang 和 Chang 2023 年（`JNJ7P7U5`）通过 common-mode reference injection �
 
 对于两路 TI-ADC，若相邻采样间隔分别为 $T_s+\Delta t$ 和 $T_s-\Delta t$，宽平稳输入的相邻相关量为
 
-
 $$
 R_{12}=E\{x_1[k]x_2[k]\}=R(T_s+\Delta t),
 $$
-
-
 
 $$
 R_{21}=E\{x_2[k]x_1[k+1]\}=R(T_s-\Delta t).
 $$
 
-
 因此
-
 
 $$
 \Delta R=R_{12}-R_{21}
 \approx 2R'(T_s)\Delta t.
 $$
-
 
 只要能够保证 $R'(T_s)$ 的符号，$\Delta R$ 就能判断 skew 应向前还是向后调。控制器不一定要准确求出 $\Delta t$ 的绝对值，只需持续按正确方向更新 DCDL，直到统计量在零附近波动。
 
@@ -613,19 +586,15 @@ $$
 
 传统多路方法常按二叉树逐级对齐通道，需要依赖更长采样间隔处的相关导数 $R'(NT_s/2)$，输入带宽限制随交织路数增加而变严。较新的相邻通道算法计算
 
-
 $$
 R_i=E\{x_i[k]x_{i+1}[k]\},
 $$
 
-
 再利用所有相邻相关量的平均值近似理想 $R(T_s)$：
-
 
 $$
 \bar R=\frac{1}{N}\sum_{i=1}^{N}R_i\approx R(T_s).
 $$
-
 
 各通道通过累加相邻间隔并与相应倍数的 $\bar R$ 比较，可以同时获得 skew 方向。其优势是并行收敛和 Nyquist 带宽，代价是仍然依赖输入统计；某些特殊周期输入可能让相关导数或误差统计失去可观测性。
 
@@ -666,20 +635,16 @@ $$
 
 参考通道以不同采样率或不同相位与主通道周期性对齐。若主、参考通道采样同一局部波形，则电压差近似为
 
-
 $$
 \Delta V\approx \frac{\mathrm dV_{\mathrm{in}}}{\mathrm dt}\Delta t.
 $$
 
-
 因此
-
 
 $$
 \operatorname{sgn}(\Delta t)
 =\operatorname{sgn}\!\left(\Delta V\cdot\frac{\mathrm dV_{\mathrm{in}}}{\mathrm dt}\right).
 $$
-
 
 这类方案的关键不只是“有没有参考 ADC”，还包括怎样得到输入导数，以及参考通道如何接入输入而不制造新的周期误差。
 
@@ -766,11 +731,9 @@ FAPSO 等群体优化算法能同时搜索多通道参数并减少串行收敛�
 
 **结构**：八个 1.5 GS/s 主 sub-ADC 共享一个仅约 480 MHz 工作的 1-bit CAL comparator。对第 $i$ 路主 ADC，构造
 
-
 $$
 C_i(\tau_i)=E\!\left\{D_i\,\operatorname{sgn}(D_{\mathrm{CAL}})\right\}.
 $$
-
 
 当主通道与辅助比较器看到的局部输入最对齐时，相关量接近峰值；数字梯度搜索/LMS 调整该通道的 7-bit DCDL。这里检测器不是直接输出“多少皮秒”，而是把采样相位转换成一个可搜索的相关代价面。
 
@@ -813,20 +776,16 @@ $$
 
 **结构**：一个全速比较器只标记接近零交越、满足 $|V_{\mathrm{in}}|<W$ 的样本。对这些有效事件，若相对窗口中心存在采样时差 $\tau$，局部输入近似
 
-
 $$
 v(t+\tau)\approx v(t)+\tau\dot v(t),
 $$
 
-
 条件方差近似为
-
 
 $$
 \sigma_v^2(\tau)
 \approx\sigma_v^2(0)+\tau^2\sigma_{\dot v}^2.
 $$
-
 
 因此方差在 $\tau=0$ 附近取最小值。与对全幅输入直接求方差相比，window detector 先压缩正常信号本身的统计波动，timing 引起的二阶变化更容易被看见。
 
@@ -842,13 +801,11 @@ $$
 
 **结构**：主通道和低速参考 SAR 的码差给出电压误差符号；相邻两个主样本的差给出输入斜率符号。两者异或即可得到 skew 更新方向：
 
-
 $$
 \operatorname{sgn}(\Delta t)
 =\operatorname{sgn}(\Delta V)\,
 \operatorname{sgn}\!\left(\frac{\mathrm dV}{\mathrm dt}\right).
 $$
-
 
 普通参考 ADC 若与主 sampler 同时接入输入，会把 kickback 直接注入最敏感的采样瞬间。VTR 把参考时钟延后约 4 ps，使其在主采样完成后动作，同时在参考输入端引入匹配的约 4 ps 信号延迟，于是算法仍“看到”原参考时刻，而物理扰动晚于主采样到达。
 
@@ -864,27 +821,21 @@ $$
 
 **结构**：共享的 7-bit Δ-sampling SAR 在相隔已知 $\Delta T=10$ ps 的两个时刻采样局部输入，产生
 
-
 $$
 d_{\Delta}\approx K\Delta T,
 $$
 
-
 而主通道 timing error 产生
-
 
 $$
 d_s\approx Kt_s.
 $$
 
-
 其中未知局部斜率 $K$ 由两式共同携带，因此用数字混频/相关提取两项后，可通过比值
-
 
 $$
 \hat t_s\approx\Delta T\frac{d_s}{d_{\Delta}}
 $$
-
 
 抵消输入斜率。这使检测器能够给出数字前馈修正所需的幅度，而不仅是方向；校正采用局部一阶插值，不在模拟时钟中放置 VDL。
 
@@ -914,13 +865,11 @@ $$
 
 **结构**：三路参考 ADC 也以总速率轮转，因此任一时刻都有近似恒定的参考输入负载；3 与 8 互质使每个 reference/main 组合被均匀访问。以主通道 1 为相对参考，检测量比较
 
-
 $$
 R_i=E\{d_r^F d_{\mathrm{out},i}\},
 \qquad
 \Delta R_i=R_i-R_1.
 $$
-
 
 1-bit reference 自身的通道 skew 会改变相关曲线斜率，但只要所有采样间隔处于自相关的同一单调区，多个 reference 通道的公共零点仍与主通道相对 skew 对齐。该工作的重要贡献不只是“多放几个参考比较器”，而是同时保持恒定输入阻抗并明确给出相关检测的可工作延迟区间。
 
@@ -936,12 +885,10 @@ $$
 
 **问题起点**：若在每个通道本地注入 dither，参考信号不经过完整公共输入缓冲，而且各注入支路的增益和延迟不匹配。精读笔记给出的局部注入残差形式可概括为
 
-
 $$
 \Delta t_{\mathrm{LDI,res}}
 \approx \Delta t_D-t_d\Delta G_D,
 $$
-
 
 并且真实输入路径的 $\Delta t_{\mathrm{IN}}$ 可能完全不可见。继续增加平均样本只能减小随机噪声，不能消除这类路径偏置。
 
@@ -959,20 +906,16 @@ $$
 
 **结构**：计算每一对相邻通道在一个总采样周期间隔处的相关量
 
-
 $$
 R_i=E\{x_i[k]x_{i+1}[k]\},
 $$
 
-
 并用环形相邻相关的平均
-
 
 $$
 \bar R=\frac{1}{N}\sum_{i=0}^{N-1}R_i
 \approx R(T_s)
 $$
-
 
 重建理想相邻相关。每个通道只需把自己的局部累计间隔对应统计量拉向 $\bar R$，因此所有通道可以同时更新，并且不再依赖传统二叉层次中的 $R'(NT_s/2)$。乘法相关还可用 MAD 替代。
 
@@ -982,7 +925,7 @@ $$
 
 **边界**：该芯片只有四路，尚不能直接证明 32/64 路中的路由、状态与环路耦合开销；结果也不等于“任意输入均可校准”。它的核心进步是把多通道可扩展性从串行/树形对齐推进到局部相邻量与全局约束的并行求解。
 
-> **九个方案背后的共同演进**
+> [!summary] 九个方案背后的共同演进
 > 2011—2017 年主要在降低“从正常输入中看到 skew”所需的统计代价；2014—2022 年通过复用 coarse ADC、互质轮转和虚拟参考解决参考路径的功耗与扰动；2018 以后开始追求 skew 幅值估计和数字修正；2024 年 GDI 把焦点推进到“参考信号是否真正经过真实输入路径”；2025 年相邻并行相关则把重点推进到 massive interleaving 下的可扩展性。方法更替不是简单性能排名，而是可观测性、前端侵入性和数字实现成本之间的重新分配。
 
 ## 6. 误差修正方法
@@ -1005,12 +948,10 @@ LC delay line 可降低 jitter，但面积和可调范围不适合所有 ADC。�
 
 用简单线性模型表示，模拟修正后的残差为
 
-
 $$
 \Delta t_{i,\mathrm{res}}
 =\Delta t_{i,0}-K_{\mathrm{DCDL}}u_i-\Delta t_{i,\mathrm{act,bias}}.
 $$
-
 
 其中 $K_{\mathrm{DCDL}}$ 可能随码值、PVT 和边沿方向变化，$\Delta t_{i,\mathrm{act,bias}}$ 包括占空比耦合、负载变化和校准码注入。一个可用的 DCDL 规格分解是：
 
@@ -1029,30 +970,24 @@ $$
 
 根据
 
-
 $$
 y_m[k]\approx x(t_k)+\Delta t_m x'(t_k),
 $$
 
-
 可构造
-
 
 $$
 \hat x(t_k)=y_m[k]-\widehat{\Delta t_m}\,\widehat{x'(t_k)}.
 $$
 
-
 一阶导数可用相邻样本差或 FIR differentiator 近似。该方法结构清楚，适合小 skew；当输入接近 Nyquist、skew 较大或前端存在显著 bandwidth mismatch 时，一阶近似误差增加。
 
 从频域看，理想时间平移的逆校正需要乘以 $e^{-j\omega\Delta t_m}$，而一阶导数法只保留
-
 
 $$
 e^{-j\omega\Delta t_m}
 \approx1-j\omega\Delta t_m.
 $$
-
 
 被忽略的二阶项尺度约为 $(\omega\Delta t_m)^2/2$。因此，同一个估计误差在低频足够精确，在 Nyquist/过 Nyquist 可能产生新的 residual spur。数字导数还必须从已经包含其他通道失配的合并数据中估计；若相邻样本来自不同增益/带宽通道，应先校 offset/gain，或在每通道低速域构造匹配的 differentiator。
 
@@ -1074,12 +1009,10 @@ fractional-delay FIR 把各通道数字序列重新采样到统一时间网格�
 
 理想第 $m$ 路校正滤波器可写为
 
-
 $$
 H_m(e^{j\omega})\approx
 e^{-j\omega\widehat{\Delta t_m}/T_s}.
 $$
-
 
 实际 FIR 同时受到阶数、系数量化和通带设计区间限制。若目标只覆盖第一 Nyquist 区，可以针对该带宽优化 Chebyshev/minimax 误差；若需支持多个 Nyquist zone，离散时间混叠后“原模拟频率”不再唯一，估计器还必须告诉滤波器当前 zone 或使用保留模拟频率信息的前端模型。Polyphase 实现降低单个运算单元的时钟，却不会减少总乘加次数的数量级。
 
@@ -1153,7 +1086,7 @@ flowchart LR
 | 数字 FIR | 改善 skew 估计、提高系数位宽 | 有限阶逼近、频带模型错误 | 乘加/量化/latency | tap 数、系数位宽、片上功耗与目标带宽 |
 | 架构级统一采样 | 不适用或只跟踪残差 | 公共前端失真、后级 group-delay mismatch | 公共采样 jitter | 公共前端 ERBW、线性度、负载可扩展性 |
 
-> **比较原则**
+> [!note] 比较原则
 > “校准后 SFDR 最高”不必然意味着检测器更精确。不同芯片的分辨率、输入频率、初始 skew、DCDL 步长、谐波上限和数字核算范围均不同。更公平的比较应同时给出最高输入频率、校准前后特定 skew tone、残余时间误差定义、有效样本数、是否片上闭环以及校准电路引入的新 spur/noise。
 
 ## 8. 代表性实现及论文报告结果
@@ -1244,19 +1177,16 @@ Time-skew 误差直接与 $f_{\mathrm{in}}$ 相乘。一个 2 GS/s ADC 若只服
 
 用
 
-
 $$
 |c_q|_{\max}
 \lesssim\frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}
 $$
-
 
 作第一轮估算。例如，1 GHz 输入、目标 skew spur 低于 −70 dBc，对应最坏模式系数约 50 fs；5.7 GHz 输入、−74 dBc 则约 5.6 fs。前者不应直接被误读为“每路允许 50 fs RMS”，而应在行为模型中把实际 $\{\Delta t_m\}$ 做 $N$ 点 DFT，验证所有 $q\ge1$ 模式。
 
 #### 第三步：分配残余预算
 
 可先用 RSS 分配互相近似独立的量：
-
 
 $$
 \sigma_{t,\mathrm{target}}^2
@@ -1266,7 +1196,6 @@ $$
 +\sigma_{t,\mathrm{act}}^2
 +\sigma_{t,\mathrm{track}}^2.
 $$
-
 
 其中检测随机误差可通过更多样本下降，path bias 通常不能；actuator 项包括 DCDL 量化、DNL 和新增 jitter；tracking 项由温漂速度与环路带宽决定。随机 clock jitter 还应通过 SNR 预算单独检查，而不是全部塞入“residual skew”。
 
@@ -1284,11 +1213,9 @@ $$
 
 若量化残差预算为 $t_{\mathrm{q,max}}$，静态最坏条件下通常要求
 
-
 $$
 t_{\mathrm{LSB}}\lesssim2t_{\mathrm{q,max}}.
 $$
-
 
 DCDL 范围应覆盖 Monte Carlo + PVT + 路由提取的最坏初始 skew，并保留边界裕量；数字 FIR 则需把目标频带内的复数误差和系数量化误差换算成 residual spur。对于只给方向的检测器，还要设计控制码到时间的闭环，不要假定 detector 数字值天然以秒为单位。
 
@@ -1359,7 +1286,7 @@ DCDL 范围应覆盖 Monte Carlo + PVT + 路由提取的最坏初始 skew，并�
 | 结果 | 校准前后频谱、所有 $qf_s/N\pm f_{\mathrm{in}}$ tones、SNDR、SFDR、残余 skew |
 | 核算边界 | 模拟、数字、参考路径、I/O、时钟是否计入功耗与面积 |
 
-> **建议的校准顺序**
+> [!important] 建议的校准顺序
 > 对依赖电压差或符号统计的 detector，通常先处理大 offset，再校 gain/coarse range，随后做 coarse skew，最后联合迭代 fine skew 与 bandwidth；否则 offset/gain 可能被 timing 环误当成 skew。这个顺序不是普遍定律：若某论文证明其 detector 对 offset/gain 正交，应以该推导为准，而不是机械套用。
 
 ## 11. 研究趋势与尚未解决的问题
@@ -1520,10 +1447,66 @@ TI-ADC time-skew 校准的发展并不是单一路线的替代，而是误差观
 - Cao et al., 2024, global dither injection：[DOI](https://doi.org/10.1109/JSSC.2024.3482567)，Zotero `AMZFXGAJ`。
 - Gu et al., 2025, adjacent-channel autocorrelation：[DOI](https://doi.org/10.1109/JSSC.2024.3421363)，Zotero `CEMRICHS`。
 
+## 2026 工程专题：从 20 GS/s 层次化时钟到时偏校准闭环（新增）
 
-## 相关笔记
+> [!important] 对已有综述的补充
+> 原笔记已整理 70 条 Zotero 条目及 DOI，本节不重复粘贴该列表，而以**确定性采样 skew、随机 jitter、输入带宽失配、THA 交接时序**的解耦为主。以下推导针对理想正弦信号，实际输入 buffer/THA 的频率相关时延需另行测量。2025 年 Gu 等综述可作总入口。[T2]
 
-- [ADC 架构：分类、比较与选型](/GarveyDing_AcademicPages/blog/adc-architectures/)
-- [Dither-Based Calibration：原理、架构与建模](/GarveyDing_AcademicPages/blog/dither-calibration/)
-- [ADC 比较器：架构、关键指标与设计方法](/GarveyDing_AcademicPages/blog/adc-comparators/)
-- [ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
+### T1. 两通道误差频谱与 N 路空间傅里叶观点
+
+对于信号 `x(t)=A sin(2πf_in t)`，一个小的确定性采样时差 `Δt` 一阶产生 `e≈x'(t)Δt`，幅值与输入频率成正比。N 路 TI 中，各通道固定 skew `τ_m` 随 `m mod N` 周期重复，对应误差 `e[n]≈x'(nT_s)τ_{n mod N}`。把周期 skew 序列展开为 DFT：
+
+$$T_k=\frac1N\sum_{m=0}^{N-1}\tau_m e^{-j2\pi km/N}.$$
+
+对单音输入，这些分量分别把 `f_in` 调制到 `k Fs/N ± f_in` 周围（最后按采样频谱折叠）。因此**相同 RMS skew 的两组芯片可能有完全不同的最坏 spur**；布局/时钟树优化不能只看通道间标准差，还应检查 skew 序列的模式。全部通道同时平移仅改变系统公共采样相位，不产生通道间失配 spur，因此只有 `N−1` 个独立相对 skew。
+
+![2026_05_专项机制图](/images/blog/learning-notes/ti-adc-time-skew/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_时偏与频谱](/images/blog/learning-notes/ti-adc-time-skew/2026_01_时偏与频谱.svg)
+
+### T2. 为什么 THA / Sub-ADC 两级采样的时钟不能同等处理
+
+在层次化 20 GS/s ADC 中，若每个 THA 对高速连续输入完成真实采样/冻结，**采样精度敏感节点**是 THA 的 aperture；后续 Sub-ADC 在 THA hold 相位内量化近似 DC 值，它的时钟主要关乎是否落在 hold-window 及残余 settling，而非同样敏感的输入正弦斜率。然而，Sub-ADC 采样开关穿透、THA droop、输出网络振铃或 hold 不完全时，后级时钟依然会造成时间相关误差，绝不可宣称其 jitter 完全无关。
+
+假定 THA 周期为 `400 ps`（2.5 GHz），子 ADC 单通道 `625 MHz`（1.6 ns），那么每一颗子 ADC 必须在对应 THA hold 周期内部采样。长走线延迟变化、PVT、buffer propagation skew 会消耗这段保护时间；优先保持 THA 高频采样边沿稳定，通过延迟抽头、可编程 duty-cycle 或更早关断子 ADC 采样开关去确保 **setup/hold 间隔**。同时应验证采样相位的上下边界，不仅是标称值的一个时刻。
+
+![2026_02_THA保持窗口](/images/blog/learning-notes/ti-adc-time-skew/2026_02_THA保持窗口.svg)
+
+### T3. DCDL 与数字 fractional-delay FIR 的系统分工
+
+|修正路径|改变什么|好处|主要损耗|不可忽略项|
+|---|---|---|---|---|
+|模拟/数字控制延迟线（DCDL）|实际采样边沿|芯片内部实时修正、数据通路轻|调节边沿的 jitter、INL、温度漂移|单调性、步进粒度、PVT、非目标边沿变化|
+|可调占空比/脉宽|Sub-ADC 的有效采样窗|便于避开 THA 相位冲突|只能改采样窗，不必然校正 THA 相对 skew|延时与脉宽的耦合、毛刺|
+|分数延迟 FIR|已采样数据的有效时间坐标|不扰动真正 THA 采样时钟|全速乘加、插值噪声、延迟与边带|超 Nyquist、输入带宽、passband ripple|
+|共享真实采样前端|架构上减少通道间 aperture mismatch|可降低 skew 校准复杂度|THA/分配网络负载、线性、功耗|公共 THA 的 jitter 仍存在|
+
+FIR 方法可用 `y_c(t_n)≈y(t_n)+Δt·dy/dt` 的一阶等效理解，但真实实现需满足带限重建与通道复用关系。对连续宽带输入，数字插值要标定归一化频率、模拟前端响应与 aliasing；外推超出有效模拟带宽时，FIR 不会凭空恢复已折叠的信息。模拟 DCDL 的目标不一定是“分辨率越细越好”，还应评估调节器引入的随机时钟噪声与上电收敛。
+
+### T4. 哪些统计检测器不能被称为 input-independent
+
+相邻通道方差/互相关/导数法在输入为窄带单音、DC、对称频谱或频率接近某些零点时，误差符号可观测性会恶化；参考 ADC 类方法可能在模拟入口增加时变负载；在前端统一注入 dither 的方案，可减轻输入统计假设，但仍须检验 dither 注入路径引入的本体干扰。一个完整比较表应同时写明：**可观测条件、更新方向、修正器范围、后处理延时、抗带宽失配能力、是否 truly background**。Cao 等 2024 年的 12 GS/s、12-bit TI ADC 以 global dither 和 linearized input buffer 为联合设计，是这条路线的代表案例。[T3]
+
+![2026_03_校准方法矩阵](/images/blog/learning-notes/ti-adc-time-skew/2026_03_校准方法矩阵.svg)
+
+### T5. 仿真验收模板（20 GS/s TI 系统）
+
+建立三个层次的误差：`τ_m`（静态通道偏斜）、`σ_j,m`（随机 aperture jitter）、`H_m(f)`（通道模拟频响）。逐一注入并关闭其他误差，先验证每类频谱指纹，再同时打开三者判断校准串扰。若校准作用于 THA，验证 `Fin` 从低频至目标最高输入带宽；若校准只作用于 Sub-ADC，记录 hold droop、时钟相位窗口、残差过渡时刻与 kickback。所有结果分别报告校准前/后的 `SFDR(Fin)`、`SNDR(Fin)`、各时偏模态、DCDL 码分布和 PVT corner。
+
+- [T1] S. M. Jamal et al., “A 10-b 120-Msample/s Time-Interleaved ADC With Digital Background Calibration,” *IEEE JSSC*, 2002. [DOI:10.1109/JSSC.2002.804327](https://doi.org/10.1109/JSSC.2002.804327)。
+- [T2] M. Gu et al., “Timing-Skew Calibration Techniques in Time-Interleaved ADCs,” *IEEE Open Journal of the Solid-State Circuits Society*, 卷 5, 2025. [DOI:10.1109/OJSSCS.2024.3519486](https://doi.org/10.1109/OJSSCS.2024.3519486)。
+- [T3] Y. Cao et al., “A 12-GS/s 12-b 4× Time-Interleaved ADC Using Input-Independent Timing Skew Calibration With Global Dither Injection and Linearized Input Buffer,” *IEEE JSSC*, 2024. [DOI:10.1109/JSSC.2024.3482567](https://doi.org/10.1109/JSSC.2024.3482567)。
+- [T4] B. Murmann, *ADC Performance Survey 1997–2026*, <https://github.com/bmurmann/ADC-survey>，适合与实际 TI 性能做横向比较。
+- [T5] S. M. Navidi and M. M. Navidi, “A Comprehensive Review of Time Skew Background Calibration and Mitigation Techniques in High-Speed Time-Interleaved Analog-to-Digital Converters,” *Int. J. Circuit Theory Appl.*, 2025. [DOI:10.1002/cta.4133](https://doi.org/10.1002/cta.4133)。
+
+**论文图片定位建议**：T1 的背景校准框图、T3 的 global dither 注入路径、T2 中各 detector 分类。原有附录的 70 条文献未被删除；本节配图均为独立绘制、可直接离线显示。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/ti-adc-time-skew/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---

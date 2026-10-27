@@ -1,16 +1,18 @@
 ---
 title: 电路噪声：从 MOS 器件到系统设计
-date: 2026-07-09
+date: '2026-10-26'
 excerpt: 从系统噪声预算出发，贯通器件噪声、典型模拟电路、采样系统、ADC 和仿真验证方法。
 tags:
-  - 学习记录
-  - 模拟集成电路
-  - analog-ic
-  - noise
-  - adc
+- 学习记录
+- 模拟集成电路
+- analog-ic
+- noise
+- adc
 ---
 
-> **核心定位**
+# 电路噪声：从 MOS 器件到系统设计
+
+> [!abstract] 核心定位
 > 从系统噪声预算出发，贯通器件噪声、典型模拟电路、采样系统、ADC 和仿真验证方法。
 
 ---
@@ -20,10 +22,12 @@ tags:
 ---
 
 
-> **层次化结构**
-> 本版将原笔记的并列分点重构为 **8 个主章节 → 主题小节 → 具体知识点**。原有正文、公式、表格与参考资料保持不变，主要调整标题层级与导航结构。
+
 
 ## 目录
+
+- **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
+
 
 1. 系统噪声预算与数学基础
    - 1.1 为什么必须从“系统噪声预算”而不是单个器件开始
@@ -56,6 +60,17 @@ tags:
    - 8.3 参考文献
 
 ## 1. 系统噪声预算与数学基础
+
+```mermaid
+flowchart LR
+    A[识别噪声源与 PSD] --> B[建立噪声传递函数]
+    B --> C[考虑带宽、折叠与采样]
+    C --> D[积分得到均方值]
+    D --> E[合成 RMS 并对照系统预算]
+```
+
+*图：噪声从器件谱密度映射到系统级 RMS 预算的路径。*
+
 
 ### 1.1 为什么必须从“系统噪声预算”而不是单个器件开始
 
@@ -93,31 +108,25 @@ tags:
 
 设随机噪声为 $x_n$(t)，其均值通常近似为零：
 
-
 $$
-\mu_x=E[x_n(t)]\approx 0
+\mu_x=E[x_n(t)]\approx 0  
 $$
-
 
 
 
 噪声功率或方差为：
 
-
 $$
-\sigma_x^2=E[(x_n-\mu_x)^2]
+\sigma_x^2=E[(x_n-\mu_x)^2]  
 $$
-
 
 
 
 噪声的 RMS 为：
 
-
 $$
-x_{n,\mathrm{rms}}=\sqrt{\sigma_x^2}
+x_{n,\mathrm{rms}}=\sqrt{\sigma_x^2}  
 $$
-
 
 
 
@@ -135,31 +144,25 @@ $$
 
 噪声在频域中的分布由功率谱密度 $S_x$(f) 描述。某一频带内的均方噪声为：
 
-
 $$
-\overline{x_n^2}=\int_{f_L}^{f_H}S_x(f)\,df
+\overline{x_n^2}=\int_{f_L}^{f_H}S_x(f)\,df  
 $$
-
 
 
 
 RMS 噪声为：
 
-
 $$
-x_{n,\mathrm{rms}}=\sqrt{\int_{f_L}^{f_H}S_x(f)\,df}
+x_{n,\mathrm{rms}}=\sqrt{\int_{f_L}^{f_H}S_x(f)\,df}  
 $$
-
 
 
 
 对白噪声，若 $S_x$(f)=$S_0$，则：
 
-
 $$
-x_{n,\mathrm{rms}}=\sqrt{S_0B}
+x_{n,\mathrm{rms}}=\sqrt{S_0B}  
 $$
-
 
 
 
@@ -173,21 +176,17 @@ $$
 
 若噪声源 PSD 为 $S_n$(f)，到输出的传递函数为 $H_n$(f)，则：
 
-
 $$
-S_{out}(f)=|H_n(f)|^2S_n(f)
+S_{out}(f)=|H_n(f)|^2S_n(f)  
 $$
-
 
 
 
 总输出噪声：
 
-
 $$
-v_{n,out}^2=\int_0^{\infty}|H_n(f)|^2S_n(f)\,df
+v_{n,out}^2=\int_0^{\infty}|H_n(f)|^2S_n(f)\,df  
 $$
-
 
 
 
@@ -195,21 +194,17 @@ $$
 
 对于低通系统，噪声并不是简单积分到 $-3\,\mathrm{dB}$ 带宽。定义等效噪声带宽：
 
-
 $$
-B_{ENBW}=\frac{1}{|H(0)|^2}\int_0^{\infty}|H(f)|^2df
+B_{ENBW}=\frac{1}{|H(0)|^2}\int_0^{\infty}|H(f)|^2df  
 $$
-
 
 
 
 一阶 RC 低通有：
 
-
 $$
-B_{ENBW}=\frac{\pi}{2}f_{-3\mathrm{dB}}
+B_{ENBW}=\frac{\pi}{2}f_{-3\mathrm{dB}}  
 $$
-
 
 
 
@@ -219,11 +214,9 @@ $$
 
 多个互不相关噪声源应按均方值相加：
 
-
 $$
-v_{n,total}=\sqrt{v_{n1}^2+v_{n2}^2+\cdots+v_{nN}^2}
+v_{n,total}=\sqrt{v_{n1}^2+v_{n2}^2+\cdots+v_{nN}^2}  
 $$
-
 
 
 
@@ -231,11 +224,9 @@ $$
 
 若噪声存在相关性，则还要加入互相关项：
 
-
 $$
-S_{total}=S_1+S_2+2\operatorname{Re}\{S_{12}\}
+S_{total}=S_1+S_2+2\operatorname{Re}\{S_{12}\}  
 $$
-
 
 
 
@@ -245,11 +236,9 @@ MOS 高频栅感应噪声与漏极沟道噪声就是典型相关噪声。
 
 若信号增益为 $A_v$(f)，输出噪声折算到输入端为：
 
-
 $$
-S_{n,in}(f)=\frac{S_{n,out}(f)}{|A_v(f)|^2}
+S_{n,in}(f)=\frac{S_{n,out}(f)}{|A_v(f)|^2}  
 $$
-
 
 
 
@@ -259,31 +248,25 @@ $$
 
 噪声因子定义为：
 
-
 $$
-F=\frac{\mathrm{SNR}_{in}}{\mathrm{SNR}_{out}}
+F=\frac{\mathrm{SNR}_{in}}{\mathrm{SNR}_{out}}  
 $$
-
 
 
 
 噪声指数为：
 
-
 $$
-NF=10\log_{10}F
+NF=10\log_{10}F  
 $$
-
 
 
 
 在 RF 接收机中，级联系统常用 Friis 公式：
 
-
 $$
-F_{total}=F_1+\frac{F_2-1}{G_1}+\frac{F_3-1}{G_1G_2}+\cdots
+F_{total}=F_1+\frac{F_2-1}{G_1}+\frac{F_3-1}{G_1G_2}+\cdots  
 $$
-
 
 
 
@@ -302,31 +285,25 @@ $$
 
 电阻 R 的开路电压噪声 PSD：
 
-
 $$
-S_{v,R}=4kTR\quad \mathrm{V^2/Hz}
+S_{v,R}=4kTR\quad \mathrm{V^2/Hz}  
 $$
-
 
 
 
 短路电流噪声 PSD：
 
-
 $$
-S_{i,R}=\frac{4kT}{R}=4kTG\quad \mathrm{A^2/Hz}
+S_{i,R}=\frac{4kT}{R}=4kTG\quad \mathrm{A^2/Hz}  
 $$
-
 
 
 
 在带宽 B 内：
 
-
 $$
-v_{n,R}=\sqrt{4kTRB}
+v_{n,R}=\sqrt{4kTRB}  
 $$
-
 
 
 
@@ -347,11 +324,9 @@ $$
 
 散粒噪声来源于载流子以离散电荷形式跨越势垒，其电流 PSD 为：
 
-
 $$
-S_i=2qI
+S_i=2qI  
 $$
-
 
 
 
@@ -372,21 +347,17 @@ $$
 
 闪烁噪声在低频占主导，PSD 近似为：
 
-
 $$
-S(f)\propto\frac{1}{f^{\alpha}},\qquad \alpha\approx 1
+S(f)\propto\frac{1}{f^{\alpha}},\qquad \alpha\approx 1  
 $$
-
 
 
 
 MOS 栅输入等效闪烁噪声常用近似式：
 
-
 $$
-S_{v_g,1/f}(f)=\frac{K_f}{C_{ox}^2WLf^{\alpha}}
+S_{v_g,1/f}(f)=\frac{K_f}{C_{ox}^2WLf^{\alpha}}  
 $$
-
 
 
 
@@ -416,11 +387,9 @@ $$
 
 陷阱俘获和释放载流子会形成产生—复合噪声，其 PSD 常呈洛伦兹形：
 
-
 $$
-S(f)=\frac{S_0}{1+(f/f_c)^2}
+S(f)=\frac{S_0}{1+(f/f_c)^2}  
 $$
-
 
 
 
@@ -440,11 +409,9 @@ $$
 
 时钟边沿不确定性用 RMS 时间抖动 $\sigma$_t 描述。对于正弦输入，采样抖动限制的 SNR 近似为：
 
-
 $$
-\mathrm{SNR}_{jitter}=-20\log_{10}(2\pi f_{in}\sigma_t)
+\mathrm{SNR}_{jitter}=-20\log_{10}(2\pi f_{in}\sigma_t)  
 $$
-
 
 
 
@@ -454,21 +421,17 @@ $$
 
 量化噪声不是器件物理噪声，但在 ADC 中通常和模拟噪声统一进行预算。对于理想均匀量化器且量化误差可近似为均匀分布：
 
-
 $$
-\sigma_q^2=\frac{\Delta^2}{12}
+\sigma_q^2=\frac{\Delta^2}{12}  
 $$
-
 
 
 
 满幅正弦输入时，理想 N 位 ADC：
 
-
 $$
-\mathrm{SNR}_{ideal}\approx 6.02N+1.76\ \mathrm{dB}
+\mathrm{SNR}_{ideal}\approx 6.02N+1.76\ \mathrm{dB}  
 $$
-
 
 
 
@@ -500,21 +463,17 @@ $$
 
 当电容通过电阻或 MOS 开关与热源充分达到平衡后，电容上的均方噪声电压为：
 
-
 $$
-\overline{v_n^2}=\frac{kT}{C}
+\overline{v_n^2}=\frac{kT}{C}  
 $$
-
 
 
 
 即：
 
-
 $$
-v_{n,rms}=\sqrt{\frac{kT}{C}}
+v_{n,rms}=\sqrt{\frac{kT}{C}}  
 $$
-
 
 
 
@@ -550,11 +509,9 @@ MOS 开关导通时可近似为时变电阻，会产生热噪声。采样结束�
 
 MOSFET 在强反型饱和区的漏极电流噪声常写为：
 
-
 $$
-S_{i_d}=4kT\gamma g_m
+S_{i_d}=4kT\gamma g_m  
 $$
-
 
 
 
@@ -562,21 +519,17 @@ $$
 
 仅考虑输入管本身时，输入等效电压噪声密度为：
 
-
 $$
-S_{v,in}=\frac{4kT\gamma}{g_m}
+S_{v,in}=\frac{4kT\gamma}{g_m}  
 $$
-
 
 
 
 幅度谱密度为：
 
-
 $$
-e_n=\sqrt{\frac{4kT\gamma}{g_m}}
+e_n=\sqrt{\frac{4kT\gamma}{g_m}}  
 $$
-
 
 
 
@@ -612,11 +565,9 @@ $$
 
 MOS 管漏极闪烁噪声可写成：
 
-
 $$
-S_{i_d,1/f}=g_m^2S_{v_g,1/f}
+S_{i_d,1/f}=g_m^2S_{v_g,1/f}  
 $$
-
 
 
 
@@ -765,41 +716,33 @@ BJT 在一定电流下可获得较高 $g_m=I_C/V_T$，因此具有较低输入�
 
 对于 NMOS 共源级和电阻负载 $R_D$，忽略 $r_o$ 时，增益：
 
-
 $$
-A_v\approx-g_mR_D
+A_v\approx-g_mR_D  
 $$
-
 
 
 
 输入管沟道噪声折算到输入：
 
-
 $$
-S_{v,in,M1}\approx\frac{4kT\gamma}{g_m}
+S_{v,in,M1}\approx\frac{4kT\gamma}{g_m}  
 $$
-
 
 
 
 负载电阻噪声折算到输入：
 
-
 $$
-S_{v,in,R_D}\approx\frac{4kTR_D}{(g_mR_D)^2} =\frac{4kT}{g_m^2R_D}
+S_{v,in,R_D}\approx\frac{4kTR_D}{(g_mR_D)^2} =\frac{4kT}{g_m^2R_D}  
 $$
-
 
 
 
 总输入等效白噪声近似为：
 
-
 $$
-S_{v,in}\approx4kT\left(\frac{\gamma}{g_m}+\frac{1}{g_m^2R_D}\right)
+S_{v,in}\approx4kT\left(\frac{\gamma}{g_m}+\frac{1}{g_m^2R_D}\right)  
 $$
-
 
 
 
@@ -833,11 +776,9 @@ $$
 
 对简单差分对，输入等效差分白噪声常呈：
 
-
 $$
-S_{v,id}\propto\frac{8kT\gamma}{g_m}
+S_{v,id}\propto\frac{8kT\gamma}{g_m}  
 $$
-
 
 
 
@@ -919,11 +860,9 @@ Cascode 的主要优势不是“没有噪声”，而是：
 
 多级放大器总输入等效噪声可类比 Friis 公式：
 
-
 $$
-v_{n,in,total}^2\approx v_{n1}^2+\frac{v_{n2}^2}{A_1^2}+\frac{v_{n3}^2}{A_1^2A_2^2}+\cdots
+v_{n,in,total}^2\approx v_{n1}^2+\frac{v_{n2}^2}{A_1^2}+\frac{v_{n3}^2}{A_1^2A_2^2}+\cdots  
 $$
-
 
 
 
@@ -969,11 +908,9 @@ Telescopic 架构器件数少、内部节点少，通常能获得较高增益、
 
 NMOS 和 PMOS 同时提供跨导：
 
-
 $$
-g_{m,total}=g_{mn}+g_{mp}
+g_{m,total}=g_{mn}+g_{mp}  
 $$
-
 
 
 
@@ -1051,11 +988,9 @@ Auto-zero 先采样放大器失调和低频噪声，再在信号相位进行抵�
 
 采样开关导通足够长时，采样电容上的噪声达到：
 
-
 $$
-v_{n,sample}=\sqrt{\frac{kT}{C_s}}
+v_{n,sample}=\sqrt{\frac{kT}{C_s}}  
 $$
-
 
 
 
@@ -1314,11 +1249,9 @@ TIA 需要同时考虑：
 
 高频下，运放电压噪声经总输入电容形成：
 
-
 $$
-i_{n,eq}(f)\approx 2\pi fC_{in}e_n
+i_{n,eq}(f)\approx 2\pi fC_{in}e_n  
 $$
-
 
 
 
@@ -1358,39 +1291,31 @@ ADC 输出噪声和误差通常包括：
 
 若差分输入峰峰值为 $V_{pp,diff}$，满幅正弦 RMS 为：
 
-
 $$
-V_{sig,rms}=\frac{V_{pp,diff}}{2\sqrt{2}}
+V_{sig,rms}=\frac{V_{pp,diff}}{2\sqrt{2}}  
 $$
-
 
 
 
 允许总输入等效噪声：
 
-
 $$
-V_{n,rms}=\frac{V_{sig,rms}}{10^{\mathrm{SNR}/20}}
+V_{n,rms}=\frac{V_{sig,rms}}{10^{\mathrm{SNR}/20}}  
 $$
-
 
 
 
 例如 $V_{pp,diff}=$0.8\,$\mathrm{V}$，目标 SNR 为 74 dB：
 
-
 $$
-V_{sig,rms}\approx 0.283\,\mathrm{V}
+V_{sig,rms}\approx 0.283\,\mathrm{V}  
 $$
-
-
 
 
 
 $$
-V_{n,rms}\approx56.4\,\mu\mathrm{V}
+V_{n,rms}\approx56.4\,\mu\mathrm{V}  
 $$
-
 
 
 
@@ -1417,11 +1342,9 @@ SAR ADC 的主要随机噪声：
 
 采样热噪声对电容的基本约束：
 
-
 $$
-C_{total}\gtrsim\frac{kT}{V_{n,sample}^2}
+C_{total}\gtrsim\frac{kT}{V_{n,sample}^2}  
 $$
-
 
 
 
@@ -1461,11 +1384,9 @@ $$
 
 多级 ADC 的输入等效噪声可写为：
 
-
 $$
-V_{n,total}^2=V_{n,1}^2+\frac{V_{n,2}^2}{G_1^2}+\frac{V_{n,3}^2}{G_1^2G_2^2}+\cdots
+V_{n,total}^2=V_{n,1}^2+\frac{V_{n,2}^2}{G_1^2}+\frac{V_{n,3}^2}{G_1^2G_2^2}+\cdots  
 $$
-
 
 
 
@@ -1535,11 +1456,9 @@ Sigma-Delta ADC 利用过采样和噪声整形把量化噪声推向带外，但�
 
 对于 $f_{in}=$1\,$\mathrm{GHz}$、$\sigm$a_$t=$100\,$\mathrm{fs}$：
 
-
 $$
-\mathrm{SNR}_{jitter}\approx64.0\,\mathrm{dB}
+\mathrm{SNR}_{jitter}\approx64.0\,\mathrm{dB}  
 $$
-
 
 
 
@@ -1771,11 +1690,9 @@ Monte Carlo mismatch 用于失配和工艺散布，不等同于瞬态随机噪�
 
 可设置一系列小差分输入 $V_{id}$，每个输入运行多次 transient noise，统计输出为 1 的概率：
 
-
 $$
-P(D=1|V_{id})\approx\Phi\left(\frac{V_{id}-V_{os}}{\sigma_n}\right)
+P(D=1|V_{id})\approx\Phi\left(\frac{V_{id}-V_{os}}{\sigma_n}\right)  
 $$
-
 
 
 
@@ -1876,21 +1793,17 @@ $$
 
 在 300 K：
 
-
 $$
-v_n=\sqrt{4kTRB}
+v_n=\sqrt{4kTRB}  
 $$
-
 
 
 
 代入 $R=$1\,$\mathrm{k\Omega}$、$B=$10\,$\mathrm{MHz}$：
 
-
 $$
-v_n\approx12.9\,\mu\mathrm{V}_{rms}
+v_n\approx12.9\,\mu\mathrm{V}_{rms}  
 $$
-
 
 
 
@@ -1898,21 +1811,17 @@ $$
 
 若 $g_m=5\,\mathrm{mS}$、$\gamma=2/3$、$T=300\,\mathrm{K}$：
 
-
 $$
-e_n=\sqrt{\frac{4kT\gamma}{g_m}} \approx1.49\,\mathrm{nV}/\sqrt{\mathrm{Hz}}
+e_n=\sqrt{\frac{4kT\gamma}{g_m}} \approx1.49\,\mathrm{nV}/\sqrt{\mathrm{Hz}}  
 $$
-
 
 
 
 若简单按 100 MHz 矩形带宽积分：
 
-
 $$
-v_{n,rms}\approx14.9\,\mu\mathrm{V}
+v_{n,rms}\approx14.9\,\mu\mathrm{V}  
 $$
-
 
 
 
@@ -1922,21 +1831,17 @@ $$
 
 若希望采样噪声低于 $50\,\mu\mathrm{V}_{rms}$：
 
-
 $$
-C\ge\frac{kT}{V_n^2}
+C\ge\frac{kT}{V_n^2}  
 $$
-
 
 
 
 在 300 K：
 
-
 $$
-C\gtrsim1.66\,\mathrm{pF}
+C\gtrsim1.66\,\mathrm{pF}  
 $$
-
 
 
 
@@ -2002,11 +1907,9 @@ $$
 
 预算必须按平方和闭合：
 
-
 $$
-V_{n,total}^2=\sum_iV_{n,i}^2
+V_{n,total}^2=\sum_iV_{n,i}^2  
 $$
-
 
 
 
@@ -2099,10 +2002,77 @@ $$
 
 [12] Cadence Design Systems, _Spectre Noise, Periodic Noise and Transient Noise Analysis Documentation and Training Materials_.
 
+## 2026 深化：时变噪声、折叠与高速 ADC 噪声预算（新增）
 
-## 相关笔记
+> [!info] 本节补充的核心问题
+> 不能把 MOS 白噪声谱密度在任意“电路带宽”内直接积分来估算所有采样噪声；不同噪声源经不同传函、不同采样相位和重置状态进入输出。必须区分连续时间小信号 `noise`、周期时变 `pnoise`、瞬态 `transient noise`、抖动引起的采样误差以及确定性 spur。
 
-- [ADC 比较器：架构、关键指标与设计方法](/GarveyDing_AcademicPages/blog/adc-comparators/)
-- [Bandgap 基准源：架构与设计](/GarveyDing_AcademicPages/blog/bandgap-reference/)
-- [ADC Reference Voltage Buffer（RVB）：架构与设计](/GarveyDing_AcademicPages/blog/adc-reference-buffer/)
-- [PVT 对 MOS 管性能参数的影响](/GarveyDing_AcademicPages/blog/mos-pvt/)
+### N1. 热噪声与输入等效预算的对应关系
+
+理想电阻的一边谱热噪声 `S_v(f)=4kTR`（V²/Hz），MOS 强反型饱和区漏电流热噪声常写成 `S_id≈4kTγg_m`，但 `γ` 在短沟道、不同偏置中不是固定的 `2/3`，输入等效噪声还需考虑负载、电流源、体效应和沟道调制。对 `G_m` 放大器，若核心输出噪声积分得到 `v_{n,out,rms}`，则输入等效应由目标信号增益 `|H_sig|` 归一化：
+
+$$v_{n,in,eq}^2=\int_0^\infty \frac{S_{v,out}(f)}{|H_{sig}(f)|^2}\,df\quad\text{（当信号增益随频率变化时需明确等效定义）}.$$
+
+在实际设计中更稳妥的方式是按最终采样量，将每个源的 `S_i(f)` 乘其**输出传函** `|H_i(f)|²`，求输出均方噪声，再统一折算回输入端。对不相关噪声可加均方值，不可直接把 RMS 电压线性相加；对于同一器件经多条路径产生的相关噪声，应保留相关项。
+
+![2026_05_专项机制图](/images/blog/learning-notes/circuit-noise/2026_05_专项机制图.svg)
+
+*原创专项机制示意；图中比例、相位和结构仅用于说明原理，不代表实际芯片晶体管级拓扑。*
+
+![2026_01_噪声传递路径](/images/blog/learning-notes/circuit-noise/2026_01_噪声传递路径.svg)
+
+### N2. kT/C 不是所有采样相位中唯一的噪声
+
+开关电容对热平衡采样的理想结果 `σ²=kT/C`，前提包含理想开关导通足够久、一个等效采样电容、开关电阻热噪声达到相应平衡。对差分电路，单端/差模采样电容的定义会让系数出现 `1`、`2` 等差别，必须画清实际电荷关系，不能直接套一个“差分 kT/C=2kT/C”。在连续多相流水线中，需要把：
+
+- 前端 sampling switch `kT/C`；
+- CDAC bottom-plate 切换和 reference noise；
+- preamp/RA 在有限时间内注入的热噪声；
+- comparator 自身的输入等效噪声与 kickback；
+- 级间增益放大后的噪声和下级折回的噪声；
+- 采样过程导致的 aliasing/folding
+
+纳入同一预算。**取样后所有“后级噪声除以 G²”只是线性输入折算近似**；存在饱和、冗余拼接或码相关切换时须用相应行为模型验证。
+
+### N3. 时钟抖动：不要与电路电压噪声混为一谈
+
+小抖动下 `δv≈(dv/dt)δt`；对正弦输入 `A sin 2πft`，产生 `SNR_j=−20log10(2πfσ_t)`。例如假设 `f_in=10 GHz`、`σ_t=50 fs`，则计算得到约 **50.1 dB**，对应即使其他噪声理想，也远不能获得 12-bit 理想 `74 dB` SNR。该算例说明输入频率远比子 ADC 的内部运算时钟频率对真正**输入 aperture jitter**更敏感，不能把 THA 和后级只采样近似 DC 的逻辑等同。
+
+![2026_02_噪声与jitter分类](/images/blog/learning-notes/circuit-noise/2026_02_噪声与jitter分类.svg)
+
+### N4. Spectre 仿真检查清单：选择正确噪声模型
+
+|问题|建议分析|判读条件|
+|---|---|---|
+|连续偏置电路输入等效噪声|AC noise|固定 DC 工作点、稳定的 LTI 小信号|
+|采样、斩波、混频与周期切换|PSS + PNOISE（适用时）|PSS 真实收敛、采样边沿、侧带数和 sampled noise 设置正确|
+|比较器/动态 RingAmp 非周期或亚稳态噪声|Transient Noise|多随机种子、足够样本、正确保存谱密度与时间步长|
+|电源/数字耦合产生的周期 spur|Transient/FFT + PSS/PXF|这是确定性干扰，不能简单归为 `noise floor`|
+|器件失配引入 offset|Monte Carlo mismatch|这是片间准静态偏差，不是热噪声|
+
+对采样电路的 PNOISE 结果，应明确报告 `sampled` 观测时间、噪声 sidebands 截断收敛曲线和哪些边沿产生噪声；否则只报一个积分 RMS 没有可复现性。若 FFT 的低频 spur 随仿真采样时间变化，应先排查数字周期/时钟相位/非相干泄漏，而不是一律归因 1/f noise。
+
+![2026_03_噪声仿真矩阵](/images/blog/learning-notes/circuit-noise/2026_03_噪声仿真矩阵.svg)
+
+### N5. 面向两级 Pipeline-SAR 的最小噪声设计流程
+
+① 由目标 SNDR 扣除谐波预算后给出允许的**输入等效随机噪声 RMS**；② 对输入采样、首级 CDAC、RA、二级 CDAC、比较器、参考源及 THA/aperture 分配均方噪声份额；③ 用晶体管 op-point 导出 `g_m, g_ds` 等而不是对所有 MOS 使用同一个 `γ`；④ 建立每个相位的 transfer function 和噪声折叠；⑤ PNOISE/Transient Noise 与顶层 FFT 三层结果闭环；⑥ PVT、MC、后仿重算预算。尤其要分开**RA 线性建立误差**（确定性动态失真）与 RA 热噪声（随机噪声），两者优化旋钮不同。
+
+### N6. 推荐核验的经典文献
+
+- [N1] C. C. Enz and G. C. Temes, “Circuit Techniques for Reducing the Effects of Op-Amp Imperfections: Autozeroing, Correlated Double Sampling, and Chopper Stabilization,” *Proceedings of the IEEE*, 1996. [DOI:10.1109/5.542410](https://doi.org/10.1109/5.542410)。
+- [N2] A. Hajimiri and T. H. Lee, “A General Theory of Phase Noise in Electrical Oscillators,” *IEEE JSSC*, 1998. [DOI:10.1109/4.658619](https://doi.org/10.1109/4.658619)；[作者存档 PDF](https://chic.caltech.edu/wp-content/uploads/2013/05/general.pdf)。
+- [N3] S. Pavan, R. Schreier, and G. C. Temes, *Understanding Delta-Sigma Data Converters*, 2nd ed., Wiley-IEEE Press, 2017. [DOI:10.1002/9781119258308](https://doi.org/10.1002/9781119258308)。
+- [N4] B. Razavi, *Design of Analog CMOS Integrated Circuits*, 2nd ed., McGraw-Hill, 2017. [出版社书目](https://www.mheducation.com/highered/product/Design-of-Analog-CMOS-Integrated-Circuits-Razavi.html)。
+- [N5] IEEE Std 1241-2023, *IEEE Standard for Terminology and Test Methods for Analog-to-Digital Converters*. [官方入口](https://standards.ieee.org/ieee/1241/6797/)。
+- [N6] A. N. Karanicolas, H.-S. Lee, and K. L. Bacrania, “A 15-b 1-Msample/s Digitally Self-Calibrated Pipeline ADC,” *IEEE JSSC*, 1993. [DOI:10.1109/4.261994](https://doi.org/10.1109/4.261994)（校准与随机噪声预算概念需区别）。
+
+**读图路线**：N1 中 autozero/CDS 噪声折叠图、N2 中相位敏感函数/ISF；本次插图皆为原创机制图，可在本地 Obsidian 离线查看。
+
+### 定量分析图（理论/指定参数示意）
+
+![2026_04_理论参数曲线](/images/blog/learning-notes/circuit-noise/2026_04_理论参数曲线.png)
+
+> 上图为数学模型/显式参数下计算的示意曲线，不是论文测量，也不是 TSMC 28 nm PDK 提取结果。实际结论需结合文中定义、完整寄生与时序验证。
+
+---
