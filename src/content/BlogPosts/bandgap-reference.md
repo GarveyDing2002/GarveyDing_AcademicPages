@@ -52,7 +52,7 @@ tags:
 | Brokaw | [Brokaw 1974 原论文 PDF](https://class.ece.iastate.edu/djchen/ee501/2013/bandgaprefpaperbypaulbrokawjssc1974.pdf) | Fig. 2/3：two-transistor cell 与 collector current sensing；Fig. 4 完整芯片 |
 | Banba | [Banba 1999 原论文 PDF](https://people.eecs.berkeley.edu/~pister/140sp16/resources/LowVoltageBG.pdf) | **Fig. 2、Eq. (5)–(13)**：低压电流模和实物偏置；Fig. 3 低压 SPICE 仿真 |
 
-![电压模与电流模的求和位置](attachment/17_voltage_current_sum.png)
+![电压模与电流模的求和位置](/images/blog/learning-notes/bandgap-reference/17_voltage_current_sum.png)
 
 > [!warning] 一个容易误解的分类
 > Widlar、Kuijk、Brokaw 常归入**传统电压模**，Banba 常归入**低压电流模**。但“电压模/电流模”描述 CTAT/PTAT 的组合实现，**不是说电压模不允许有电流镜**。此外，Kuijk-like、Brokaw-like 是结构族，不应把 Razavi 所有带运放的 CMOS 图都不加区分地当成 Kuijk 原始电路。
@@ -305,7 +305,7 @@ $$
 
 #### CTAT/PTAT 补偿示意图
 
-![示意图](attachment/02_ctat_ptat.png)
+![示意图](/images/blog/learning-notes/bandgap-reference/02_ctat_ptat.png)
 
 图中可以看到，$V_{BE}$ 随温度下降，放大后的 $\Delta V_{BE}$ 随温度上升，两者相加后得到近似平坦的 $V_{REF}$。实际电路中，最终曲线不会完全平坦，因为 $V_{BE}(T)$ 存在二阶和高阶曲率。
 
@@ -338,7 +338,7 @@ $$
 - **$T\ln(T/T_0)$ 项**：传统 $\Delta V_{BE}=V_T\ln N$ 在固定电流密度比时严格正比 $T$，不能用常数倍 PTAT 抵消它的二阶导数。
 - 若 $\eta>\alpha$，则在此近似模型下 $d^2 V_{BE}/dT^2=-(\eta-\alpha)k/(qT)<0$。
 
-![VBE 非线性模型](attachment/16_vbe_nonlinear_model.png)
+![VBE 非线性模型](/images/blog/learning-notes/bandgap-reference/16_vbe_nonlinear_model.png)
 
 > [!note] 模型边界
 > $V_{G0}$ 是与禁带外推相关的模型参数，不等于直接量得的任意温度下硅禁带电压。$\eta$ 与 $\alpha$ 均依赖器件和偏置，不是所有 PDK 通用的常数。实际需要从 Spectre 的 $V_{BE}(T)$、$\Delta V_{BE}(T)$ 拟合并检查 leakage 与有限 $\beta$。
@@ -347,7 +347,7 @@ $$
 
 Bandgap / voltage reference 的结构谱系可以概括如下：
 
-![示意图](attachment/01_taxonomy.png)
+![示意图](/images/blog/learning-notes/bandgap-reference/01_taxonomy.png)
 
 从图中可以看到，bandgap 的主线大致分为：
 
@@ -673,7 +673,7 @@ Brokaw cell 非常适合：
 
 **判断架构时应该先看三个问题：** (1) $\Delta V_{BE}$ 由哪个电阻承受；(2) 哪个节点（或支路）被反馈强制相等；(3) 最终输出是 PN 结电压与 PTAT 电压直接相加，还是两种电流先汇合后由电阻转换。
 
-![Widlar 功能关系](attachment/03_widlar_principle.png)
+![Widlar 功能关系](/images/blog/learning-notes/bandgap-reference/03_widlar_principle.png)
 
 #### 2.5.1 Widlar：无需独立误差放大器的三 BJT 基准原型
 
@@ -681,7 +681,7 @@ Widlar 1971 的经典单元中，Q1/Q2 处于不同电流密度，产生 $\Delta
 
 #### 2.5.2 Kuijk：放大器反馈建立电流密度比
 
-![Kuijk 反馈思想](attachment/04_kuijk_principle.png)
+![Kuijk 反馈思想](/images/blog/learning-notes/bandgap-reference/04_kuijk_principle.png)
 
 - 运放通过负反馈使检测节点近似相等；在设计的电阻上建立 $\Delta V_{BE}$。
 - 相应 $I_{PTAT}=\Delta V_{BE}/R_P$，最终由电阻权重形成 $V_{REF}=V_{BE}+K\Delta V_{BE}$。
@@ -690,7 +690,7 @@ Widlar 1971 的经典单元中，Q1/Q2 处于不同电流密度，产生 $\Delta
 
 #### 2.5.3 Brokaw：Collector Current Sensing + 两 BJT cell
 
-![Brokaw cell 功能关系](attachment/05_brokaw_principle.png)
+![Brokaw cell 功能关系](/images/blog/learning-notes/bandgap-reference/05_brokaw_principle.png)
 
 Brokaw 1974 的真正贡献不在于更换 $V_{BE}+K\Delta V_{BE}$ 公式，而在于 **双 BJT、集电极电流检测以及温漂和输出幅度的分开控制**。原论文特别讨论 base-current error correction、工作点灵敏度、frequency response、startup 和完整三端参考。
 
@@ -756,7 +756,7 @@ $$
 
 #### 电压模与电流模对比
 
-![示意图](attachment/17_voltage_current_sum.png)
+![示意图](/images/blog/learning-notes/bandgap-reference/17_voltage_current_sum.png)
 
 #### 电流模的核心优势
 
@@ -955,7 +955,7 @@ $$
 
 #### 逐支路原理：原论文 Fig. 2 的完整 KCL
 
-![Banba 两个核心支路与输出电阻](attachment/10_banba_branch_schematic.png)
+![Banba 两个核心支路与输出电阻](/images/blog/learning-notes/bandgap-reference/10_banba_branch_schematic.png)
 
 > 自绘教学用等效连接图；p1/p2/p3 的晶体管符号经过简化，**严格器件连接、OPA 输入正负端与原论文 Eq. (5)–(13) 以 [Banba 原始 PDF](https://people.eecs.berkeley.edu/~pister/140sp16/resources/LowVoltageBG.pdf) Fig. 2 为准**。
 
@@ -1025,13 +1025,13 @@ $$
 
 *符号取决于 $V_{OS}$ 的定义，设计时更重要的是增益大小*。例如 $R_2/R_3=10$，$R_4/R_2=0.4$，则 $|\Delta V_{REF}/V_{OS}|\simeq4.4$；1 mV 失调导致约 4.4 mV 输出误差，约占 0.5 V 的 0.88%。
 
-![Banba 失调放大路径](attachment/12_banba_offset_path.png)
+![Banba 失调放大路径](/images/blog/learning-notes/bandgap-reference/12_banba_offset_path.png)
 
 运放的 **offset drift**（$dV_{OS}/dT$）还会进入 TC。不能仅依靠提高 OTA DC gain 来消除固有 offset；可以使用匹配、适当尺寸、trim、chopping/auto-zero 或专门的 PTAT-offset 架构，但每一种都需要衡量功耗、纹波与系统复杂度。
 
 #### 最低供电：分别核对三条支路
 
-![Banba 逐支路供电余量](attachment/11_low_voltage_headroom.png)
+![Banba 逐支路供电余量](/images/blog/learning-notes/bandgap-reference/11_low_voltage_headroom.png)
 
 低输出电压仅表示 $V_{REF}<1.2\ \mathrm V$；真正的低电源设计必须满足：
 
@@ -1218,7 +1218,7 @@ $$
 
 #### 曲率示意图
 
-![示意图](attachment/07_curvature_model.png)
+![示意图](/images/blog/learning-notes/bandgap-reference/07_curvature_model.png)
 
 图中第一条曲线表示一阶补偿后残余误差仍然存在；曲率补偿后，输出误差可以在更宽温度范围内减小。
 
@@ -1318,7 +1318,7 @@ $$
 
 这解释了曲线出现中温峰值、两端较低的常见形态；不同工艺、偏置指数、电阻 TCR 和 offset drift 会造成峰值移动甚至转为单调曲线。
 
-![一阶补偿 vs 曲率补偿](attachment/13_first_vs_curvature_trim.png)
+![一阶补偿 vs 曲率补偿](/images/blog/learning-notes/bandgap-reference/13_first_vs_curvature_trim.png)
 
 **如何在 Virtuoso 定位曲率来源：** 分别保存 $V_{BE}(T)$、$\Delta V_{BE}(T)$、$I_{PTAT}(T)$、$I_{CTAT}(T)$、$R_i(T)$ 与最终 $V_{REF}(T)$，先锁定理想运放/镜像，后逐步放开 offset、镜像 $r_o$ 和寄生，明确哪些是“PN 结内禀曲率”，哪些是“电路实现附加曲率”。
 
@@ -1917,7 +1917,7 @@ $$
 
 #### Trim 的三个设计自由度（新增）
 
-![Trim：初值与曲率分开处理](attachment/14_trim_dimensions.png)
+![Trim：初值与曲率分开处理](/images/blog/learning-notes/bandgap-reference/14_trim_dimensions.png)
 
 对于 Banba 结构，理想情况下 $R_4/R_2$ 主要控制 **幅度**，$R_2/R_3$ 主要控制 **一阶 TC**，额外 $I_{COMP}(T)$ 主要控制 **高阶曲率**。要把这些设计自由度分开，实现上仍须检查电阻 TCR 与电流镜的耦合。
 
@@ -2016,7 +2016,7 @@ Bandgap 的理论温漂可以很低，但实际芯片存在：
 
 ### 6.4 2021–2026 年近期 JSSC 方向（新增）
 
-![JSSC Bandgap 研究路线](attachment/15_jssc_evolution.png)
+![JSSC Bandgap 研究路线](/images/blog/learning-notes/bandgap-reference/15_jssc_evolution.png)
 
 > [!info] 文献筛选原则
 > 下表区分正式 **JSSC** 与 ISSCC/A-SSCC、综述；所列为代表性工作而非全部 JSSC Bandgap 论文。出版年按正式卷期，部分 DOI 年份是早期上线年。主要信息核对于 IEEE Xplore 摘要、作者机构页面和期刊元数据，尚不能代替逐页精读原始电路。
@@ -2085,7 +2085,7 @@ $$
 
 #### 典型 ADC reference 系统
 
-![示意图](attachment/09_adc_reference_chain.png)
+![示意图](/images/blog/learning-notes/bandgap-reference/09_adc_reference_chain.png)
 
 #### 各模块职责
 
@@ -2812,7 +2812,7 @@ Bandgap 负责长期稳定性，reference buffer 负责动态驱动能力。
 
 ### 9.4 附录 D：Bandgap 的主要误差来源
 
-![误差路径总览](attachment/08_error_sources.png)
+![误差路径总览](/images/blog/learning-notes/bandgap-reference/08_error_sources.png)
 
 
 
@@ -3059,7 +3059,7 @@ $$
 
 ### 9.7 附录 G：实际复现路线（TSMC 28 nm / Virtuoso）
 
-![Virtuoso 逐级验证矩阵](attachment/18_virtuoso_check_matrix.png)
+![Virtuoso 逐级验证矩阵](/images/blog/learning-notes/bandgap-reference/18_virtuoso_check_matrix.png)
 
 #### G.1 五个互相独立的 testbench
 
