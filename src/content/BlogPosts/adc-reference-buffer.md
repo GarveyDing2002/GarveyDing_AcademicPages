@@ -21,7 +21,6 @@ tags:
 
 ---
 
-
 > [!info] 层次化结构
 > 保留原有 **9 个主章节**，2026-10-26 版在原笔记基础上扩充小信号推导、Capless 与主极点辨析、Class-AB、差分参考误差、TI-ADC reference distribution、测试流程与已核对文献。图中蓝色框图为原创教学示意，**不是论文原图/晶体管级网表**。
 
@@ -84,7 +83,7 @@ tags:
 
 可以把 ADC 的供电与基准链路分成三类角色：
 
-- **[[Bandgap 基准源：架构与设计|Bandgap / Reference Core]]：负责“准”**——生成温漂小、长期稳定的基准。
+- **Bandgap / Reference Core：负责“准”**——生成温漂小、长期稳定的基准。
 - **LDO：负责“供电稳”**——生成干净的 AVDD/DVDD。
 - **RVB：负责“把准确的 reference 变硬”**——在 CDAC 瞬态抽取/回灌电荷时仍维持 VREFP/VREFN。
 
@@ -109,7 +108,6 @@ $$
 所以 reference 的动态误差会直接调制 ADC 的量化尺度。
 
 ---
-
 
 ### 1.2 为什么 ADC 需要专门的 RVB
 
@@ -147,7 +145,6 @@ Reference Core ---> RVB ---> CDAC
 第二种才是高速 ADC 中更合理的系统结构。
 
 ---
-
 
 ### 1.3 Switched-Capacitor 负载与 Reference Error
 
@@ -237,7 +234,6 @@ $$
 
 ---
 
-
 ### 1.4 三种时间尺度：CDEC、Local Loop 与 Global Loop
 
 ![03_charge_timescales](/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.svg)
@@ -261,13 +257,7 @@ $$
 随后局部高速环路开始工作：
 
 $$
-\Delta V_{OUT}
-\rightarrow
-\Delta V_G
-\rightarrow
-\Delta I_{OUT}
-\rightarrow
-V_{OUT}\text{ recovery}
+\Delta V_{OUT} \rightarrow \Delta V_G \rightarrow \Delta I_{OUT} \rightarrow V_{OUT}\text{ recovery}
 $$
 
 这部分决定：
@@ -297,17 +287,10 @@ $$
 因此一个现代高速 RVB 很常见的思想是：
 
 $$
-\boxed{
-\text{precision slow loop}
-+
-\text{fast local loop}
-+
-\text{charge reservoir}
-}
+\boxed{ \text{precision slow loop} + \text{fast local loop} + \text{charge reservoir} }
 $$
 
 ---
-
 
 ### 1.5 从电荷守恒推导参考误差与码相关非线性（新增）
 
@@ -568,7 +551,6 @@ $$
 
 ---
 
-
 ### 2.2 统一的 RVB 架构分析框架
 
 以后看到任何新 RVB，不必先记名字，可以按照以下步骤分析。
@@ -586,10 +568,7 @@ $$
 #### Step 2：画 global feedback loop
 
 $$
-V_{out}
-\rightarrow EA
-\rightarrow driver
-\rightarrow V_{out}
+V_{out} \rightarrow EA \rightarrow driver \rightarrow V_{out}
 $$
 
 求：
@@ -605,10 +584,7 @@ $$
 例如：
 
 $$
-V_{out}
-\rightarrow M_1
-\rightarrow M_2
-\rightarrow V_{out}
+V_{out} \rightarrow M_1 \rightarrow M_2 \rightarrow V_{out}
 $$
 
 求：
@@ -681,7 +657,6 @@ $$
 
 ---
 
-
 ### 2.3 将 ADC 精度分配到参考动态误差预算（新增）
 
 ![10_refp_refn_common_mode](/images/blog/learning-notes/adc-reference-buffer/10_refp_refn_common_mode.svg)
@@ -699,10 +674,7 @@ $$
 一个更正确的方法是先建立：
 
 $$
-\delta V_{DAC,k}\simeq
-\frac{\partial V_{DAC,k}}{\partial V_{REFP}}\delta V_{REFP,k}+
-\frac{\partial V_{DAC,k}}{\partial V_{REFN}}\delta V_{REFN,k}+
-\frac{\partial V_{DAC,k}}{\partial V_{CM}}\delta V_{CM,k}.
+\delta V_{DAC,k}\simeq \frac{\partial V_{DAC,k}}{\partial V_{REFP}}\delta V_{REFP,k}+ \frac{\partial V_{DAC,k}}{\partial V_{REFN}}\delta V_{REFN,k}+ \frac{\partial V_{DAC,k}}{\partial V_{CM}}\delta V_{CM,k}.
 $$
 
 然后将 $\delta V_{DAC,k}$ 传递到 ADC 最终输出（考虑 stage-1 冗余和 residue gain），再分配为总体噪声/失真预算的一部分。PN/LMS 等静态或缓变增益校准**不保证**能消除码相关、bit-time-dependent reference settling error。
@@ -710,8 +682,7 @@ $$
 #### 2.3.2 区分差模与共模参考错误
 
 $$
-\delta V_{REF,diff}=\delta V_{REFP}-\delta V_{REFN},\qquad
-\delta V_{REF,CM}=\frac{\delta V_{REFP}+\delta V_{REFN}}{2}.
+\delta V_{REF,diff}=\delta V_{REFP}-\delta V_{REFN},\qquad \delta V_{REF,CM}=\frac{\delta V_{REFP}+\delta V_{REFN}}{2}.
 $$
 
 差模参考扰动更直接改变 DAC 有效权重；共模扰动可能通过开关电容耦合、比较器共模敏感度、运放输入共模和 P/N 不匹配转换成差模误差。**共模波动不一定自动抵消**，能否抵消必须由实际差分 CDAC 拓扑验证。
@@ -757,7 +728,6 @@ $$
 因此“架构名”只是描述它最突出的设计机制。
 
 ---
-
 
 ### 3.2 Source Follower（SF）
 
@@ -837,7 +807,6 @@ $$
 
 ---
 
-
 ### 3.3 Super Source Follower（SSF）/ Regulated Follower
 
 SSF 的思想是给 follower 加一条局部增益路径，使输出变化能更强地调节输出管。
@@ -873,9 +842,7 @@ $$
 普通 SF：
 
 $$
-V_{OUT}\downarrow
-\Rightarrow V_{GS}\uparrow
-\Rightarrow I_{OUT}\uparrow
+V_{OUT}\downarrow \Rightarrow V_{GS}\uparrow \Rightarrow I_{OUT}\uparrow
 $$
 
 属于器件自身的跟随作用。
@@ -883,10 +850,7 @@ $$
 SSF：
 
 $$
-V_{OUT}\downarrow
-\Rightarrow \text{auxiliary gain}
-\Rightarrow V_G\text{变化更大}
-\Rightarrow I_{OUT}\uparrow\uparrow
+V_{OUT}\downarrow \Rightarrow \text{auxiliary gain} \Rightarrow V_G\text{变化更大} \Rightarrow I_{OUT}\uparrow\uparrow
 $$
 
 因此对输出扰动的抵抗更强。
@@ -910,7 +874,6 @@ $$
 > 阅读论文时不要只看作者把电路叫 SSF 还是 FVF，而应实际画出 local feedback loop。
 
 ---
-
 
 ### 3.4 Opamp + Output Stage 闭环型 RVB
 
@@ -992,7 +955,6 @@ CDAC 高频瞬态发生时，全局环路可能尚未建立修正电流。
 因此“Opamp RVB”实际上是一类系统框架，而不是一个固定 transistor schematic。
 
 ---
-
 
 ### 3.5 SF、SSF、FVF 的信号路径与输出阻抗辨析（新增）
 
@@ -1076,7 +1038,6 @@ $$
 
 ---
 
-
 ### 4.2 Class-AB RVB
 
 Class-AB 的核心目标不是简单增加输出管，而是：
@@ -1134,7 +1095,6 @@ $$
 
 ---
 
-
 ### 4.3 双向瞬态能力与 Class-AB 实测论文（新增）
 
 ![07_classab_source_sink](/images/blog/learning-notes/adc-reference-buffer/07_classab_source_sink.svg)
@@ -1181,11 +1141,7 @@ FVF 是高速 RVB 和 fast-transient LDO 中最重要的经典结构之一。
 输出扰动被快速感知：
 
 $$
-\Delta V_{OUT}
-\rightarrow
-\Delta V_G
-\rightarrow
-\Delta I_{OUT}
+\Delta V_{OUT} \rightarrow \Delta V_G \rightarrow \Delta I_{OUT}
 $$
 
 局部环路不经过完整高增益全局 opamp，因此可以拥有更高的局部带宽。
@@ -1197,8 +1153,7 @@ $$
 常见数量级可写为：
 
 $$
-R_{out,FVF}\approx
-\frac{1}{g_{m1}(1+g_{m2}r_o)}
+R_{out,FVF}\approx \frac{1}{g_{m1}(1+g_{m2}r_o)}
 $$
 
 当：
@@ -1210,10 +1165,7 @@ $$
 则：
 
 $$
-\boxed{
-R_{out,FVF}\sim
-\frac{1}{g_{m1}g_{m2}r_o}
-}
+\boxed{ R_{out,FVF}\sim \frac{1}{g_{m1}g_{m2}r_o} }
 $$
 
 相比 SF：
@@ -1264,7 +1216,6 @@ $$
 
 ---
 
-
 ### 5.2 Super-FVF / Gain-Boosted FVF
 
 如果 conventional FVF 的 local gain：
@@ -1282,9 +1233,7 @@ $$
 于是：
 
 $$
-R_{out}\sim
-\frac{1}
-{g_m(1+A_{boost}g_mr_o)}
+R_{out}\sim \frac{1} {g_m(1+A_{boost}g_mr_o)}
 $$
 
 在强增益条件下近似：
@@ -1319,14 +1268,10 @@ $$
 因此设计重点变为：
 
 $$
-\boxed{
-Z_{out}\downarrow
-\quad\text{但不能以严重 BW/PM 损失为代价}
-}
+\boxed{ Z_{out}\downarrow \quad\text{但不能以严重 BW/PM 损失为代价} }
 $$
 
 ---
-
 
 ### 5.3 Class-AB FVF
 
@@ -1357,15 +1302,11 @@ FVF 提供 fast local error sensing，但 conventional FVF 的一个方向可能
 Class-AB 将局部误差信号转换为双向大电流：
 
 $$
-V_{REF}\downarrow
-\Rightarrow
-I_{source}\uparrow\uparrow
+V_{REF}\downarrow \Rightarrow I_{source}\uparrow\uparrow
 $$
 
 $$
-V_{REF}\uparrow
-\Rightarrow
-I_{sink}\uparrow\uparrow
+V_{REF}\uparrow \Rightarrow I_{sink}\uparrow\uparrow
 $$
 
 非常匹配 SAR CDAC 的双向 charge exchange。
@@ -1390,7 +1331,6 @@ pipeline-SAR 中第一级通常：
 Class-AB FVF 因此是值得优先研究的候选。
 
 ---
-
 
 ### 5.4 SF、SSF、FVF 的统一理解
 
@@ -1432,7 +1372,6 @@ SSF、regulated follower、FVF 都属于利用局部环路增强 follower 的设
 5. source 和 sink 分别由哪条路径提供？
 
 ---
-
 
 ### 5.5 FVF 环路极性、小信号推导与稳定性（新增，重点）
 
@@ -1484,8 +1423,7 @@ $$
 把断开 local loop 以后输出阻抗记为 $Z_0(s)$，局部反馈从 $v_o$ 经传感器到主器件控制 gate 的传递为 $A_s(s)$，在近似条件下有：
 
 $$
-T_{local}(s)\approx A_s(s)g_{mp}Z_0(s),\qquad
-Z_{out,CL}(s)\approx\frac{Z_0(s)}{1+T_{local}(s)}.
+T_{local}(s)\approx A_s(s)g_{mp}Z_0(s),\qquad Z_{out,CL}(s)\approx\frac{Z_0(s)}{1+T_{local}(s)}.
 $$
 
 该传函包含两个常见节点：
@@ -1563,7 +1501,6 @@ $$
 $$
 
 ---
-
 
 ### 6.2 Active RVB + Large Decoupling Capacitor
 
@@ -1648,7 +1585,6 @@ $$
 
 ---
 
-
 ### 6.3 Capacitor-less / Small-C RVB
 
 另一个发展方向是尽量减少大 decap：
@@ -1685,15 +1621,12 @@ $$
 所以常出现：
 
 $$
-\boxed{
-C_{DEC}\leftrightarrow P_{RVB}
-}
+\boxed{ C_{DEC}\leftrightarrow P_{RVB} }
 $$
 
 的基本 trade-off。
 
 ---
-
 
 ### 6.4 Dynamic / Charge-Replenishment RVB
 
@@ -1714,11 +1647,7 @@ SAR reference load 的最大特点之一是**时序可预测**。
 只有在 switching window 增大输出级偏置：
 
 $$
-I_Q(t)=
-\begin{cases}
-I_{low}, & idle\\
-I_{boost}, & conversion
-\end{cases}
+I_Q(t)= \begin{cases} I_{low}, & idle\\ I_{boost}, & conversion \end{cases}
 $$
 
 #### Charge Replenishment
@@ -1742,15 +1671,12 @@ $$
 变成：
 
 $$
-\boxed{
-\text{ADC-timing-aware reference driver}
-}
+\boxed{ \text{ADC-timing-aware reference driver} }
 $$
 
 以换取能效。
 
 ---
-
 
 ### 6.5 外接 C 与 Capless 的主极点、补偿和真实网络阻抗（新增）
 
@@ -1761,11 +1687,7 @@ $$
 传统输出电容主导补偿结构，经常设计为：
 
 $$
-\omega_{p,out}\simeq\frac{1}{(r_{o,pass}\parallel R_L) C_{OUT}},
-\quad
-\omega_{p,g}\simeq \frac{1}{R_{EA,out}C_{g,eff}},
-\quad
-\omega_{z,ESR}\simeq\frac{1}{R_{ESR}C_{OUT}}.
+\omega_{p,out}\simeq\frac{1}{(r_{o,pass}\parallel R_L) C_{OUT}}, \quad \omega_{p,g}\simeq \frac{1}{R_{EA,out}C_{g,eff}}, \quad \omega_{z,ESR}\simeq\frac{1}{R_{ESR}C_{OUT}}.
 $$
 
 大 $C_{OUT}$ 使输出极点变低，成为 dominant pole；输出电容 ESR 还能形成零点帮助补偿。**上式中的输出电阻用于断环/开环极点建模，不能用全局反馈闭合后的测量 $R_{out,CL}$ 代替。**
@@ -1810,10 +1732,7 @@ $$
 对多通道/TI ADC，如果所有子 ADC 直接挂在同一个 reference 节点：
 
 $$
-V_{REF,err}
-=
-Z_{REF}
-\sum_{k=1}^{N}I_{CDAC,k}
+V_{REF,err} = Z_{REF} \sum_{k=1}^{N}I_{CDAC,k}
 $$
 
 某一路的 switching 会影响其它通道。
@@ -1871,7 +1790,6 @@ ADC1   ADC2   ADC3
 
 ---
 
-
 ### 7.2 Replica / Mirrored / Per-Channel FVF
 
 在多通道系统里，还可以采用：
@@ -1917,15 +1835,12 @@ $$
 因此 mirrored/replica/hierarchical 架构本质上在做：
 
 $$
-\boxed{
-\text{matching vs isolation}
-}
+\boxed{ \text{matching vs isolation} }
 $$
 
 的折中。
 
 ---
-
 
 ### 7.3 20 GS/s、32 路 TI-ADC 的参考分配案例（新增）
 
@@ -1984,19 +1899,12 @@ $$
 
 ---
 
-
 ### 8.2 五条架构演进主线
 
 #### 主线 A：降低 follower 输出阻抗
 
 $$
-SF
-\rightarrow
-SSF
-\rightarrow
-FVF
-\rightarrow
-Super/Gain\text{-}Boosted\ FVF
+SF \rightarrow SSF \rightarrow FVF \rightarrow Super/Gain\text{-}Boosted\ FVF
 $$
 
 核心：
@@ -2010,13 +1918,7 @@ $$
 #### 主线 B：增强双向瞬态驱动
 
 $$
-Class\text{-}A
-\rightarrow
-Push\text{-}Pull
-\rightarrow
-Class\text{-}AB
-\rightarrow
-Class\text{-}AB\ FVF
+Class\text{-}A \rightarrow Push\text{-}Pull \rightarrow Class\text{-}AB \rightarrow Class\text{-}AB\ FVF
 $$
 
 核心：
@@ -2036,11 +1938,7 @@ $$
 #### 主线 C：把不同时间尺度拆开
 
 $$
-\text{Global precision loop}
-+
-\text{Local fast loop}
-+
-C_{DEC}
+\text{Global precision loop} + \text{Local fast loop} + C_{DEC}
 $$
 
 核心：
@@ -2054,11 +1952,7 @@ $$
 #### 主线 D：减小大电容依赖
 
 $$
-RVB+C_{DEC}
-\rightarrow
-Small\text{-}C
-\rightarrow
-Capacitor\text{-}less
+RVB+C_{DEC} \rightarrow Small\text{-}C \rightarrow Capacitor\text{-}less
 $$
 
 通过：
@@ -2074,11 +1968,7 @@ $$
 #### 主线 E：从集中式走向分布式
 
 $$
-Shared\ RVB
-\rightarrow
-Global+Local
-\rightarrow
-Per\text{-}Channel/Replica/Mirrored
+Shared\ RVB \rightarrow Global+Local \rightarrow Per\text{-}Channel/Replica/Mirrored
 $$
 
 核心解决：
@@ -2089,7 +1979,6 @@ $$
 
 ---
 
-
 ### 8.3 面向 12-bit、几百 MS/s～GS/s pipeline-SAR 的建议
 
 对于这类 ADC，尤其第一级 4~6 bit CDAC + interstage MDAC / residue amplification，RVB 建议优先关注以下组合。
@@ -2097,13 +1986,7 @@ $$
 #### 优先候选
 
 $$
-\boxed{
-\text{Global precision loop}
-+
-\text{Class-AB FVF local output}
-+
-\text{moderate CDEC}
-}
+\boxed{ \text{Global precision loop} + \text{Class-AB FVF local output} + \text{moderate CDEC} }
 $$
 
 原因：
@@ -2157,7 +2040,6 @@ $$
 - 或两级共用 global reference、各自 local driver。
 
 ---
-
 
 ### 8.4 仿真方法
 
@@ -2251,7 +2133,6 @@ $$
 
 ---
 
-
 ### 8.5 常见误区
 
 #### 误区 1：RVB 就是 voltage follower
@@ -2296,7 +2177,6 @@ $$
 错误。code-dependent reference ripple 会形成非线性和谐波。
 
 ---
-
 
 ### 8.6 按 CDAC 时序构建可执行的验证计划（新增）
 
@@ -2427,7 +2307,6 @@ $$
 
 ---
 
-
 ### 9.2 最终心智模型
 
 现代高速 ADC 的 reference system 可以抽象为：
@@ -2474,7 +2353,6 @@ $$
 
 ---
 
-
 ### 9.3 推荐学习顺序
 
 如果目标是快速建立 RVB 的完整知识体系，建议顺序：
@@ -2489,7 +2367,6 @@ $$
 8. **Global + Local / TI reference distribution**：进入系统级 reference network。
 
 ---
-
 
 ### 9.4 代表性文献与进一步阅读（更新：核验 DOI 和原始出处）
 
@@ -2548,19 +2425,7 @@ $$
 如果把所有架构压缩成一句话：
 
 $$
-\boxed{
-\text{现代高速 RVB}
-\approx
-\text{高精度慢环}
-+
-\text{高速局部反馈}
-+
-\text{高效双向输出级}
-+
-\text{适量储能电容}
-+
-\text{必要时的分布式隔离}
-}
+\boxed{ \text{现代高速 RVB} \approx \text{高精度慢环} + \text{高速局部反馈} + \text{高效双向输出级} + \text{适量储能电容} + \text{必要时的分布式隔离} }
 $$
 
 因此设计 RVB 时不应该停留在“SF、SSF、FVF 谁更好”的层面，而应对整个 reference network 问：
@@ -2574,7 +2439,6 @@ $$
 7. **多通道之间是否通过 reference bus 相互调制？**
 
 只要这七个问题回答清楚，一个 RVB 架构的核心基本就已经分析完整了。
-
 
 ### 9.6 论文分组、核验状态与论文配图索引（新增）
 

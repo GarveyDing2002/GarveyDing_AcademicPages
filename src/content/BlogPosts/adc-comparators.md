@@ -16,8 +16,6 @@ tags:
 > [!abstract] 核心定位
 > 按典型架构、核心指标、噪声与失调机理、ADC 系统约束及仿真验证，建立比较器设计与选型框架。
 
-
-
 ## 目录
 
 1. ADC 比较器基础与系统定位
@@ -51,11 +49,7 @@ $$
 理想比较器输出满足：
 
 $$
-D=
-\begin{cases}
-1, & V_{id}>0\\
-0, & V_{id}<0
-\end{cases}
+D= \begin{cases} 1, & V_{id}>0\\ 0, & V_{id}<0 \end{cases}
 $$
 
 但实际 ADC 比较器存在输入等效噪声、失调、有限比较时间、Kickback、输入电容、亚稳态以及 PVT 漂移，因此真实判决更接近概率事件：
@@ -91,9 +85,7 @@ $$
 最终比较器是否可用，不是只看某一个参数，而是看：
 
 $$
-\boxed{
-\text{Accuracy} + \text{Speed} + \text{Input Interface} + \text{Energy} + \text{Robustness}
-}
+\boxed{ \text{Accuracy} + \text{Speed} + \text{Input Interface} + \text{Energy} + \text{Robustness} }
 $$
 
 ### 1.3 ADC 对比较器的系统级要求
@@ -603,15 +595,7 @@ $$
 按目标粗略选型：
 
 $$
-\boxed{
-\begin{aligned}
-\text{极致速度/简单/低能量} &\rightarrow \text{StrongARM}\\
-\text{高速+低压+更低 Kickback} &\rightarrow \text{Double-Tail}\\
-\text{更低噪声/更高精度} &\rightarrow \text{FIA + Latch}\\
-\text{极低 }V_{DD}\text{ / charge-domain} &\rightarrow \text{Charge-Steering}\\
-\text{精度第一、功耗次要} &\rightarrow \text{Preamp + Latch}
-\end{aligned}
-}
+\boxed{ \begin{aligned} \text{极致速度/简单/低能量} &\rightarrow \text{StrongARM}\\ \text{高速+低压+更低 Kickback} &\rightarrow \text{Double-Tail}\\ \text{更低噪声/更高精度} &\rightarrow \text{FIA + Latch}\\ \text{极低 }V_{DD}\text{ / charge-domain} &\rightarrow \text{Charge-Steering}\\ \text{精度第一、功耗次要} &\rightarrow \text{Preamp + Latch} \end{aligned} }
 $$
 
 ---
@@ -747,8 +731,7 @@ $$
 关注：
 
 $$
-\frac{\partial V_{OS}}{\partial V_{DD}},\qquad
-\frac{\partial t_{cmp}}{\partial V_{DD}}
+\frac{\partial V_{OS}}{\partial V_{DD}},\qquad \frac{\partial t_{cmp}}{\partial V_{DD}}
 $$
 
 以及 clock slew、duty cycle、clock feedthrough、clock skew 对 delay/offset 的影响。
@@ -794,9 +777,7 @@ $$
 ### 4.4 动态预放大增益
 
 $$
-\boxed{
-A_{pre}(t)=\frac{\Delta V_F(t)}{V_{in}}\approx \frac{g_mt_{int}}{C_F}
-}
+\boxed{ A_{pre}(t)=\frac{\Delta V_F(t)}{V_{in}}\approx \frac{g_mt_{int}}{C_F} }
 $$
 
 与静态 OTA 不同，这是 transient 积分形成的动态增益。
@@ -882,15 +863,7 @@ flowchart LR
 对 preamp + latch：
 
 $$
-\boxed{
-\sigma_{n,in,total}^2
-\approx
-\sigma_{n,pre}^2+
-\frac{\sigma_{n,latch}^2}{A_{pre}^2}
-+
-\sigma_{n,kick}^2+
-\sigma_{n,reset}^2
-}
+\boxed{ \sigma_{n,in,total}^2 \approx \sigma_{n,pre}^2+ \frac{\sigma_{n,latch}^2}{A_{pre}^2} + \sigma_{n,kick}^2+ \sigma_{n,reset}^2 }
 $$
 
 设计目标通常是让第一级成为主要噪声源，后级贡献被前置增益充分压低。
@@ -990,10 +963,7 @@ $$
 总噪声近似：
 
 $$
-\boxed{
-\sigma_{cmp}^2\approx \sigma_{FIA}^2+
-\frac{\sigma_{latch}^2}{A_{FIA}^2}
-}
+\boxed{ \sigma_{cmp}^2\approx \sigma_{FIA}^2+ \frac{\sigma_{latch}^2}{A_{FIA}^2} }
 $$
 
 合理设计目标是：
@@ -1015,10 +985,7 @@ $$
 则：
 
 $$
-\sigma_{in}^2\approx
-\sigma_1^2+
-\frac{\sigma_2^2}{A_1^2}+
-\frac{\sigma_{latch}^2}{A_1^2A_2^2}
+\sigma_{in}^2\approx \sigma_1^2+ \frac{\sigma_2^2}{A_1^2}+ \frac{\sigma_{latch}^2}{A_1^2A_2^2}
 $$
 
 这是经典 first-stage-noise-dominance 原则。
@@ -1108,9 +1075,7 @@ flowchart TD
 ### 6.2 Offset 输入折算
 
 $$
-\boxed{
-V_{OS,total}\approx V_{OS,pre}+\frac{V_{OS,latch}}{A_{pre}}+V_{OS,dyn}
-}
+\boxed{ V_{OS,total}\approx V_{OS,pre}+\frac{V_{OS,latch}}{A_{pre}}+V_{OS,dyn} }
 $$
 
 其中第一级自身 offset 不能被自己的增益抑制。
@@ -1171,7 +1136,6 @@ $$
 ### 6.7 IOS：Input Offset Storage
 
 ![fig_offset_cancellation](/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg)
-
 
 在输入侧 capacitor 存储 input-referred offset：
 
@@ -1690,9 +1654,7 @@ PEX 后 offset 变大常见原因：
 ### 12.4 Redundancy Window
 
 $$
-\boxed{
-k\sigma_{cmp}+|V_{OS}|+|V_{DACerr}|+|V_{settle}|+|V_{kick}|<V_{red}
-}
+\boxed{ k\sigma_{cmp}+|V_{OS}|+|V_{DACerr}|+|V_{settle}|+|V_{kick}|<V_{red} }
 $$
 
 ### 12.5 第一级 Comparator
@@ -1949,16 +1911,7 @@ $$
 ADC comparator 的设计不能被简化为“把输入管做大、tail 做强、latch 做快”。真正的设计对象是：
 
 $$
-\boxed{
-\text{Noise}
-+\text{Offset}
-+\text{Delay}
-+\text{Metastability}
-+\text{Kickback}
-+\text{Input Load}
-+\text{Energy}
-+\text{PVT/MC}
-}
+\boxed{ \text{Noise} +\text{Offset} +\text{Delay} +\text{Metastability} +\text{Kickback} +\text{Input Load} +\text{Energy} +\text{PVT/MC} }
 $$
 
 对于动态 preamp + latch 比较器，最核心的关系仍然是：
@@ -2040,16 +1993,14 @@ flowchart LR
 如果目标是**高速 SAR / Pipeline-SAR comparator 设计**，推荐顺序：
 
 $$
-\boxed{
-R8\rightarrow R2\rightarrow R3\rightarrow R4\rightarrow R6\rightarrow R7\rightarrow R5\rightarrow R1
-}
+\boxed{ R8\rightarrow R2\rightarrow R3\rightarrow R4\rightarrow R6\rightarrow R7\rightarrow R5\rightarrow R1 }
 $$
 
 即先建立 comparator 设计和 StrongARM 直觉，再看 Double-Tail 与 modified Double-Tail，随后补 Kickback、Noise、FIA，最后系统读高精度 offset cancellation。
 
 ### 15.5 参考文献
 
-完整 BibTeX 数据库见 [[学习记录/ADC 比较器/attachment/ADC_Comparator_References.bib|ADC Comparator References]]。
+完整 BibTeX 数据库见 ADC Comparator References。
 
 - **[R1]** B. Razavi and B. A. Wooley, “Design Techniques for High-Speed, High-Resolution Comparators,” *IEEE JSSC*, vol. 27, no. 12, pp. 1916–1926, 1992. DOI: 10.1109/4.173122.
 - **[R2]** B. Razavi, “The StrongARM Latch [A Circuit for All Seasons],” *IEEE Solid-State Circuits Magazine*, vol. 7, no. 2, pp. 12–17, 2015. DOI: 10.1109/MSSC.2015.2418155.
@@ -2098,8 +2049,6 @@ $$
 - [ ] PEX kickback
 - [ ] Real CDAC joint simulation
 - [ ] ADC-level SNDR / SFDR / DNL / INL
-
-
 
 ---
 

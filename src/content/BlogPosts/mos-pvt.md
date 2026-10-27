@@ -17,13 +17,9 @@ tags:
 
 ---
 
-
-
-
 ## 目录
 
 - **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
-
 
 1. PVT 基础与 MOS 核心参数
    - 1.1 PVT 的基本含义
@@ -60,16 +56,13 @@ flowchart LR
 
 *图：从 PVT 条件到电路指标的检查链；全局工艺变化与局部失配应分开评估。*
 
-
 ### 1.1 PVT 的基本含义
 
 PVT 是集成电路设计中用于评估电路鲁棒性的三个主要变化维度：
 
 $$
-\text{PVT}=\text{Process}+\text{Voltage}+\text{Temperature}  
+\text{PVT}=\text{Process}+\text{Voltage}+\text{Temperature}
 $$
-
-
 
 其中：
 
@@ -82,13 +75,10 @@ $$
 PVT 变化最终会反映到 MOS 管的以下性能参数上：
 
 $$
-V_{th},\quad V_{ov},\quad I_D,\quad g_m,\quad r_o,\quad C_{par},\quad f_T,\quad R_{on},\quad noise,\quad leakage  
+V_{th},\quad V_{ov},\quad I_D,\quad g_m,\quad r_o,\quad C_{par},\quad f_T,\quad R_{on},\quad noise,\quad leakage
 $$
 
-
-
 ---
-
 
 ### 1.2 MOS 管关键参数
 
@@ -99,10 +89,8 @@ $$
 常用关系：
 
 $$
-V_{ov}=V_{GS}-V_{th}  
+V_{ov}=V_{GS}-V_{th}
 $$
-
-
 
 其中 $V_{ov}$ 是过驱动电压。
 
@@ -120,10 +108,8 @@ $$
 低温下 $V_{th}$ 增大，可能导致：
 
 $$
-V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow speed\downarrow  
+V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow speed\downarrow
 $$
-
-
 
 这也是低压模拟电路、比较器、自偏置电路在低温 SS 角可能变慢的重要原因。
 
@@ -132,10 +118,8 @@ $$
 #### 过驱动电压 $V_{ov}$
 
 $$
-V_{ov}=V_{GS}-V_{th}  
+V_{ov}=V_{GS}-V_{th}
 $$
-
-
 
 $V_{ov}$ 直接影响电流、跨导、速度和输出摆幅。
 
@@ -155,18 +139,14 @@ $V_{ov}$ 直接影响电流、跨导、速度和输出摆幅。
 强反型饱和区近似：
 
 $$
-I_D \approx \frac{1}{2}\mu C_{ox}\frac{W}{L}V_{ov}^2  
+I_D \approx \frac{1}{2}\mu C_{ox}\frac{W}{L}V_{ov}^2
 $$
-
-
 
 因此 $I_D$ 受以下因素影响：
 
 $$
-I_D \propto \mu \cdot \frac{W}{L}\cdot V_{ov}^2  
+I_D \propto \mu \cdot \frac{W}{L}\cdot V_{ov}^2
 $$
-
-
 
 |条件|$I_D$ 变化|
 |---|---|
@@ -185,7 +165,6 @@ $$
 
 - 在低电压、低 $V_{ov}$ 电路中，低温 $V_{th}$ 上升可能使电流明显下降。
 
-
 ---
 
 #### 跨导 $g_m$
@@ -193,26 +172,20 @@ $$
 跨导定义为：
 
 $$
-g_m=\frac{\partial I_D}{\partial V_{GS}}  
+g_m=\frac{\partial I_D}{\partial V_{GS}}
 $$
-
-
 
 强反型近似：
 
 $$
-g_m \approx \frac{2I_D}{V_{ov}}  
+g_m \approx \frac{2I_D}{V_{ov}}
 $$
-
-
 
 或者：
 
 $$
-g_m \approx \sqrt{2\mu C_{ox}\frac{W}{L}I_D}  
+g_m \approx \sqrt{2\mu C_{ox}\frac{W}{L}I_D}
 $$
-
-
 
 $g_m$ 是模拟电路中极其关键的参数，直接影响：
 
@@ -228,7 +201,6 @@ $g_m$ 是模拟电路中极其关键的参数，直接影响：
 
 - $f_T$。
 
-
 |条件|$g_m$ 变化趋势|
 |---|---|
 |FF 角|通常增大|
@@ -241,18 +213,14 @@ $g_m$ 是模拟电路中极其关键的参数，直接影响：
 在比较器预放大级中：
 
 $$
-\tau_{pre} \approx \frac{C_L}{g_m}  
+\tau_{pre} \approx \frac{C_L}{g_m}
 $$
-
-
 
 因此：
 
 $$
-g_m\downarrow \Rightarrow \tau_{pre}\uparrow \Rightarrow \Delta V_{preamp}(t)\downarrow  
+g_m\downarrow \Rightarrow \tau_{pre}\uparrow \Rightarrow \Delta V_{preamp}(t)\downarrow
 $$
-
-
 
 最终会导致 latch 初始差分电压变小，比较时间变长。
 
@@ -263,18 +231,14 @@ $$
 输出电阻：
 
 $$
-r_o=\frac{1}{g_{ds}}  
+r_o=\frac{1}{g_{ds}}
 $$
-
-
 
 小信号增益近似：
 
 $$
-A_v \approx g_m r_o  
+A_v \approx g_m r_o
 $$
-
-
 
 一般趋势：
 
@@ -295,7 +259,6 @@ $$
 
 - 因此增益 worst case 不一定出现在 SS 角。
 
-
 ---
 
 #### 寄生电容 $C_{par}$
@@ -303,10 +266,8 @@ $$
 MOS 管主要寄生电容包括：
 
 $$
-C_{gs},\quad C_{gd},\quad C_{gb},\quad C_{db},\quad C_{sb},\quad C_{gg}  
+C_{gs},\quad C_{gd},\quad C_{gb},\quad C_{db},\quad C_{sb},\quad C_{gg}
 $$
-
-
 
 寄生电容影响：
 
@@ -322,27 +283,21 @@ $$
 
 - $C_L$。
 
-
 基本速度关系：
 
 $$
-\tau \approx \frac{C_L}{g_m}  
+\tau \approx \frac{C_L}{g_m}
 $$
-
-
 
 或者：
 
 $$
-t_d \approx \frac{C_L V_{swing}}{I_D}  
+t_d \approx \frac{C_L V_{swing}}{I_D}
 $$
-
-
 
 PVT 下，寄生电容的变化通常小于电流和 $g_m$ 的变化，但在高速 ADC、比较器、bootstrapped switch 和 TDC/VTC 中，寄生电容仍然非常关键。
 
 ---
-
 
 ### 1.3 特征频率 $f_T$
 
@@ -353,26 +308,20 @@ MOS 管的特征频率 $f_T$ 是指电流增益下降到 1 时的频率。它可
 常用近似式：
 
 $$
-f_T \approx \frac{g_m}{2\pi C_{gg}}  
+f_T \approx \frac{g_m}{2\pi C_{gg}}
 $$
-
-
 
 其中：
 
 $$
-C_{gg}=C_{gs}+C_{gd}+C_{gb}  
+C_{gg}=C_{gs}+C_{gd}+C_{gb}
 $$
-
-
 
 因此：
 
 $$
-f_T \uparrow \Longleftrightarrow g_m \uparrow \quad \text{或} \quad C_{gg}\downarrow  
+f_T \uparrow \Longleftrightarrow g_m \uparrow \quad \text{或} \quad C_{gg}\downarrow
 $$
-
-
 
 更直观地说，$f_T$ 反映了 MOS 管用自身跨导驱动自身栅电容的速度上限。
 
@@ -383,10 +332,8 @@ $$
 在一定范围内，随着偏置电流增加：
 
 $$
-I_D\uparrow \Rightarrow g_m\uparrow \Rightarrow f_T\uparrow  
+I_D\uparrow \Rightarrow g_m\uparrow \Rightarrow f_T\uparrow
 $$
-
-
 
 但是 $f_T$ 不会无限增大。
 
@@ -402,7 +349,6 @@ $$
 
 5. 过高电流会使功耗和非线性增加。
 
-
 因此 $f_T$ 通常随电流密度先上升，然后趋于饱和，甚至下降。
 
 ---
@@ -412,10 +358,8 @@ $$
 短沟道器件一般具有更高的 $f_T$：
 
 $$
-L\downarrow \Rightarrow C_{gg}\downarrow,\quad transit\ time\downarrow \Rightarrow f_T\uparrow  
+L\downarrow \Rightarrow C_{gg}\downarrow,\quad transit\ time\downarrow \Rightarrow f_T\uparrow
 $$
-
-
 
 但短沟道器件也会带来：
 
@@ -431,7 +375,6 @@ $$
 
 - 电压裕量变差。
 
-
 所以高速电路常用短沟道管，而高增益模拟电路可能需要适当加长沟道。
 
 ---
@@ -441,10 +384,8 @@ $$
 由：
 
 $$
-f_T \approx \frac{g_m}{2\pi C_{gg}}  
+f_T \approx \frac{g_m}{2\pi C_{gg}}
 $$
-
-
 
 可知，PVT 对 $f_T$ 的影响主要来自 $g_m$ 和寄生电容变化。
 
@@ -468,34 +409,26 @@ $$
 $f_T$ 是器件本征速度指标，但电路速度还取决于：
 
 $$
-C_L,\quad I_D,\quad V_{swing},\quad topology,\quad bias,\quad loading  
+C_L,\quad I_D,\quad V_{swing},\quad topology,\quad bias,\quad loading
 $$
-
-
 
 例如比较器预放大级速度：
 
 $$
-\tau_{pre}\approx \frac{C_L}{g_m}  
+\tau_{pre}\approx \frac{C_L}{g_m}
 $$
-
-
 
 latch 再生速度：
 
 $$
-\tau_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}}  
+\tau_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}}
 $$
-
-
 
 数字门延迟：
 
 $$
-t_d\approx \frac{C_LV_{DD}}{I_{drive}}  
+t_d\approx \frac{C_LV_{DD}}{I_{drive}}
 $$
-
-
 
 所以即使单管 $f_T$ 很高，如果负载电容大、偏置电流小、输出摆幅大，实际电路仍然可能很慢。
 
@@ -513,9 +446,7 @@ $$
 
 - PVT 下的 margin。
 
-
 ---
-
 
 ## 2. Process、Voltage 与 Temperature 三个维度
 
@@ -538,10 +469,8 @@ $$
 SS 角通常表现为：
 
 $$
-V_{th}\uparrow,\quad \mu\downarrow,\quad I_D\downarrow,\quad g_m\downarrow  
+V_{th}\uparrow,\quad \mu\downarrow,\quad I_D\downarrow,\quad g_m\downarrow
 $$
-
-
 
 影响总结：
 
@@ -574,7 +503,6 @@ $$
 
 - 异步 SAR 的 EOC 可能变晚。
 
-
 ---
 
 #### FF 角
@@ -582,10 +510,8 @@ $$
 FF 角通常表现为：
 
 $$
-V_{th}\downarrow,\quad \mu\uparrow,\quad I_D\uparrow,\quad g_m\uparrow  
+V_{th}\downarrow,\quad \mu\uparrow,\quad I_D\uparrow,\quad g_m\uparrow
 $$
-
-
 
 影响总结：
 
@@ -618,7 +544,6 @@ FF 角速度通常更快，但风险包括：
 
 - 参考电压扰动可能更严重。
 
-
 ---
 
 #### FS / SF 角
@@ -646,17 +571,13 @@ FS / SF 角主要反映 NMOS 和 PMOS 速度不匹配。
 
 - 差分输出 common-mode 偏移。
 
-
 在比较器中，FS/SF 角往往用于检查：
 
 $$
-V_{OS},\quad duty\ cycle,\quad rise/fall\ mismatch,\quad metastability  
+V_{OS},\quad duty\ cycle,\quad rise/fall\ mismatch,\quad metastability
 $$
 
-
-
 ---
-
 
 ### 2.2 Voltage 对 MOS 管性能的影响
 
@@ -665,10 +586,8 @@ $$
 当 $V_{DD}$ 降低时：
 
 $$
-V_{ov}\downarrow,\quad I_D\downarrow,\quad g_m\downarrow  
+V_{ov}\downarrow,\quad I_D\downarrow,\quad g_m\downarrow
 $$
-
-
 
 影响总结：
 
@@ -700,7 +619,6 @@ $$
 
 - VREF buffer 驱动能力下降。
 
-
 ---
 
 #### 电源电压升高
@@ -708,10 +626,8 @@ $$
 当 $V_{DD}$ 升高时：
 
 $$
-V_{ov}\uparrow,\quad I_D\uparrow,\quad g_m\uparrow  
+V_{ov}\uparrow,\quad I_D\uparrow,\quad g_m\uparrow
 $$
-
-
 
 影响总结：
 
@@ -738,10 +654,8 @@ $$
 对于 NMOS 输入对：
 
 $$
-V_{CM}\downarrow \Rightarrow V_{GS}\downarrow \Rightarrow V_{ov}\downarrow \Rightarrow g_m\downarrow  
+V_{CM}\downarrow \Rightarrow V_{GS}\downarrow \Rightarrow V_{ov}\downarrow \Rightarrow g_m\downarrow
 $$
-
-
 
 对于 PMOS 输入对，趋势相反。
 
@@ -761,7 +675,6 @@ $$
 
 - residue amplifier 输入余量。
 
-
 ---
 
 #### 体偏置变化
@@ -769,18 +682,14 @@ $$
 体效应公式：
 
 $$
-V_{th}=V_{th0}+\gamma\left(\sqrt{2\phi_F+V_{SB}}-\sqrt{2\phi_F}\right)  
+V_{th}=V_{th0}+\gamma\left(\sqrt{2\phi_F+V_{SB}}-\sqrt{2\phi_F}\right)
 $$
-
-
 
 对于 NMOS：
 
 $$
-V_{SB}\uparrow \Rightarrow V_{th}\uparrow \Rightarrow I_D\downarrow  
+V_{SB}\uparrow \Rightarrow V_{th}\uparrow \Rightarrow I_D\downarrow
 $$
-
-
 
 体偏置影响：
 
@@ -796,11 +705,9 @@ $$
 
 - latch 再生速度。
 
-
 在普通 NMOS 采样开关中，输入电压升高会导致 $V_{SB}$ 增大，体效应增强，使 $V_{th}$ 变大，这是采样非线性的来源之一。
 
 ---
-
 
 ### 2.3 Temperature 对 MOS 管性能的影响
 
@@ -809,23 +716,18 @@ $$
 温度升高时主要有两个相反效应：
 
 $$
-\mu\downarrow  
+\mu\downarrow
 $$
 
-
-
 $$
-V_{th}\downarrow  
+V_{th}\downarrow
 $$
-
-
 
 其中：
 
 - 迁移率下降会让器件变慢；
 
 - 阈值下降会让器件更容易导通。
-
 
 多数强反型高速电路中，高温通常使速度变慢，因为迁移率下降占主导。
 
@@ -857,7 +759,6 @@ $$
 
 - 数字逻辑速度下降。
 
-
 ---
 
 #### 温度降低
@@ -865,16 +766,12 @@ $$
 温度降低时：
 
 $$
-\mu\uparrow  
+\mu\uparrow
 $$
 
-
-
 $$
-V_{th}\uparrow  
+V_{th}\uparrow
 $$
-
-
 
 因此低温对速度的影响不一定单调。
 
@@ -900,9 +797,7 @@ $$
 
 - bandgap / bias 电路工作点偏移。
 
-
 ---
-
 
 ## 3. 噪声、失配与泄漏
 
@@ -913,18 +808,14 @@ $$
 MOS 热噪声近似：
 
 $$
-\overline{i_n^2}=4kT\gamma g_m  
+\overline{i_n^2}=4kT\gamma g_m
 $$
-
-
 
 输入等效噪声可近似理解为：
 
 $$
-\overline{v_{n,in}^2}\propto \frac{kT}{g_m}  
+\overline{v_{n,in}^2}\propto \frac{kT}{g_m}
 $$
-
-
 
 因此：
 
@@ -942,10 +833,8 @@ $$
 1/f 噪声通常与器件面积相关：
 
 $$
-v_{n,1/f}^2 \propto \frac{1}{WL}  
+v_{n,1/f}^2 \propto \frac{1}{WL}
 $$
-
-
 
 影响规律：
 
@@ -955,7 +844,6 @@ $$
 
 - 先进工艺下 1/f 噪声和界面态、工艺有关。
 
-
 ---
 
 #### 失配
@@ -963,10 +851,8 @@ $$
 随机失配常用 Pelgrom 模型：
 
 $$
-\sigma(\Delta V_{th})=\frac{A_{VT}}{\sqrt{WL}}  
+\sigma(\Delta V_{th})=\frac{A_{VT}}{\sqrt{WL}}
 $$
-
-
 
 失配主要由器件尺寸和版图决定，属于 mismatch / Monte Carlo 范畴，不等同于 PVT corner。
 
@@ -990,14 +876,11 @@ $$
 
 - 动态节点泄漏。
 
-
 泄漏 worst case 通常是：
 
 $$
-FF,\quad V_{DD,max},\quad T_{max}  
+FF,\quad V_{DD,max},\quad T_{max}
 $$
-
-
 
 高温下泄漏会显著增加，可能导致：
 
@@ -1011,9 +894,7 @@ $$
 
 - memory/register 状态异常。
 
-
 ---
-
 
 ## 4. PVT 对 SAR ADC 关键模块的影响
 
@@ -1024,18 +905,14 @@ $$
 普通 NMOS 开关导通电阻近似：
 
 $$
-R_{on}\approx \frac{1}{\mu C_{ox}\frac{W}{L}(V_{GS}-V_{th})}  
+R_{on}\approx \frac{1}{\mu C_{ox}\frac{W}{L}(V_{GS}-V_{th})}
 $$
-
-
 
 SS、低电源、低温下：
 
 $$
-V_{GS}-V_{th}\downarrow \Rightarrow R_{on}\uparrow  
+V_{GS}-V_{th}\downarrow \Rightarrow R_{on}\uparrow
 $$
-
-
 
 影响：
 
@@ -1049,14 +926,11 @@ $$
 
 - SFDR 变差。
 
-
 自举开关可以使：
 
 $$
-V_{GS}\approx \text{constant}  
+V_{GS}\approx \text{constant}
 $$
-
-
 
 从而改善 $R_{on}$ 线性度，但 PVT 仍会影响 boost 电压建立、boot 电容充放电速度和开关驱动能力。
 
@@ -1078,14 +952,11 @@ PVT 对 CDAC 的影响主要包括：
 
 - VREF settling 变化。
 
-
 对于 SAR ADC：
 
 $$
-\Delta Q=C\Delta V  
+\Delta Q=C\Delta V
 $$
-
-
 
 每一步 CDAC 切换都会从参考端吸收电荷。如果参考电压建立不充分，会产生码相关误差，引起：
 
@@ -1097,7 +968,6 @@ $$
 
 - 通道间 mismatch 增大。
 
-
 ---
 
 #### 比较器预放大级
@@ -1105,52 +975,40 @@ $$
 预放大级速度：
 
 $$
-\tau_{pre}\approx \frac{C_L}{g_m}  
+\tau_{pre}\approx \frac{C_L}{g_m}
 $$
-
-
 
 输出建立：
 
 $$
-\Delta V_{out}(t)=A_v\Delta V_{in}\left(1-e^{-t/\tau_{pre}}\right)  
+\Delta V_{out}(t)=A_v\Delta V_{in}\left(1-e^{-t/\tau_{pre}}\right)
 $$
-
-
 
 SS、低电源、低温下可能出现：
 
 $$
-I_{tail}\downarrow,\quad g_m\downarrow,\quad f_T\downarrow,\quad BW\downarrow  
+I_{tail}\downarrow,\quad g_m\downarrow,\quad f_T\downarrow,\quad BW\downarrow
 $$
-
-
 
 导致：
 
 $$
-\Delta V_{preamp}(t_{latch,start})\downarrow  
+\Delta V_{preamp}(t_{latch,start})\downarrow
 $$
-
-
 
 latch 再生时间：
 
 $$
-t_{reg}\approx \tau_{reg}\ln\left(\frac{V_{logic}}{\Delta V_0}\right)  
+t_{reg}\approx \tau_{reg}\ln\left(\frac{V_{logic}}{\Delta V_0}\right)
 $$
-
-
 
 其中 $\Delta V_0$ 是 latch 使能瞬间的初始差分电压。
 
 因此：
 
 $$
-\Delta V_0\downarrow \Rightarrow t_{reg}\uparrow  
+\Delta V_0\downarrow \Rightarrow t_{reg}\uparrow
 $$
-
-
 
 ---
 
@@ -1159,18 +1017,14 @@ $$
 latch 再生时间常数：
 
 $$
-\tau_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}}  
+\tau_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}}
 $$
-
-
 
 SS、低电源下：
 
 $$
-g_{m,n}+g_{m,p}\downarrow \Rightarrow \tau_{reg}\uparrow  
+g_{m,n}+g_{m,p}\downarrow \Rightarrow \tau_{reg}\uparrow
 $$
-
-
 
 FS/SF 角下：
 
@@ -1181,7 +1035,6 @@ FS/SF 角下：
 - latch offset 增大；
 
 - metastability 概率增加。
-
 
 需要检查：
 
@@ -1197,7 +1050,6 @@ FS/SF 角下：
 
 - 输出 buffer 延迟。
 
-
 ---
 
 #### SAR Logic 与 DAC Driver
@@ -1205,18 +1057,14 @@ FS/SF 角下：
 数字延迟近似：
 
 $$
-t_d\approx \frac{C_LV_{DD}}{I_{drive}}  
+t_d\approx \frac{C_LV_{DD}}{I_{drive}}
 $$
-
-
 
 SS、低电源、高温或低温 $V_{th}$ 上升时：
 
 $$
-I_{drive}\downarrow \Rightarrow t_d\uparrow  
+I_{drive}\downarrow \Rightarrow t_d\uparrow
 $$
-
-
 
 影响：
 
@@ -1230,7 +1078,6 @@ $$
 
 - conversion time margin 变小。
 
-
 ---
 
 #### Residue Amplifier / Dynamic Amplifier
@@ -1238,10 +1085,8 @@ $$
 对于 pipeline-SAR ADC，PVT 会显著影响 residue amplifier：
 
 $$
-A_v,\quad GBW,\quad settling,\quad output\ swing,\quad CMFB,\quad noise  
+A_v,\quad GBW,\quad settling,\quad output\ swing,\quad CMFB,\quad noise
 $$
-
-
 
 SS、低电源下：
 
@@ -1257,19 +1102,15 @@ SS、低电源下：
 
 - interstage gain error 增大。
 
-
 动态放大器中：
 
 $$
-A_v(t),\quad g_m(t),\quad I(t)  
+A_v(t),\quad g_m(t),\quad I(t)
 $$
-
-
 
 都强烈依赖 PVT，因此需要特别检查 corner 下的 residue gain 和 settling。
 
 ---
-
 
 ### 4.2 针对比较器的 PVT 检查重点
 
@@ -1291,10 +1132,8 @@ $$
 关键波形：
 
 $$
-\Delta V_{preamp}(t_{latch,start})  
+\Delta V_{preamp}(t_{latch,start})
 $$
-
-
 
 如果这个量在 SS 低温下明显变小，则 latch 再生时间会明显增大。
 
@@ -1314,10 +1153,8 @@ $$
 latch 再生时间近似：
 
 $$
-t_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}} \ln\left(\frac{V_{logic}}{\Delta V_0}\right)  
+t_{reg}\approx \frac{C_L}{g_{m,n}+g_{m,p}} \ln\left(\frac{V_{logic}}{\Delta V_0}\right)
 $$
-
-
 
 因此比较器变慢可能来自两个方面：
 
@@ -1325,9 +1162,7 @@ $$
 
 2. $\Delta V_0$ 下降，导致再生需要更长时间。
 
-
 ---
-
 
 ## 5. Worst-Case 组合与仿真验证
 
@@ -1344,7 +1179,6 @@ $$
 
 ---
 
-
 ### 5.2 常见 Worst-Case 组合
 
 #### 速度最慢角
@@ -1352,26 +1186,20 @@ $$
 传统数字逻辑常见最慢角：
 
 $$
-SS,\quad V_{DD,min},\quad T_{max}  
+SS,\quad V_{DD,min},\quad T_{max}
 $$
-
-
 
 但对于低压模拟电路、比较器、自偏置电路，最慢角也可能是：
 
 $$
-SS,\quad V_{DD,min},\quad T_{min}  
+SS,\quad V_{DD,min},\quad T_{min}
 $$
-
-
 
 原因是低温下：
 
 $$
-V_{th}\uparrow \Rightarrow V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow f_T\downarrow  
+V_{th}\uparrow \Rightarrow V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow f_T\downarrow
 $$
-
-
 
 尤其对于固定栅压偏置或自偏置电路，这种情况非常常见。
 
@@ -1380,18 +1208,14 @@ $$
 #### 泄漏最严重角
 
 $$
-FF,\quad V_{DD,max},\quad T_{max}  
+FF,\quad V_{DD,max},\quad T_{max}
 $$
-
-
 
 此时：
 
 $$
-V_{th}\downarrow,\quad VDD\uparrow,\quad T\uparrow  
+V_{th}\downarrow,\quad VDD\uparrow,\quad T\uparrow
 $$
-
-
 
 泄漏最大。
 
@@ -1402,10 +1226,8 @@ $$
 增益：
 
 $$
-A_v\approx g_mr_o  
+A_v\approx g_mr_o
 $$
-
-
 
 其 worst case 不一定固定，可能出现在：
 
@@ -1417,7 +1239,6 @@ $$
 
 - 高温：迁移率降低、$g_m$ 降低。
 
-
 因此模拟增益需要在所有 PVT 组合下仿真。
 
 ---
@@ -1427,10 +1248,8 @@ $$
 通常需要重点检查：
 
 $$
-SS,\quad V_{DD,min},\quad T_{min}  
+SS,\quad V_{DD,min},\quad T_{min}
 $$
-
-
 
 因为此时开关 $R_{on}$ 可能最大，采样建立最差。
 
@@ -1443,15 +1262,12 @@ $$
 比较器 offset 通常需要检查：
 
 $$
-FS,\quad SF,\quad mismatch,\quad VCM,\quad VDD  
+FS,\quad SF,\quad mismatch,\quad VCM,\quad VDD
 $$
-
-
 
 FS/SF 角会导致 NMOS/PMOS 再生能力不平衡，从而增加 latch offset 和输出不对称。
 
 ---
-
 
 ### 5.3 仿真建议
 
@@ -1499,10 +1315,8 @@ FS/SF 角会导致 NMOS/PMOS 再生能力不平衡，从而增加 latch offset �
 将比较器总延迟拆成：
 
 $$
-t_{comp}=t_{preamp}+t_{latch}+t_{logic}  
+t_{comp}=t_{preamp}+t_{latch}+t_{logic}
 $$
-
-
 
 其中：
 
@@ -1512,31 +1326,25 @@ $$
 
 - $t_{buf}$：输出 buffer 和后级逻辑延迟。
 
-
 在 SS 低温下，如果：
 
 $$
-\Delta V_{preamp}(t_{latch,start})\downarrow  
+\Delta V_{preamp}(t_{latch,start})\downarrow
 $$
-
-
 
 说明主要问题在预放大级。
 
 如果：
 
 $$
-\Delta V_{preamp}(t_{latch,start})  
+\Delta V_{preamp}(t_{latch,start})
 $$
-
-
 
 足够，但 latch 输出仍然慢，说明主要问题在 latch 再生能力。
 
 如果 latch 输出已经完成，但下一位 DAC 控制信号很慢，说明问题在 SAR logic 或 DAC driver。
 
 ---
-
 
 ## 6. 总结
 
@@ -1545,85 +1353,64 @@ $$
 PVT 对 MOS 管性能参数的影响可以归纳为：
 
 $$
-P:\quad V_{th},\ \mu,\ L_{eff},\ R_s,\ C_{par}\ \text{变化}  
+P:\quad V_{th},\ \mu,\ L_{eff},\ R_s,\ C_{par}\ \text{变化}
 $$
 
-
-
 $$
-V:\quad V_{ov},\ I_D,\ g_m,\ headroom,\ swing,\ speed\ \text{变化}  
+V:\quad V_{ov},\ I_D,\ g_m,\ headroom,\ swing,\ speed\ \text{变化}
 $$
 
-
-
 $$
-T:\quad \mu,\ V_{th},\ leakage,\ noise,\ metal\ R\ \text{变化}  
+T:\quad \mu,\ V_{th},\ leakage,\ noise,\ metal\ R\ \text{变化}
 $$
-
-
 
 其中，速度相关的核心链路是：
 
 $$
-V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow f_T\downarrow \Rightarrow BW\downarrow \Rightarrow delay\uparrow  
+V_{ov}\downarrow \Rightarrow I_D\downarrow \Rightarrow g_m\downarrow \Rightarrow f_T\downarrow \Rightarrow BW\downarrow \Rightarrow delay\uparrow
 $$
-
-
 
 对于高速 SAR ADC，尤其要关注：
 
 $$
-R_{on},\quad DAC\ settling,\quad \Delta V_{preamp},\quad t_{reg},\quad SAR\ logic\ delay,\quad f_T  
+R_{on},\quad DAC\ settling,\quad \Delta V_{preamp},\quad t_{reg},\quad SAR\ logic\ delay,\quad f_T
 $$
-
-
 
 对“预放大级 + latch”比较器来说，最关键的判断量是：
 
 $$
-\Delta V_{preamp}(t_{latch,start})  
+\Delta V_{preamp}(t_{latch,start})
 $$
-
-
 
 因为 latch 再生时间满足：
 
 $$
-t_{reg}\propto \ln\left(\frac{1}{\Delta V_0}\right)  
+t_{reg}\propto \ln\left(\frac{1}{\Delta V_0}\right)
 $$
-
-
 
 当 PVT 导致预放大输出初始差分电压变小时，即使 latch 本身没有严重退化，整体比较时间也会显著变长。
 
 ---
-
 
 ### 6.2 一句话总结
 
 PVT 的本质是改变 MOS 管的：
 
 $$
-V_{th},\ \mu,\ I_D,\ g_m,\ r_o,\ C_{par},\ f_T  
+V_{th},\ \mu,\ I_D,\ g_m,\ r_o,\ C_{par},\ f_T
 $$
-
-
 
 进而改变电路的：
 
 $$
-speed,\ gain,\ bandwidth,\ noise,\ leakage,\ offset,\ settling,\ linearity  
+speed,\ gain,\ bandwidth,\ noise,\ leakage,\ offset,\ settling,\ linearity
 $$
-
-
 
 在高速 SAR ADC 中，最需要关注的是：
 
 $$
-SS/V_{DD,min}/T_{min\ or\ max}  
+SS/V_{DD,min}/T_{min\ or\ max}
 $$
-
-
 
 下的比较器速度、采样开关 $R_{on}$、DAC 建立、参考建立和 SAR logic timing margin。
 

@@ -22,13 +22,9 @@ tags:
 > 2. Wang, Hung and Kuo, "A 15-bit 20 MS/s SHA-less Pipelined ADC Achieving 73.7 dB SNDR with Averaging Correlated Level Shifting Technique," 2019.
 > 3. Wang and Kuo, "A 72-dB SNDR 130-MS/s 0.8-mW Pipelined-SAR ADC Using a Distributed Averaging Correlated Level Shifting Ring Amplifier," JSSC 2022.
 
-
-
-
 ## 目录
 
 - **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
-
 
 1. CLS 的问题背景与基本原理
    - 1.1 CLS 要解决什么问题
@@ -58,7 +54,6 @@ flowchart LR
 
 *图：CLS 的通用机制示意；具体相位与电荷关系取决于实现变种。*
 
-
 ### 1.1 CLS 要解决什么问题
 
 CLS 是 Correlated Level Shifting，即“相关电平移位”。它最早主要用于 switched-capacitor 放大器和 pipeline ADC 的 MDAC / residue amplifier 中，目标不是单纯“提高 opamp 本征增益”，而是用开关电容时序把有限增益误差先估计出来，再通过电平移位让放大器在第二个相位只处理残余误差。直观地说，传统闭环 SC 放大器要求 opamp 同时满足高增益、大摆幅、高速度、低功耗；CLS 把这个问题拆成两个相位，使低/中等增益放大器也能获得高等效增益。
@@ -70,7 +65,6 @@ CLS 的核心价值可以概括为三点：
 - 用电荷存储和电平移位提升等效环路增益，降低有限增益误差。
 - 让 opamp 在精放大阶段输出摆幅显著减小，因此可用摆幅不足但高精度的小信号放大器完成大信号 SC 放大。
 - 以额外时钟相位和电容网络换取放大器增益、功耗、摆幅、速度之间的新折中。
-
 
 ### 1.2 基本 CLS 原理
 
@@ -92,7 +86,6 @@ CLS 后：  误差 ~ (1 + lambda) / (A*beta)^2
 
 经典 CLS 的另一个重要性质是摆幅增强。第二相位中 opamp 输出端不再需要完整跟随 residue 大信号，而主要处理误差信号；这使得小输出摆幅、高增益但低供电余量的放大器可以通过 CLS 产生较大的 stage output swing。Gregoire 和 Moon 2008 年的工作展示了用只有约 30 dB loop gain 的 opamp 实现超过 60 dB 的 rail-to-rail 性能，是 CLS 技术的代表性起点。
 
-
 ### 1.3 与 CDS / auto-zero 的关系
 
 CLS 容易和 CDS（correlated double sampling）混淆。二者都利用“相关性”降低放大器非理想性，但处理对象不同。
@@ -100,7 +93,6 @@ CLS 容易和 CDS（correlated double sampling）混淆。二者都利用“相�
 CDS 通常采样放大器 offset 或有限增益导致的误差，再从信号中扣除误差；它会把某些噪声项采样进信号路径，可能带来明显噪声惩罚。CLS 则更像是采样信号估计值并对放大器输出/反馈节点做电平移位，让放大器在第二阶段处理残差，因此在许多情况下 kT/C 噪声增加较小，甚至可获得速度优势。JSSC 2008 的经典论文强调，CLS 不只是误差扣除，更是把 opamp 的工作点和输出摆幅重新安排。
 
 在实际 ADC 中，CLS 常与 auto-zero、chopping、ring amplifier 的 offset 消除、dynamic amplifier 的 reset 技术结合。要注意，CLS 本身主要针对有限增益和输出摆幅，并不自动解决 offset、flicker noise、PVT 漂移、开关注入、时钟馈通、比较器 offset 等问题。
-
 
 ## 2. CLS 技术谱系与主流变种
 
@@ -255,7 +247,6 @@ Cascading-CLS 将多个 CLS 网络级联使用，目标是在不显著增加单�
 
 其思想与 sequential CLS 相近，但更强调把总电容分摊到多级/多网络中，使每个网络的负载压力下降。对于 ΔΣ / MASH ADC，有限 OTA 增益会造成模拟传递函数与数字 cancellation filter 的 mismatch，cascading-CLS 用较小硬件代价提升 OTA 等效增益，从而降低 MASH mismatch。
 
-
 ## 3. 代表论文与技术对比
 
 ### 3.1 三篇 CLS 主题论文解读
@@ -321,7 +312,6 @@ DACLS 的核心创新：
 
 实测 14-bit 130 MS/s、0.82 mW、Nyquist 输入 72.5 dB SNDR，表明 DACLS 能把 CLS 的高精度优势带到更高速度和更低功耗范围。
 
-
 ### 3.2 技术变种对比
 
 | 变种                | 核心思想                                   | 主要收益                         | 主要代价                  | 适合场景                   |
@@ -338,7 +328,6 @@ DACLS 的核心创新：
 | Open-then-close CLS | 先开环快速移动，再闭环/CLS 修正            | 速度高、能效好                   | 大信号非线性和切换误差    | 高速 pipelined-SAR         |
 | Peak-injection CLS  | 注入/稳定 level-shift 量                   | PVT robustness                   | 机制和控制复杂            | PVT 敏感 SC amplifier      |
 | Cascading-CLS       | 多 CLS 网络级联                            | 小电容下更高增益、更快 settling  | 多网络设计复杂            | ΔΣ/MASH、inverter OTA      |
-
 
 ## 4. 设计方法与关键 Trade-off
 
@@ -382,7 +371,6 @@ CLS 类技术几乎都用额外相位换精度。若额外相位占用过多时�
 - 下一级采样是否在 residue 稳定后进行。
 - SAR bit cycling 能否与 residue amplification 重叠。
 
-
 ## 5. 学习路线、总结与参考文献
 
 ### 5.1 快速入门路线
@@ -396,13 +384,11 @@ CLS 类技术几乎都用额外相位换精度。若额外相位占用过多时�
 5. 看 Wang and Kuo 2022 JSSC：理解为什么输出端 `$C_LS$` 限制带宽，以及 DACLS 如何把 CLS 分布到内部节点。
 6. 再看 WACLS、look-ahead、digital CLS、open-then-close、cascading-CLS 等近期变体，把它们都归入“增益提升 vs 带宽/时序/负载/校准”的折中框架。
 
-
 ### 5.2 一句话总结
 
 CLS 的本质是用开关电容记忆和电平移位，把“放大器必须一次性高增益、大摆幅、高速度完成闭环放大”的问题，改写为“先估计、再让放大器处理残差”。经典 CLS 解决有限增益和摆幅；split-CLS 按相位拆分放大器职责；ACLS 通过误差反相平均进一步降低有限增益误差和热噪声；RS 把平均结构用于 mismatch 降低；WACLS/DACLS/look-ahead/digital/open-then-close/cascading-CLS 则主要围绕高速、低功耗、低输出负载和 PVT robustness 继续演进。
 
 对于入门者，最重要的是不要把 CLS 只理解成“加一个电容提高增益”。真正的设计主线是：`$C_LS$` 存储了什么、第二相位移位到哪里、误差极性如何变化、哪些电容参与 charge sharing、最终采样的是单相输出还是两相平均，以及这些选择如何改变等效增益、热噪声、带宽、mismatch 和时序预算。
-
 
 ### 5.3 参考文献
 

@@ -21,26 +21,26 @@ tags:
 
 ## 目录
 
-- [[#1 为什么 ADC 需要自举开关]]
-- [[#2 自举开关的基本原理与晶体管级工作过程]]
-- [[#3 采样时序：上极板、下极板与电荷注入]]
-- [[#4 理论一：开关导通电阻与体效应]]
-- [[#5 理论二：RC 建立时间与动态跟踪误差]]
-- [[#6 理论三：寄生电容分压与自举电压误差]]
-- [[#7 理论四：源漏交换、浮阱和非线性结电容]]
-- [[#8 理论五：谐波失真的一阶解析推导]]
-- [[#9 理论六：关断电荷注入、时钟馈通和保持误差]]
-- [[#10 自举电容 Cb 的定量设计与权衡]]
-- [[#11 噪声、抖动、输入带宽和可靠性]]
-- [[#12 经典电路及八类改进架构]]
-- [[#13 论文发展时间线与架构对照]]
-- [[#14 从指标到尺寸：定量设计实例]]
-- [[#15 面向 28 nm 高速 Pipeline-SAR 和 TI-ADC 的设计决策]]
-- [[#16 Virtuoso/Spectre 仿真方案]]
-- [[#17 版图、寄生提取与电源完整性]]
-- [[#18 常见误区与设计失效案例]]
-- [[#19 推荐精读路线]]
-- [[#20 参考文献：经典、原 PDF 与新增论文]]
+- #1 为什么 ADC 需要自举开关
+- #2 自举开关的基本原理与晶体管级工作过程
+- #3 采样时序：上极板、下极板与电荷注入
+- #4 理论一：开关导通电阻与体效应
+- #5 理论二：RC 建立时间与动态跟踪误差
+- #6 理论三：寄生电容分压与自举电压误差
+- #7 理论四：源漏交换、浮阱和非线性结电容
+- #8 理论五：谐波失真的一阶解析推导
+- #9 理论六：关断电荷注入、时钟馈通和保持误差
+- #10 自举电容 Cb 的定量设计与权衡
+- #11 噪声、抖动、输入带宽和可靠性
+- #12 经典电路及八类改进架构
+- #13 论文发展时间线与架构对照
+- #14 从指标到尺寸：定量设计实例
+- #15 面向 28 nm 高速 Pipeline-SAR 和 TI-ADC 的设计决策
+- #16 Virtuoso/Spectre 仿真方案
+- #17 版图、寄生提取与电源完整性
+- #18 常见误区与设计失效案例
+- #19 推荐精读路线
+- #20 参考文献：经典、原 PDF 与新增论文
 
 ---
 
@@ -112,8 +112,7 @@ $$
 开关沟道电荷的一阶模型：
 
 $$
-Q_{ch}\simeq -WLC_{ox}(V_{GS}-V_{TH}),\qquad
-\Delta V_{s}\simeq \eta\frac{Q_{ch}}{C_S+C_{par}},
+Q_{ch}\simeq -WLC_{ox}(V_{GS}-V_{TH}),\qquad \Delta V_{s}\simeq \eta\frac{Q_{ch}}{C_S+C_{par}},
 $$
 
 其中 $\eta$ 是流向保持节点的分配比例，随关断速度、两端阻抗、波形以及电路结构变化，**不是恒定的 1/2**。若 $Q_{ch}$ 随 $V_{IN}$ 变化，采样误差就是失真；如只是固定的注入量，主要表现为 offset，可经差分或校准降低但未必消失。[R01,R03]
@@ -167,15 +166,13 @@ $$
 对于一阶模型 $R_{ON}$、$C_S$：
 
 $$
-V_O(t)=V_I\left(1-e^{-t/(R_{ON}C_S)}\right),\qquad
-\epsilon_{step}=e^{-T_{track}/(R_{ON}C_S)}.
+V_O(t)=V_I\left(1-e^{-t/(R_{ON}C_S)}\right),\qquad \epsilon_{step}=e^{-T_{track}/(R_{ON}C_S)}.
 $$
 
 对 $N$ bit，若**单次最差满量程阶跃**要求误差小于 $0.5$ LSB：
 
 $$
-\epsilon_{step} < \frac{1}{2^{N+1}},\qquad
-\boxed{R_{ON}\lesssim \frac{T_{track}}{C_S(N+1)\ln2}}.
+\epsilon_{step} < \frac{1}{2^{N+1}},\qquad \boxed{R_{ON}\lesssim \frac{T_{track}}{C_S(N+1)\ln2}}.
 $$
 
 这是便于定尺寸的**保守近似**：忽略了输入源阻抗、金属 RC、非线性 $R_{ON}(t)$、可用采样窗的死区、自举启动延迟及多极点。若已给其他误差预留 budget，还应收紧界限。
@@ -193,9 +190,7 @@ $$
 在 $R$、$C$ 暂时假定恒定的线性情形：
 
 $$
-H(j\omega)=\frac{1}{1+j\omega RC},\quad
-\left|H\right|=\frac{1}{\sqrt{1+(\omega RC)^2}},\quad
-\angle H=-\arctan(\omega RC).
+H(j\omega)=\frac{1}{1+j\omega RC},\quad \left|H\right|=\frac{1}{\sqrt{1+(\omega RC)^2}},\quad \angle H=-\arctan(\omega RC).
 $$
 
 这造成的是**带宽衰减与相位滞后**，本身不产生谐波。真正产生失真的，是 $R(V)$、$C(V)$、开关控制时序和输入源非线性导致的时变或非线性。对于 $\omega RC\ll1$：
@@ -221,8 +216,7 @@ $$
 假定 $C_B$ 在 gate 与输入之间，关键 gate 节点有对交流地寄生 $C_{pg}$；忽略其他支路与初态：
 
 $$
-\Delta V_G\approx\underbrace{\frac{C_B}{C_B+C_{pg}}}_{\alpha}\Delta V_{IN};
-\quad \Delta V_{GS}\approx -(1-\alpha)\Delta V_{IN}.
+\Delta V_G\approx\underbrace{\frac{C_B}{C_B+C_{pg}}}_{\alpha}\Delta V_{IN}; \quad \Delta V_{GS}\approx -(1-\alpha)\Delta V_{IN}.
 $$
 
 **结论**：自举电容越大，$\alpha$ 越接近 1；但 $C_B$ 也带来时钟驱动动态功耗、面积、漏电和启动延迟。真正有效的方案常常是**先减少 $C_{pg}$**，或者把较非线性的阱结/控制支路移到辅助路径，而不只是放大 $C_B$。[R08,R10,R11,R19]
@@ -302,8 +296,7 @@ $$
 因为 $dv/dt=-A\omega\sin\omega t$，利用恒等式
 
 $$
-\cos\theta\sin\theta=\frac12\sin2\theta,
-\quad \cos^2\theta\sin\theta=\frac14(\sin\theta+\sin3\theta),
+\cos\theta\sin\theta=\frac12\sin2\theta, \quad \cos^2\theta\sin\theta=\frac14(\sin\theta+\sin3\theta),
 $$
 
 得到**二次项造成的 2 次谐波**和**三次项造成的 3 次谐波**近似幅度：
@@ -336,11 +329,7 @@ Ma、Yu、Hu 在 [R12] 中把三个结构非理想因素分离，通过时域波
 对随电压变化的寄生电容 $C(V)=C_0+c_1V+c_2V^2+\cdots$，由 $i=dq/dt=C(V)\,dV/dt$，当 $V=A\cos\omega t$ 时：
 
 $$
-\begin{aligned}
-i(t)&=-\omega C_0 A\sin\omega t\\
-&\quad-\frac{c_1\omega A^2}{2}\sin2\omega t\\
-&\quad-\frac{c_2\omega A^3}{4}(\sin\omega t+\sin3\omega t)+\cdots.
-\end{aligned}
+\begin{aligned} i(t)&=-\omega C_0 A\sin\omega t\\ &\quad-\frac{c_1\omega A^2}{2}\sin2\omega t\\ &\quad-\frac{c_2\omega A^3}{4}(\sin\omega t+\sin3\omega t)+\cdots. \end{aligned}
 $$
 
 **一阶 $C(V)$ 非线性产生二次谐波电流，二阶 $C(V)$ 非线性产生三次谐波电流**；但其最终对**采样电压**的谐波贡献取决于输入缓冲输出阻抗、线路传输、节点位置和保持时刻，不能把上述电流幅度直接当 ADC 的 HD2/HD3。尤其在输入缓冲非零输出阻抗、THA 输入较大结电容时，$C(V)$ 注入电流经前级阻抗形成电压畸变，是 Input Buffer 与 BS 联合设计的理论基础。[R07,R18,R19]
@@ -388,8 +377,7 @@ $\Delta V_{droop}=I_{leak}T_{hold}/C_S$；还有栅漏/结漏电、charge redist
 原 PDF 第 6 页给出 $C_B$“按经验略大于采样电容”的建议，但**这不是普遍设计定律**：$C_B$ 直接驱动的是自举门控/辅助节点的等效总电荷负载，而 $C_S$ 是输入采样负载。两者物理上不应一概比较。需基于实际结构给出初值：
 
 $$
-C_B \gg C_{gate,eff}+C_{par,boot},\quad
-\text{且}\quad \Delta V_{GS,allow}\gtrsim\frac{\Delta Q_{loss}}{C_B}.
+C_B \gg C_{gate,eff}+C_{par,boot},\quad \text{且}\quad \Delta V_{GS,allow}\gtrsim\frac{\Delta Q_{loss}}{C_B}.
 $$
 
 若需要分压比例 $\alpha\ge1-\delta$，在第 6 节最简单的模型中
@@ -418,8 +406,7 @@ $$
 理想充足采样的单端电容热噪声方差：
 
 $$
-\sigma_{n}^2\approx\frac{kT}{C_S},\quad
-\sigma_n\approx\sqrt{\frac{kT}{C_S}}.
+\sigma_{n}^2\approx\frac{kT}{C_S},\quad \sigma_n\approx\sqrt{\frac{kT}{C_S}}.
 $$
 
 对于两侧**相互独立且各为 $C_S$ 的全差分采样**：
@@ -547,8 +534,7 @@ Zhang 等报道 **72 GS/s、9-bit TI Pipeline-SAR ADC（16 nm FinFET）**。源 
 假定 $T_{track}=200$ ps 且要求满量程 step 残差小于 $0.5$ LSB：
 
 $$
-R_{ON,max}=\frac{200\ \mathrm{ps}}{1.6\ \mathrm{pF}\times15\ln2}
-\approx\boxed{12.0\ \Omega}.
+R_{ON,max}=\frac{200\ \mathrm{ps}}{1.6\ \mathrm{pF}\times15\ln2} \approx\boxed{12.0\ \Omega}.
 $$
 
 这和原 PDF 第 5 页 $<12\,\Omega$ 一致。**需要强调**：实际 sampler 还有输入驱动 $R_S$ 和走线电阻，如果是串联关系，则应按 $R_S+R_{route}+R_{ON}$ 控制等效时间常数，而不是把整条链的 12 Ω 都分给开关。
@@ -571,8 +557,7 @@ $$
 @300 K, $kT\approx4.14\times10^{-21}$ J。若每侧 $C_S=1.6$ pF，则
 
 $$
-\sqrt{kT/C_S}\approx50.9\ \mu\mathrm{V}_{rms};\qquad
-\sqrt{2kT/C_S}\approx72.0\ \mu\mathrm{V}_{rms}.
+\sqrt{kT/C_S}\approx50.9\ \mu\mathrm{V}_{rms};\qquad \sqrt{2kT/C_S}\approx72.0\ \mu\mathrm{V}_{rms}.
 $$
 
 对于差分满量程 $0.8\ \mathrm{V_{pp,diff}}$、12-bit，1 LSB 是 $0.8/4096\approx195.3\ \mu\mathrm{V}$，均匀量化噪声约 $56.4\ \mu\mathrm{V}_{rms}$。上述单端/差分热噪声不应跟差分 $LSB$ 随意直接相加，必须先确认具体采样等效电容、相关性、增益/衰减及噪声折算位置。若每侧独立 $C_S=1.6$ pF 的简单全差分拓扑成立，仅采样热噪声就已接近甚至超过 12-bit 量化噪声。
@@ -696,11 +681,11 @@ $$
 
 ### 建议在 Obsidian 中建立的子笔记
 
-- `[[MOS 采样开关：Ron、体效应与电荷注入]]`
-- `[[Bootstrap Switch：晶体管级时序和可靠性]]`
-- `[[采样开关失真建模：HD2 HD3]]`
-- `[[ADC 输入采样网络：THA、CDAC 与 Buffer]]`
-- `[[28nm Bootstrapped Switch：Virtuoso 仿真清单]]`
+- `MOS 采样开关：Ron、体效应与电荷注入`
+- `Bootstrap Switch：晶体管级时序和可靠性`
+- `采样开关失真建模：HD2 HD3`
+- `ADC 输入采样网络：THA、CDAC 与 Buffer`
+- `28nm Bootstrapped Switch：Virtuoso 仿真清单`
 
 ---
 

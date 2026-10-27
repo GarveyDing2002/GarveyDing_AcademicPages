@@ -17,16 +17,16 @@ tags:
 > 从误差机理、检测方法、修正方式、代表性芯片和方法选型五个维度，系统梳理 TI-ADC time-skew 校准的技术演进，并明确区分论文实测、仿真结果与跨文献归纳。
 
 > [!info] 文献来源
-> 本文基于 Zotero 分类 `主题分类 > Calibration > time skew` 的 70 条记录、71 个 PDF 附件和 14 条精读笔记整理。完整条目及 DOI 见[[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B]]。
+> 本文基于 Zotero 分类 `主题分类 > Calibration > time skew` 的 70 条记录、71 个 PDF 附件和 14 条精读笔记整理。完整条目及 DOI 见附录 B。
 
 > [!important] 一句话判断
 > Time-skew 校准的真正难点不是“把一个时间差估得足够精确”，而是在正常输入、参考通道或注入信号中构造一个对 skew **有符号、近似单调、且不被增益/带宽/前端扰动淹没**的可观测量；修正精度最终还受 DCDL/FIR 分辨率、检测器系统偏差和随机 jitter 的共同限制。
 
 > [!tip] 阅读路径
-> - 先读[[#2. Time skew 的来源及系统影响|第 2 节]]，建立“周期性确定性 skew、随机 jitter、频率相关 aperture mismatch”三者的边界；
-> - 再读[[#3. 校准系统的统一框架|第 3 节]]和[[#5. 典型误差检测方法|第 5 节]]，理解可观测量、更新律与失效条件；
-> - 做电路/算法选型时直接看[[#7. 方法横向比较|第 7 节]]、[[#9. 方法选型指南|第 9 节]]和[[#10. 设计与验证检查表|第 10 节]]；
-> - 查具体论文数据时看[[#8. 代表性实现及论文报告结果|第 8 节]]与[[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B]]。
+> - 先读第 2 节，建立“周期性确定性 skew、随机 jitter、频率相关 aperture mismatch”三者的边界；
+> - 再读第 3 节和第 5 节，理解可观测量、更新律与失效条件；
+> - 做电路/算法选型时直接看第 7 节、第 9 节和第 10 节；
+> - 查具体论文数据时看第 8 节与附录 B。
 
 ## 摘要
 
@@ -44,27 +44,25 @@ tags:
 4. 延长平均只能降低随机估计误差，不能消除参考路径、dither 路径、bandwidth mismatch 或 actuator 非线性造成的系统偏置。
 5. 近年的主线不是单纯追求更低 skew 数字，而是让所有通道并行、保持恒定输入阻抗、覆盖过 Nyquist、共享真实输入路径，并把频率相关 aperture mismatch 纳入联合校正。
 
-
 ## 目录
 
 - **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
 
-
-- [[#1. 文献范围、方法与证据边界|1. 文献范围、方法与证据边界]]
-- [[#2. Time skew 的来源及系统影响|2. Time skew 的来源及系统影响]]
-- [[#3. 校准系统的统一框架|3. 校准系统的统一框架]]
-- [[#4. 发展历程|4. 发展历程]]
-- [[#5. 典型误差检测方法|5. 典型误差检测方法]]
-- [[#6. 误差修正方法|6. 误差修正方法]]
-- [[#7. 方法横向比较|7. 方法横向比较]]
-- [[#8. 代表性实现及论文报告结果|8. 代表性实现及论文报告结果]]
-- [[#9. 方法选型指南|9. 方法选型指南]]
-- [[#10. 设计与验证检查表|10. 设计与验证检查表]]
-- [[#11. 研究趋势与尚未解决的问题|11. 研究趋势与尚未解决的问题]]
-- [[#12. 结论|12. 结论]]
-- [[#附录 A：分类中的重复版本和外围条目|附录 A：分类中的重复版本和外围条目]]
-- [[#附录 B：Zotero time skew 分类全部 70 条记录|附录 B：Zotero time skew 分类全部 70 条记录]]
-- [[#附录 C：核心参考文献快捷入口|附录 C：核心参考文献快捷入口]]
+- 1. 文献范围、方法与证据边界
+- 2. Time skew 的来源及系统影响
+- 3. 校准系统的统一框架
+- 4. 发展历程
+- 5. 典型误差检测方法
+- 6. 误差修正方法
+- 7. 方法横向比较
+- 8. 代表性实现及论文报告结果
+- 9. 方法选型指南
+- 10. 设计与验证检查表
+- 11. 研究趋势与尚未解决的问题
+- 12. 结论
+- 附录 A：分类中的重复版本和外围条目
+- 附录 B：Zotero time skew 分类全部 70 条记录
+- 附录 C：核心参考文献快捷入口
 
 ## 1. 文献范围、方法与证据边界
 
@@ -120,12 +118,7 @@ $$
 若该通道存在等效采样时刻误差 $\Delta t_m$，实际输出的一阶模型为
 
 $$
-\begin{aligned}
-y_m[k]
-&=x\!\left((kN+m)T_s+\Delta t_m\right)\\
-&\approx x(t_{m,k}^{\mathrm{ideal}})
-+\Delta t_m x'(t_{m,k}^{\mathrm{ideal}}).
-\end{aligned}
+\begin{aligned} y_m[k] &=x\!\left((kN+m)T_s+\Delta t_m\right)\\ &\approx x(t_{m,k}^{\mathrm{ideal}}) +\Delta t_m x'(t_{m,k}^{\mathrm{ideal}}). \end{aligned}
 $$
 
 这个展开给出 time-skew 校准的基本物理图像：误差是“通道相关的时间系数”与“输入瞬时斜率”的乘积。对正弦输入 $x(t)=A\sin(2\pi f_{\mathrm{in}}t)$，误差幅度尺度为
@@ -149,26 +142,19 @@ $$
 把合并后的全速序列写成
 
 $$
-y[n]\approx x(nT_s)+\delta[n]x'(nT_s),
-\qquad
-\delta[n+N]=\delta[n],
+y[n]\approx x(nT_s)+\delta[n]x'(nT_s), \qquad \delta[n+N]=\delta[n],
 $$
 
 其中 $\delta[n]=\Delta t_{n\bmod N}$ 是以 $N$ 为周期的确定性序列。对它作 $N$ 点离散傅里叶展开：
 
 $$
-\delta[n]=\sum_{q=0}^{N-1}c_qe^{j2\pi qn/N},
-\qquad
-c_q=\frac{1}{N}\sum_{m=0}^{N-1}
-\Delta t_me^{-j2\pi qm/N}.
+\delta[n]=\sum_{q=0}^{N-1}c_qe^{j2\pi qn/N}, \qquad c_q=\frac{1}{N}\sum_{m=0}^{N-1} \Delta t_me^{-j2\pi qm/N}.
 $$
 
 这一步非常关键：time-skew spur 的大小不是只由“最大通道偏差”决定，而是由 skew 空间分布在各个交织模式上的傅里叶系数 $c_q$ 决定。对单音输入，一阶误差项把输入搬移到
 
 $$
-f_{\mathrm{spur}}
-=q\frac{f_s}{N}\pm f_{\mathrm{in}},
-\qquad q=1,\ldots,N-1 .
+f_{\mathrm{spur}} =q\frac{f_s}{N}\pm f_{\mathrm{in}}, \qquad q=1,\ldots,N-1 .
 $$
 
 若忽略折叠方向和实信号的共轭项，第 $q$ 个 skew 模式的 spur/信号幅度近似为
@@ -180,8 +166,7 @@ $$
 因而
 
 $$
-\mathrm{Spur}_q\,[\mathrm{dBc}]
-\approx20\log_{10}\!\left(2\pi f_{\mathrm{in}}|c_q|\right).
+\mathrm{Spur}_q\,[\mathrm{dBc}] \approx20\log_{10}\!\left(2\pi f_{\mathrm{in}}|c_q|\right).
 $$
 
 $c_0$ 是所有通道的公共延迟，只造成整体相位变化；$q\ge1$ 才形成交织 spur。这个表示也解释了为什么“每路 skew RMS 相同”的两颗芯片可能具有不同的最坏 SFDR：如果误差集中在某一个离散空间模式上，其单根 spur 会比误差分散在多个模式时更高。
@@ -194,17 +179,13 @@ $c_0$ 是所有通道的公共延迟，只造成整体相位变化；$q\ge1$ 才
 若目标是让某个最坏 skew 模式低于 $S$ dBc，一阶估算为
 
 $$
-|c_q|_{\max}
-\lesssim
-\frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}.
+|c_q|_{\max} \lesssim \frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}.
 $$
 
 例如，仅作数量级说明，若希望在 $f_{\mathrm{in,max}}=5.7\ \mathrm{GHz}$ 时把一阶 time-skew spur 压到 −74 dBc 以下，则最坏模式系数需约小于
 
 $$
-|c_q|_{\max}\lesssim
-\frac{10^{-74/20}}{2\pi\cdot5.7\times10^9}
-\approx5.6\ \mathrm{fs}.
+|c_q|_{\max}\lesssim \frac{10^{-74/20}}{2\pi\cdot5.7\times10^9} \approx5.6\ \mathrm{fs}.
 $$
 
 这不是“每路 DCDL 必须有 5.6 fs 步长”的直接结论：模式系数和通道误差的映射取决于 $N$ 与误差空间分布，且实际 SFDR 还可能由量化、谐波、带宽失配、参考路径 feedthrough 和随机 jitter 限制。但它能快速说明为什么 10 GS/s、12-bit 级系统会把校准推到几十飞秒甚至个位数飞秒的系统误差预算。
@@ -228,8 +209,7 @@ $$
 采样开关的有效关断时刻不等于数字时钟的逻辑阈值交越时刻。MOS 阈值、bootstrap 波形、栅极驱动斜率、body effect、信号相关导通电阻和 drain feedthrough 都会改变 aperture。若时钟边沿在阈值附近的斜率为 $S_{\mathrm{clk}}$，阈值失配 $\Delta V_{\mathrm{th}}$ 的一阶等效时间误差为
 
 $$
-\Delta t_{\mathrm{eq}}\approx
-\frac{\Delta V_{\mathrm{th}}}{S_{\mathrm{clk}}}.
+\Delta t_{\mathrm{eq}}\approx \frac{\Delta V_{\mathrm{th}}}{S_{\mathrm{clk}}}.
 $$
 
 这说明只在时钟输入端测相位并不足以证明实际采样时刻已经匹配。
@@ -274,8 +254,7 @@ flowchart TD
 随机 jitter 的正弦输入上限常用
 
 $$
-\mathrm{SNR}_{\mathrm{jitter}}\approx
--20\log_{10}\left(2\pi f_{\mathrm{in}}\sigma_t\right).
+\mathrm{SNR}_{\mathrm{jitter}}\approx -20\log_{10}\left(2\pi f_{\mathrm{in}}\sigma_t\right).
 $$
 
 与确定性 skew 不同，随机 jitter 主要增加噪声；随机化通道顺序或参考采样时刻虽然能把周期 spur 摊平，却没有消除误差能量，因此可能改善 SFDR 而不改善 SNDR。
@@ -307,9 +286,7 @@ flowchart LR
 在已接近锁定点的小 skew 范围内，多数检测器都可抽象为
 
 $$
-z_i[\ell]
-=K_i\Delta t_{i,\mathrm{res}}[\ell]
-+b_i+\nu_i[\ell],
+z_i[\ell] =K_i\Delta t_{i,\mathrm{res}}[\ell] +b_i+\nu_i[\ell],
 $$
 
 其中：
@@ -323,17 +300,13 @@ $$
 以符号累加器为例，更新律可写成
 
 $$
-u_i[\ell+1]
-=\operatorname{sat}\!\left(
-u_i[\ell]-\mu\operatorname{sgn}(K_i)\operatorname{sgn}(z_i[\ell])
-\right),
+u_i[\ell+1] =\operatorname{sat}\!\left( u_i[\ell]-\mu\operatorname{sgn}(K_i)\operatorname{sgn}(z_i[\ell]) \right),
 $$
 
 而 DCDL 近似产生
 
 $$
-t_{i,\mathrm{corr}}[\ell]
-=t_{\mathrm{LSB}}u_i[\ell].
+t_{i,\mathrm{corr}}[\ell] =t_{\mathrm{LSB}}u_i[\ell].
 $$
 
 若检测器给出误差幅度而不只是符号，也可以用 LMS、归一化 LMS、binary/coarse-fine search 或 Kalman/随机梯度更新。算法名称不同，但闭环都必须同时满足：
@@ -387,12 +360,7 @@ $$
 下降。把随机误差再减半，往往需要约四倍有效样本；但系统偏置 $b_i$ 不会随平均时间消失。残余 skew 可用下式作一阶预算：
 
 $$
-\sigma_{t,\mathrm{res}}^2
-\approx
-\sigma_{t,\mathrm{est}}^2
-+\sigma_{t,\mathrm{quant}}^2
-+\sigma_{t,\mathrm{track}}^2
-+\sigma_{t,\mathrm{path}}^2.
+\sigma_{t,\mathrm{res}}^2 \approx \sigma_{t,\mathrm{est}}^2 +\sigma_{t,\mathrm{quant}}^2 +\sigma_{t,\mathrm{track}}^2 +\sigma_{t,\mathrm{path}}^2.
 $$
 
 其中 $\sigma_{t,\mathrm{path}}\approx|b_i/K_i|$ 表示参考/信号路径差造成的等效时间偏差。对步长为 $t_{\mathrm{LSB}}$ 的单调 DCDL，若锁定码在一个量化区间内近似均匀，量化残差 RMS 的粗略估计为
@@ -406,10 +374,7 @@ $$
 平均窗口越长，$\sigma_{t,\mathrm{est}}$ 越低，但校准环跟踪 PVT 漂移的带宽越窄。高速采样率不等于快速校准：参考通道可能只在 $f_s/21$ 工作，window detector 可能只选中几千分之一的样本，算法一次更新又可能需要多个 trial code。应同时报告：
 
 $$
-T_{\mathrm{conv}}
-=\frac{N_{\mathrm{total\ clocks}}}{f_s}
-=\frac{N_{\mathrm{effective\ samples}}}
-{p_{\mathrm{valid}}f_{\mathrm{obs}}},
+T_{\mathrm{conv}} =\frac{N_{\mathrm{total\ clocks}}}{f_s} =\frac{N_{\mathrm{effective\ samples}}} {p_{\mathrm{valid}}f_{\mathrm{obs}}},
 $$
 
 其中 $p_{\mathrm{valid}}$ 是有效事件概率，$f_{\mathrm{obs}}$ 是观察路径的实际采样率。
@@ -576,8 +541,7 @@ $$
 因此
 
 $$
-\Delta R=R_{12}-R_{21}
-\approx 2R'(T_s)\Delta t.
+\Delta R=R_{12}-R_{21} \approx 2R'(T_s)\Delta t.
 $$
 
 只要能够保证 $R'(T_s)$ 的符号，$\Delta R$ 就能判断 skew 应向前还是向后调。控制器不一定要准确求出 $\Delta t$ 的绝对值，只需持续按正确方向更新 DCDL，直到统计量在零附近波动。
@@ -642,8 +606,7 @@ $$
 因此
 
 $$
-\operatorname{sgn}(\Delta t)
-=\operatorname{sgn}\!\left(\Delta V\cdot\frac{\mathrm dV_{\mathrm{in}}}{\mathrm dt}\right).
+\operatorname{sgn}(\Delta t) =\operatorname{sgn}\!\left(\Delta V\cdot\frac{\mathrm dV_{\mathrm{in}}}{\mathrm dt}\right).
 $$
 
 这类方案的关键不只是“有没有参考 ADC”，还包括怎样得到输入导数，以及参考通道如何接入输入而不制造新的周期误差。
@@ -783,8 +746,7 @@ $$
 条件方差近似为
 
 $$
-\sigma_v^2(\tau)
-\approx\sigma_v^2(0)+\tau^2\sigma_{\dot v}^2.
+\sigma_v^2(\tau) \approx\sigma_v^2(0)+\tau^2\sigma_{\dot v}^2.
 $$
 
 因此方差在 $\tau=0$ 附近取最小值。与对全幅输入直接求方差相比，window detector 先压缩正常信号本身的统计波动，timing 引起的二阶变化更容易被看见。
@@ -802,9 +764,7 @@ $$
 **结构**：主通道和低速参考 SAR 的码差给出电压误差符号；相邻两个主样本的差给出输入斜率符号。两者异或即可得到 skew 更新方向：
 
 $$
-\operatorname{sgn}(\Delta t)
-=\operatorname{sgn}(\Delta V)\,
-\operatorname{sgn}\!\left(\frac{\mathrm dV}{\mathrm dt}\right).
+\operatorname{sgn}(\Delta t) =\operatorname{sgn}(\Delta V)\, \operatorname{sgn}\!\left(\frac{\mathrm dV}{\mathrm dt}\right).
 $$
 
 普通参考 ADC 若与主 sampler 同时接入输入，会把 kickback 直接注入最敏感的采样瞬间。VTR 把参考时钟延后约 4 ps，使其在主采样完成后动作，同时在参考输入端引入匹配的约 4 ps 信号延迟，于是算法仍“看到”原参考时刻，而物理扰动晚于主采样到达。
@@ -866,9 +826,7 @@ $$
 **结构**：三路参考 ADC 也以总速率轮转，因此任一时刻都有近似恒定的参考输入负载；3 与 8 互质使每个 reference/main 组合被均匀访问。以主通道 1 为相对参考，检测量比较
 
 $$
-R_i=E\{d_r^F d_{\mathrm{out},i}\},
-\qquad
-\Delta R_i=R_i-R_1.
+R_i=E\{d_r^F d_{\mathrm{out},i}\}, \qquad \Delta R_i=R_i-R_1.
 $$
 
 1-bit reference 自身的通道 skew 会改变相关曲线斜率，但只要所有采样间隔处于自相关的同一单调区，多个 reference 通道的公共零点仍与主通道相对 skew 对齐。该工作的重要贡献不只是“多放几个参考比较器”，而是同时保持恒定输入阻抗并明确给出相关检测的可工作延迟区间。
@@ -886,8 +844,7 @@ $$
 **问题起点**：若在每个通道本地注入 dither，参考信号不经过完整公共输入缓冲，而且各注入支路的增益和延迟不匹配。精读笔记给出的局部注入残差形式可概括为
 
 $$
-\Delta t_{\mathrm{LDI,res}}
-\approx \Delta t_D-t_d\Delta G_D,
+\Delta t_{\mathrm{LDI,res}} \approx \Delta t_D-t_d\Delta G_D,
 $$
 
 并且真实输入路径的 $\Delta t_{\mathrm{IN}}$ 可能完全不可见。继续增加平均样本只能减小随机噪声，不能消除这类路径偏置。
@@ -913,8 +870,7 @@ $$
 并用环形相邻相关的平均
 
 $$
-\bar R=\frac{1}{N}\sum_{i=0}^{N-1}R_i
-\approx R(T_s)
+\bar R=\frac{1}{N}\sum_{i=0}^{N-1}R_i \approx R(T_s)
 $$
 
 重建理想相邻相关。每个通道只需把自己的局部累计间隔对应统计量拉向 $\bar R$，因此所有通道可以同时更新，并且不再依赖传统二叉层次中的 $R'(NT_s/2)$。乘法相关还可用 MAD 替代。
@@ -949,8 +905,7 @@ LC delay line 可降低 jitter，但面积和可调范围不适合所有 ADC。�
 用简单线性模型表示，模拟修正后的残差为
 
 $$
-\Delta t_{i,\mathrm{res}}
-=\Delta t_{i,0}-K_{\mathrm{DCDL}}u_i-\Delta t_{i,\mathrm{act,bias}}.
+\Delta t_{i,\mathrm{res}} =\Delta t_{i,0}-K_{\mathrm{DCDL}}u_i-\Delta t_{i,\mathrm{act,bias}}.
 $$
 
 其中 $K_{\mathrm{DCDL}}$ 可能随码值、PVT 和边沿方向变化，$\Delta t_{i,\mathrm{act,bias}}$ 包括占空比耦合、负载变化和校准码注入。一个可用的 DCDL 规格分解是：
@@ -985,8 +940,7 @@ $$
 从频域看，理想时间平移的逆校正需要乘以 $e^{-j\omega\Delta t_m}$，而一阶导数法只保留
 
 $$
-e^{-j\omega\Delta t_m}
-\approx1-j\omega\Delta t_m.
+e^{-j\omega\Delta t_m} \approx1-j\omega\Delta t_m.
 $$
 
 被忽略的二阶项尺度约为 $(\omega\Delta t_m)^2/2$。因此，同一个估计误差在低频足够精确，在 Nyquist/过 Nyquist 可能产生新的 residual spur。数字导数还必须从已经包含其他通道失配的合并数据中估计；若相邻样本来自不同增益/带宽通道，应先校 offset/gain，或在每通道低速域构造匹配的 differentiator。
@@ -1010,8 +964,7 @@ fractional-delay FIR 把各通道数字序列重新采样到统一时间网格�
 理想第 $m$ 路校正滤波器可写为
 
 $$
-H_m(e^{j\omega})\approx
-e^{-j\omega\widehat{\Delta t_m}/T_s}.
+H_m(e^{j\omega})\approx e^{-j\omega\widehat{\Delta t_m}/T_s}.
 $$
 
 实际 FIR 同时受到阶数、系数量化和通带设计区间限制。若目标只覆盖第一 Nyquist 区，可以针对该带宽优化 Chebyshev/minimax 误差；若需支持多个 Nyquist zone，离散时间混叠后“原模拟频率”不再唯一，估计器还必须告诉滤波器当前 zone 或使用保留模拟频率信息的前端模型。Polyphase 实现降低单个运算单元的时钟，却不会减少总乘加次数的数量级。
@@ -1178,8 +1131,7 @@ Time-skew 误差直接与 $f_{\mathrm{in}}$ 相乘。一个 2 GS/s ADC 若只服
 用
 
 $$
-|c_q|_{\max}
-\lesssim\frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}
+|c_q|_{\max} \lesssim\frac{10^{-S/20}}{2\pi f_{\mathrm{in,max}}}
 $$
 
 作第一轮估算。例如，1 GHz 输入、目标 skew spur 低于 −70 dBc，对应最坏模式系数约 50 fs；5.7 GHz 输入、−74 dBc 则约 5.6 fs。前者不应直接被误读为“每路允许 50 fs RMS”，而应在行为模型中把实际 $\{\Delta t_m\}$ 做 $N$ 点 DFT，验证所有 $q\ge1$ 模式。
@@ -1189,12 +1141,7 @@ $$
 可先用 RSS 分配互相近似独立的量：
 
 $$
-\sigma_{t,\mathrm{target}}^2
-\ge
-\sigma_{t,\mathrm{det}}^2
-+\sigma_{t,\mathrm{path}}^2
-+\sigma_{t,\mathrm{act}}^2
-+\sigma_{t,\mathrm{track}}^2.
+\sigma_{t,\mathrm{target}}^2 \ge \sigma_{t,\mathrm{det}}^2 +\sigma_{t,\mathrm{path}}^2 +\sigma_{t,\mathrm{act}}^2 +\sigma_{t,\mathrm{track}}^2.
 $$
 
 其中检测随机误差可通过更多样本下降，path bias 通常不能；actuator 项包括 DCDL 量化、DNL 和新增 jitter；tracking 项由温漂速度与环路带宽决定。随机 clock jitter 还应通过 SNR 预算单独检查，而不是全部塞入“residual skew”。

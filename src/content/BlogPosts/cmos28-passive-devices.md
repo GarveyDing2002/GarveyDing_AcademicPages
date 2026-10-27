@@ -26,13 +26,9 @@ tags:
 
 ---
 
-
-
-
 ## 目录
 
 - **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
-
 
 1. 片上电阻
    - 1.1 片上电阻
@@ -59,7 +55,6 @@ flowchart LR
 ```
 
 *图：片上无源器件从规格到版图验证的选型流程；器件参数以目标 PDK 为准。*
-
 
 ### 1.1 片上电阻
 
@@ -265,13 +260,9 @@ $$R=R_{\mathrm{sh,metal}}\frac{L}{W}$$
 
 小阻值金属电阻需要特别注意：
 
-$$R_{\mathrm{total}}
-=
-R_{\mathrm{metal}}
-+
-R_{\mathrm{via}}
-+
-R_{\mathrm{contact}}$$
+$$
+R_{\mathrm{total}} = R_{\mathrm{metal}} + R_{\mathrm{via}} + R_{\mathrm{contact}}
+$$
 
 例如设计一个几欧姆的电阻时，通孔阵列本身的电阻可能已经不可忽略。应使用多排 via，并进行后仿真或 EM 分析。
 
@@ -281,9 +272,9 @@ R_{\mathrm{contact}}$$
 
 MOS 管在线性区可以近似成可调电阻：
 
-$$R_{\mathrm{on}}\approx
-\frac{1}
-{\mu C_{\mathrm{ox}}\frac WL(V_{GS}-V_{TH})}$$
+$$
+R_{\mathrm{on}}\approx \frac{1} {\mu C_{\mathrm{ox}}\frac WL(V_{GS}-V_{TH})}
+$$
 
 ##### 类型
 
@@ -320,7 +311,6 @@ $$R_{\mathrm{on}}\approx
 - 泄放路径
 
 ---
-
 
 ## 2. 片上电容
 
@@ -555,9 +545,9 @@ $$C=C(V)$$
 
 PN 结反偏时具有耗尽层电容：
 
-$$C_j(V)=
-\frac{C_{j0}}
-{\left(1+\frac{V_R}{\phi_0}\right)^m}$$
+$$
+C_j(V)= \frac{C_{j0}} {\left(1+\frac{V_R}{\phi_0}\right)^m}
+$$
 
 ##### 实现方式
 
@@ -621,7 +611,6 @@ $$C_j(V)=
 - 模型通常针对电源去耦而不是精密模拟应用
 
 ---
-
 
 ## 3. 片上电感与磁性/传输线器件
 
@@ -896,7 +885,6 @@ $$M=k\sqrt{L_1L_2}$$
 
 ---
 
-
 ## 4. 器件比较与高速 ADC 选型
 
 ### 4.1 三类器件的综合比较
@@ -919,7 +907,6 @@ $$M=k\sqrt{L_1L_2}$$
 | 电感 | Transmission line | 高频模型准确 | 面积大，必须 EM 仿真 |
 
 ---
-
 
 ### 4.2 面向高速 ADC 的具体选型建议
 
@@ -1034,17 +1021,13 @@ $$\boxed{\text{PEX + EM + 封装联合仿真}}$$
 
 ---
 
-
 ### 4.3 不要只比较 R、L、C 的标称值
 
 #### 电阻
 
-$$R,\quad R_{\mathrm{sh}},\quad
-\sigma_R/R,\quad
-TCR,\quad VCR,\quad
-C_{\mathrm{par}},\quad
-I_{\max},\quad
-\text{noise}$$
+$$
+R,\quad R_{\mathrm{sh}},\quad \sigma_R/R,\quad TCR,\quad VCR,\quad C_{\mathrm{par}},\quad I_{\max},\quad \text{noise}
+$$
 
 其中：
 
@@ -1056,23 +1039,19 @@ I_{\max},\quad
 
 #### 电容
 
-$$C,\quad C/A,\quad
-\sigma_C/C,\quad
-TC,\quad VC,\quad
-Q,\quad f_{\mathrm{SRF}},\quad
-C_{\mathrm{bottom}}$$
+$$
+C,\quad C/A,\quad \sigma_C/C,\quad TC,\quad VC,\quad Q,\quad f_{\mathrm{SRF}},\quad C_{\mathrm{bottom}}
+$$
 
 ---
 
 #### 电感
 
-$$L,\quad Q(f),\quad
-R_s(f),\quad f_{\mathrm{SRF}},\quad
-k,\quad A,\quad
-S_{11},S_{21}$$
+$$
+L,\quad Q(f),\quad R_s(f),\quad f_{\mathrm{SRF}},\quad k,\quad A,\quad S_{11},S_{21}
+$$
 
 ---
-
 
 ## 5. 版图设计与核心结论
 
@@ -1121,7 +1100,6 @@ S_{11},S_{21}$$
 - 观察完整 S 参数，而不只是某个频点的 L 值
 
 ---
-
 
 ### 5.2 核心结论
 

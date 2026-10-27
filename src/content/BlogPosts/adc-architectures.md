@@ -15,13 +15,9 @@ tags:
 
 ---
 
-
-
-
 ## 目录
 
 - **2026 新增专题**：见文末扩展篇章，含新增推导、文献与配图
-
 
 1. 架构分类与总体框架
    - 1.1 架构速览
@@ -39,7 +35,6 @@ tags:
 ![01_adc_architecture_map](/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.svg)
 
 *图：ADC 架构选择应同时考虑速度、精度、功耗和输入场景。*
-
 
 ### 1.1 架构速览
 
@@ -79,10 +74,7 @@ tags:
 
     - Zoom ADC
 
-
-
 > 说明：ADC 架构之间并不是完全互斥的。现代高性能 ADC 往往是混合架构，例如 Pipeline-SAR、Flash-SAR、SAR+TD、VCO-assisted NS-SAR、Time-Interleaved Pipeline-SAR 等。 本表按“转换原理、系统组织、混合架构、应用形态、采样方式、信号域”等维度综合整理，适合做文献调研、架构选型和论文综述时使用。
-
 
 ### 1.2 ADC 类型综合分类主表
 
@@ -153,7 +145,6 @@ tags:
 |按信号域|Time-domain ADC / 时间域 ADC|时间/频率/相位量化|把电压或电流信息转为时间差、频率或相位后数字化|4–16 bit 等效|中到高|VTC、TDC、VCO、delay line、counter|先进 CMOS 友好，数字化程度高|jitter、PVT、非线性校准是核心|delay mismatch、VTC gain、VCO phase noise、TDC DNL|DLL/PLL 校准、数字背景校准、bin calibration|TD ADC、VCO ADC、数字 PLL、先进节点混合 ADC|
 |按信号域|Frequency-domain ADC / 频率域 ADC|电压/电流转频率|输入控制振荡频率，在时间窗口内计数或测相位|中低到中高|低到中|VCO/VFC、counter、digital filter|简单、数字友好、天然积分平均|速度和线性度受限，PVT 敏感|VFC/VCO 非线性、温漂、相位噪声|频率校准、查表线性化|传感器、低功耗测量、VCO-based ADC|
 
-
 ## 2. 架构选型与发展趋势
 
 ### 2.1 快速选型总结
@@ -169,7 +160,6 @@ tags:
 |RF/宽带直接采样|TI-Pipeline、TI-Pipeline-SAR、RF-sampling ADC|总采样率高，输入带宽大|
 |存算一体/AI 加速|Flash、SAR、Ramp、Time-domain、Current-mode ADC|低 bit、大规模并行、面积能耗优先|
 
-
 ### 2.2 现代 ADC 架构发展趋势
 
 |趋势|具体表现|背后原因|
@@ -181,7 +171,6 @@ tags:
 |Time-interleaving 普及|TI-SAR、TI-Pipeline、TI-Pipeline-SAR|单通道速度受限，通过多通道并行提高总采样率|
 |数字后台校准增强|gain/offset/skew/DAC mismatch/VTC/TDC 校准|放松模拟精度要求，用数字域恢复线性度和匹配|
 |混合域架构增多|SAR+TD、Pipeline+TD、VCO-assisted ADC|单一架构难以同时满足速度、精度、功耗和先进工艺约束|
-
 
 ## 3. 高速混合 ADC 与研究方向
 
@@ -198,7 +187,6 @@ tags:
 |背景校准|Modern calibrated ADC|级间增益、VTC gain、TDC bin、CDAC mismatch、time skew|
 
 ---
-
 
 ## 4. 总结
 

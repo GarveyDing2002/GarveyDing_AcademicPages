@@ -1,259 +1,734 @@
 {
   "notes": [
     {
-      "source": "ADC 数据输出接口：架构与设计.md",
-      "slug": "adc-data-interfaces",
-      "sourceSha256": "2527ffea79981807f4d65365809935f07d7d3f21b146db54610cabde2c7eb040"
-    },
-    {
-      "source": "ADC 架构：分类、比较与选型.md",
+      "source": "adc-architectures.md",
       "slug": "adc-architectures",
-      "sourceSha256": "9e839357ab827e1631a0b27060cc5d0b45c11cf21e8f4d7e95483f137dd88c1d"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "ADC比较器/ADC 比较器：架构、关键指标与设计方法.md",
+      "source": "adc-bootstrapped-switch.md",
+      "slug": "adc-bootstrapped-switch",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators.md",
       "slug": "adc-comparators",
-      "sourceSha256": "e4db4a1262a9d55ed5bf50c5991afc6b932aa394fd162a614a268da264c0c500"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "CLS 技术：原理、变种与设计.md",
-      "slug": "correlated-level-shifting",
-      "sourceSha256": "d48b026565a91266524502aa7c75c353773045929429d78ff45603506ecd2389"
+      "source": "adc-data-interfaces.md",
+      "slug": "adc-data-interfaces",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "Dither-Based Calibration：原理、架构与建模.md",
-      "slug": "dither-calibration",
-      "sourceSha256": "1cd1140e13b4541445dc1a54c5d84514d4e0de2b2be4f6cb96fd2bd8122abb9e"
-    },
-    {
-      "source": "PVT 对 MOS 管性能参数的影响.md",
-      "slug": "mos-pvt",
-      "sourceSha256": "2d65637b1a0aec8a481f8256eb7d408ea05b5be6333e95bef65be64702f18497"
-    },
-    {
-      "source": "TI-ADC Time-Skew 校准：原理、方法与演进.md",
-      "slug": "ti-adc-time-skew",
-      "sourceSha256": "4484e3716e7438e71865dd91679476ce307d1b7b232f3d4bb0701e2bf7e5d8a7"
-    },
-    {
-      "source": "TSMC 28 nm CMOS 片上无源器件：电阻、电容与电感.md",
-      "slug": "cmos28-passive-devices",
-      "sourceSha256": "6c804f6848cca51c22c9b2b1257d1f54f0395b7b2ed4cfe7c0e24b1f89b5a003"
-    },
-    {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/ADC Reference Buffer：架构与设计.md",
+      "source": "adc-reference-buffer.md",
       "slug": "adc-reference-buffer",
-      "sourceSha256": "353274434efe65d68d74f444df8d0c99f69d43d9d0dc735c3b2fed28b379577a"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/Bandgap 基准源：架构与设计.md",
+      "source": "bandgap-reference.md",
       "slug": "bandgap-reference",
-      "sourceSha256": "252f59a43eb99cef2ae3e7a84411e263f16d6e877ab7de7df023dfee48edb907"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/模拟集成电路偏置电路.md",
-      "slug": "analog-bias-circuits",
-      "sourceSha256": "c2b37441bff05bcef6c90293627980aa6a49e8755bbb4e8cab3ea2ff145a4422"
-    },
-    {
-      "source": "学习记录索引.md",
-      "slug": "learning-records",
-      "sourceSha256": "4ae8e0164817067cd3d4cacf1e7966b1c3cbab613447f25a3c92533ccd65d542"
-    },
-    {
-      "source": "电路噪声：从 MOS 器件到系统设计.md",
+      "source": "circuit-noise.md",
       "slug": "circuit-noise",
-      "sourceSha256": "cc5515ffde7c5d7e84f817fc2cc2eef605d8604af2fc84e69edea1e7b1a66fd7"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "电路零极点：原理、分析与稳定性.md",
+      "source": "circuit-poles-and-zeros.md",
       "slug": "circuit-poles-and-zeros",
-      "sourceSha256": "bb04bc5b6aed1c5c4e1264147ac719970333718fecd69bc748102a3145b96712"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/高速 ADC Input Buffer：原理、架构与设计方法.md",
+      "source": "cmos28-passive-devices.md",
+      "slug": "cmos28-passive-devices",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting.md",
+      "slug": "correlated-level-shifting",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration.md",
+      "slug": "dither-calibration",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer.md",
       "slug": "high-speed-adc-input-buffer",
-      "sourceSha256": "2187afa6183013fadf3674f520192a777bd95218362d5aa2480fb1cb31812a57"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt.md",
+      "slug": "mos-pvt",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew.md",
+      "slug": "ti-adc-time-skew",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   ],
   "assets": [
     {
-      "source": "ADC比较器/attachment/fig_architecture_tradeoff.svg",
+      "source": "adc-architectures/01_adc_architecture_map.before_import_20261027.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.before_import_20261027.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/01_adc_architecture_map.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/01_adc_architecture_map.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/2026_01_多维架构地图.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/2026_01_多维架构地图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/2026_02_量化与误差整形.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/2026_02_量化与误差整形.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/2026_03_架构决策流程.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/2026_03_架构决策流程.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/adc-architectures/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-architectures/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/adc-architectures/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p02_basic_bootstrap.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p02_basic_bootstrap.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p03_top_bottom_sampling.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p03_top_bottom_sampling.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p04_three_nonidealities.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p04_three_nonidealities.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p05_settling_model.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p05_settling_model.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p06_transistor_schematic.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p06_transistor_schematic.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p07_floating_well.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p07_floating_well.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p08_fast_turnon.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p08_fast_turnon.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p09_dual_path.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p09_dual_path.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p10_dual_loop.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p10_dual_loop.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p11_improved_dual_path.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p11_improved_dual_path.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/p12_multi_path.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/p12_multi_path.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/schematic_bootstrap_principle.svg",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/schematic_bootstrap_principle.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/schematic_sample_window.svg",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/schematic_sample_window.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/theory_harmonics_scaling.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/theory_harmonics_scaling.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/theory_ron_vs_vin.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/theory_ron_vs_vin.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-bootstrapped-switch/theory_settling.png",
+      "destination": "public/images/blog/learning-notes/adc-bootstrapped-switch/theory_settling.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators/fig_architecture_tradeoff.svg",
       "destination": "public/images/blog/learning-notes/adc-comparators/fig_architecture_tradeoff.svg",
-      "sourceSha256": "476dd707f3bb1b1a02e5dfcedfba9acfa393367ab3eca994b59631047861505c"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "ADC比较器/attachment/fig_strongarm.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_strongarm.svg",
-      "sourceSha256": "2f4cde873756e4168433cf24279e1a2b295544fffb6b2f1a7a06b86d1bae5ef9"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_double_tail.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_double_tail.svg",
-      "sourceSha256": "ee57fcce5ac4a60131c5b6c82ef7ddedaa0bc0e0d58b2998e627ca70b306dd77"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_fia_latch.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg",
-      "sourceSha256": "1342f4e11411461e86cd08934b74c2aa3aa68e21f2b71a3410d0b782ff797656"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_noise_budget.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg",
-      "sourceSha256": "0f0425124c15b71f3c97513ef9abe2a0379362d523a4cae59ce70a558632a4a3"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_offset_cancellation.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg",
-      "sourceSha256": "d0c92835f9c6fbb29d8eb08f8057bb67f7629f54ef28388763e80a3ec7da4229"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_metastability_delay.svg",
-      "destination": "public/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg",
-      "sourceSha256": "01a34858529e77cb3a8e6e2eaa7876d48f2ebe133c0ca75ff0549183ec20c6d4"
-    },
-    {
-      "source": "ADC比较器/attachment/fig_design_flow.svg",
+      "source": "adc-comparators/fig_design_flow.svg",
       "destination": "public/images/blog/learning-notes/adc-comparators/fig_design_flow.svg",
-      "sourceSha256": "2d1e9055081032387407aa605d82ee64c525be5a49fbd906b8a1e03369125120"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "ADC比较器/attachment/ADC_Comparator_References.bib",
-      "destination": "public/images/blog/learning-notes/adc-comparators/ADC_Comparator_References.bib",
-      "sourceSha256": "3ddf71202acc7d3bac802fb925ac42779da58241d6d158f5fbb1448ad359c870"
+      "source": "adc-comparators/fig_double_tail.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_double_tail.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/attachment/01_reference_system_overview.png",
+      "source": "adc-comparators/fig_fia_latch.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_fia_latch.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators/fig_metastability_delay.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_metastability_delay.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators/fig_noise_budget.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_noise_budget.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators/fig_offset_cancellation.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_offset_cancellation.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-comparators/fig_strongarm.svg",
+      "destination": "public/images/blog/learning-notes/adc-comparators/fig_strongarm.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/01_adc_data_output_link.before_import_20261027.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/01_adc_data_output_link.before_import_20261027.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/01_adc_data_output_link.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/01_adc_data_output_link.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/2026_01_接口分层.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/2026_01_接口分层.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/2026_02_三种数据采集.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/2026_02_三种数据采集.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/2026_03_接口验证链.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/2026_03_接口验证链.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-data-interfaces/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/adc-data-interfaces/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/01_reference_system_overview.png",
       "destination": "public/images/blog/learning-notes/adc-reference-buffer/01_reference_system_overview.png",
-      "sourceSha256": "083abd83c6b8407575cf91b958420fd180c5f9cad76dbcc56e491e4806ff86fe"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/attachment/03_charge_timescales.png",
-      "destination": "public/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.png",
-      "sourceSha256": "d6ae603117ac8e78fce4e58ce37651bcedd29771ecd00c7a7b57da14b581c762"
+      "source": "adc-reference-buffer/01_reference_system_overview.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/01_reference_system_overview.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/attachment/02_rvb_architecture_tree.png",
+      "source": "adc-reference-buffer/02_rvb_architecture_tree.png",
       "destination": "public/images/blog/learning-notes/adc-reference-buffer/02_rvb_architecture_tree.png",
-      "sourceSha256": "b53890ae3c4f7e7f529bd145fd3b2d773a0acb52784c5627bf8b1e7ff7ccbf34"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/attachment/04_fvf_local_feedback.png",
+      "source": "adc-reference-buffer/02_rvb_architecture_tree.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/02_rvb_architecture_tree.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/03_charge_timescales.png",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/03_charge_timescales.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/03_charge_timescales.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/04_fvf_local_feedback.png",
       "destination": "public/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.png",
-      "sourceSha256": "d71db0779a333bfd13d3132600550d3664dcc4f6476853f6b041ce7434e87516"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/ADC Reference  Buffer：架构与设计/attachment/05_hierarchical_reference_distribution.png",
+      "source": "adc-reference-buffer/04_fvf_local_feedback.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/04_fvf_local_feedback.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/05_hierarchical_reference_distribution.png",
       "destination": "public/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.png",
-      "sourceSha256": "ab8a9ff7083f30e6f078a0dc1b3d05110580ace924f5a34ab624a52d6e8e4621"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/attachment/02_ctat_ptat_compensation.png",
-      "destination": "public/images/blog/learning-notes/bandgap-reference/02_ctat_ptat_compensation.png",
-      "sourceSha256": "7d11b786a64965b8989b72ec349a27d0175a48186b156d75d640c5b205400b92"
+      "source": "adc-reference-buffer/05_hierarchical_reference_distribution.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/05_hierarchical_reference_distribution.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/attachment/01_bandgap_architecture_taxonomy.png",
+      "source": "adc-reference-buffer/06_sf_ssf_fvf.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/06_sf_ssf_fvf.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/07_classab_source_sink.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/07_classab_source_sink.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/08_cap_vs_capless_poles.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/08_cap_vs_capless_poles.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/09_reference_network_impedance.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/09_reference_network_impedance.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/10_refp_refn_common_mode.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/10_refp_refn_common_mode.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/11_sar_bitcycle.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/11_sar_bitcycle.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/12_simulation_matrix.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/12_simulation_matrix.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/13_fvf_small_signal.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/13_fvf_small_signal.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "adc-reference-buffer/14_rvb_reading_map.svg",
+      "destination": "public/images/blog/learning-notes/adc-reference-buffer/14_rvb_reading_map.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/01_bandgap_architecture_taxonomy.png",
       "destination": "public/images/blog/learning-notes/bandgap-reference/01_bandgap_architecture_taxonomy.png",
-      "sourceSha256": "5d0d6a52e33c062af13b7e4b3a17817ca22eb54eb8311ffa62d4c7a353cffbd9"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/attachment/03_voltage_mode_vs_current_mode.png",
+      "source": "bandgap-reference/01_taxonomy.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/01_taxonomy.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/02_ctat_ptat.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/02_ctat_ptat.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/02_ctat_ptat_compensation.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/02_ctat_ptat_compensation.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/03_voltage_mode_vs_current_mode.png",
       "destination": "public/images/blog/learning-notes/bandgap-reference/03_voltage_mode_vs_current_mode.png",
-      "sourceSha256": "c29cb5a3ad5fc92ff37625cb6a6f496cef1eaf6af5d94d8e2b7d2f957baf538c"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/attachment/04_curvature_compensation.png",
+      "source": "bandgap-reference/03_widlar_principle.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/03_widlar_principle.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/04_curvature_compensation.png",
       "destination": "public/images/blog/learning-notes/bandgap-reference/04_curvature_compensation.png",
-      "sourceSha256": "971e65f076667d315e11bf537d77410d291bb1e85d19c5d1ab8bc9a142e0fd39"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "偏置电路/Bandgap 基准源：架构与设计/attachment/05_adc_reference_system.png",
+      "source": "bandgap-reference/04_kuijk_principle.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/04_kuijk_principle.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/05_adc_reference_system.png",
       "destination": "public/images/blog/learning-notes/bandgap-reference/05_adc_reference_system.png",
-      "sourceSha256": "43cb359648cfacd8d74ba7d189f99fcaa7248d9891dfef524d18a55ac58cb76c"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/figure_sources.json",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/figure_sources.json",
-      "sourceSha256": "9c6437e4defdbc684423fec40ad6fa59479c5b80060bdc082819d274f814be1b"
+      "source": "bandgap-reference/05_brokaw_principle.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/05_brokaw_principle.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/14_fanout.png",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png",
-      "sourceSha256": "d0a66253f93bb9cc61ea81d60038de26bcfc71bd1fc6e952cfec511633195fce"
+      "source": "bandgap-reference/06_banba_current_paths.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/06_banba_current_paths.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/01_fvf_comparison.png",
+      "source": "bandgap-reference/07_curvature_model.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/07_curvature_model.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/08_error_sources.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/08_error_sources.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/09_adc_reference_chain.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/09_adc_reference_chain.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/10_banba_branch_schematic.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/10_banba_branch_schematic.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/11_low_voltage_headroom.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/11_low_voltage_headroom.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/12_banba_offset_path.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/12_banba_offset_path.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/13_first_vs_curvature_trim.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/13_first_vs_curvature_trim.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/14_trim_dimensions.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/14_trim_dimensions.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/15_jssc_evolution.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/15_jssc_evolution.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/16_vbe_nonlinear_model.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/16_vbe_nonlinear_model.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/17_voltage_current_sum.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/17_voltage_current_sum.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "bandgap-reference/18_virtuoso_check_matrix.png",
+      "destination": "public/images/blog/learning-notes/bandgap-reference/18_virtuoso_check_matrix.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-noise/2026_01_噪声传递路径.svg",
+      "destination": "public/images/blog/learning-notes/circuit-noise/2026_01_噪声传递路径.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-noise/2026_02_噪声与jitter分类.svg",
+      "destination": "public/images/blog/learning-notes/circuit-noise/2026_02_噪声与jitter分类.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-noise/2026_03_噪声仿真矩阵.svg",
+      "destination": "public/images/blog/learning-notes/circuit-noise/2026_03_噪声仿真矩阵.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-noise/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/circuit-noise/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-noise/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/circuit-noise/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-poles-and-zeros/2026_01_慢尾双重态.svg",
+      "destination": "public/images/blog/learning-notes/circuit-poles-and-zeros/2026_01_慢尾双重态.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-poles-and-zeros/2026_02_反馈环路与断点.svg",
+      "destination": "public/images/blog/learning-notes/circuit-poles-and-zeros/2026_02_反馈环路与断点.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-poles-and-zeros/2026_03_稳定性验证流程.svg",
+      "destination": "public/images/blog/learning-notes/circuit-poles-and-zeros/2026_03_稳定性验证流程.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-poles-and-zeros/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/circuit-poles-and-zeros/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "circuit-poles-and-zeros/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/circuit-poles-and-zeros/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "cmos28-passive-devices/2026_01_寄生网络.svg",
+      "destination": "public/images/blog/learning-notes/cmos28-passive-devices/2026_01_寄生网络.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "cmos28-passive-devices/2026_02_高速互连模型.svg",
+      "destination": "public/images/blog/learning-notes/cmos28-passive-devices/2026_02_高速互连模型.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "cmos28-passive-devices/2026_03_EM协同流程.svg",
+      "destination": "public/images/blog/learning-notes/cmos28-passive-devices/2026_03_EM协同流程.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "cmos28-passive-devices/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/cmos28-passive-devices/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "cmos28-passive-devices/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/cmos28-passive-devices/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting/2026_01_CLS误差路径.svg",
+      "destination": "public/images/blog/learning-notes/correlated-level-shifting/2026_01_CLS误差路径.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting/2026_02_CLS变种比较.svg",
+      "destination": "public/images/blog/learning-notes/correlated-level-shifting/2026_02_CLS变种比较.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting/2026_03_625M建立窗口.svg",
+      "destination": "public/images/blog/learning-notes/correlated-level-shifting/2026_03_625M建立窗口.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/correlated-level-shifting/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "correlated-level-shifting/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/correlated-level-shifting/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration/2026_01_dither观测链.svg",
+      "destination": "public/images/blog/learning-notes/dither-calibration/2026_01_dither观测链.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration/2026_02_注入位置比较.svg",
+      "destination": "public/images/blog/learning-notes/dither-calibration/2026_02_注入位置比较.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration/2026_03_LMS收敛验证.svg",
+      "destination": "public/images/blog/learning-notes/dither-calibration/2026_03_LMS收敛验证.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/dither-calibration/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "dither-calibration/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/dither-calibration/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/01_fvf_comparison.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/01_fvf_comparison.png",
-      "sourceSha256": "03957545fbfc7d0cba6732edc8cf03b294fdd617462a09c1e9a76c8d0af4ca54"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/02_ssf_essf.png",
+      "source": "high-speed-adc-input-buffer/02_ssf_essf.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/02_ssf_essf.png",
-      "sourceSha256": "edeea64dd7ebe9b8f0a77d8394b74eed1637997e14df49695b0f64d8745249a7"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/03_differential_ssf.png",
+      "source": "high-speed-adc-input-buffer/03_differential_ssf.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/03_differential_ssf.png",
-      "sourceSha256": "4b015395a1f9986ff1727e26c3e97ab9dbf2a9f67f29637747f29bd9723ad4e5"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/04_ppsf_bootstrap.png",
+      "source": "high-speed-adc-input-buffer/04_ppsf_bootstrap.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/04_ppsf_bootstrap.png",
-      "sourceSha256": "265bab7c2c5c24b005bc62aa70de8d2dbd42a4b866bc433a21af5e2488dd578c"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/06_ccsf.png",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png",
-      "sourceSha256": "bbc689190ef4311c8e903fc4e8c5e2acb3364ced61c2343b802b039a87a6c776"
-    },
-    {
-      "source": "高速 ADC Input Buffer/images/05_body_buffer.png",
+      "source": "high-speed-adc-input-buffer/05_body_buffer.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/05_body_buffer.png",
-      "sourceSha256": "28bf2a3a13d7c1e93f70d1a724de97c1ad8ff5648c7ab26e4e225c64aad7704b"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/11_body_cross_coupling.png",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png",
-      "sourceSha256": "28ff5630e3419233bfe9876982540bf504be930bac1978e46563c313f765da2e"
+      "source": "high-speed-adc-input-buffer/06_ccsf.png",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/06_ccsf.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/07_sacc.png",
+      "source": "high-speed-adc-input-buffer/07_sacc.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/07_sacc.png",
-      "sourceSha256": "7544c60e83fb457dd72ad8433cf3fb344af698f8605c50f0c66257535ee74046"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/13_hold_kickback.png",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png",
-      "sourceSha256": "931fb1155259a6a03332d5fb4884df6f2d7d51eab90d2b31bb82e73f4c258252"
-    },
-    {
-      "source": "高速 ADC Input Buffer/images/09_hierarchy_interface.png",
-      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png",
-      "sourceSha256": "d8cb411e542400c11df37a7abaafc7451493c69557ef4aabbe2a0549c84924a6"
-    },
-    {
-      "source": "高速 ADC Input Buffer/images/08_hierarchy_timing.png",
+      "source": "high-speed-adc-input-buffer/08_hierarchy_timing.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/08_hierarchy_timing.png",
-      "sourceSha256": "efcbbb3cec9ea44b156a0b3c12aa49b537ee47506fc10ce4704b9ebe8eb2cf48"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/10_active_bootstrap.png",
+      "source": "high-speed-adc-input-buffer/09_hierarchy_interface.png",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/09_hierarchy_interface.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/10_active_bootstrap.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/10_active_bootstrap.png",
-      "sourceSha256": "85b60fd3e1c9b9533aa548121036e05030ffbe2f19c36daf0fa65beaeddcaca2"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
-      "source": "高速 ADC Input Buffer/images/12_pvt_mc.png",
+      "source": "high-speed-adc-input-buffer/11_body_cross_coupling.png",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/11_body_cross_coupling.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/12_pvt_mc.png",
       "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/12_pvt_mc.png",
-      "sourceSha256": "3c0415919174d497499789f17109a460b0876e4e702404200eedaa05f8d440bf"
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/13_hold_kickback.png",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/13_hold_kickback.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/14_fanout.png",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/14_fanout.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "high-speed-adc-input-buffer/figure_sources.json",
+      "destination": "public/images/blog/learning-notes/high-speed-adc-input-buffer/figure_sources.json",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt/2026_01_温度竞争机制.svg",
+      "destination": "public/images/blog/learning-notes/mos-pvt/2026_01_温度竞争机制.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt/2026_02_PVT与失配分层.svg",
+      "destination": "public/images/blog/learning-notes/mos-pvt/2026_02_PVT与失配分层.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt/2026_03_Corner验证矩阵.svg",
+      "destination": "public/images/blog/learning-notes/mos-pvt/2026_03_Corner验证矩阵.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/mos-pvt/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "mos-pvt/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/mos-pvt/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew/2026_01_时偏与频谱.svg",
+      "destination": "public/images/blog/learning-notes/ti-adc-time-skew/2026_01_时偏与频谱.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew/2026_02_THA保持窗口.svg",
+      "destination": "public/images/blog/learning-notes/ti-adc-time-skew/2026_02_THA保持窗口.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew/2026_03_校准方法矩阵.svg",
+      "destination": "public/images/blog/learning-notes/ti-adc-time-skew/2026_03_校准方法矩阵.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew/2026_04_理论参数曲线.png",
+      "destination": "public/images/blog/learning-notes/ti-adc-time-skew/2026_04_理论参数曲线.png",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source": "ti-adc-time-skew/2026_05_专项机制图.svg",
+      "destination": "public/images/blog/learning-notes/ti-adc-time-skew/2026_05_专项机制图.svg",
+      "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   ],
   "counts": {
-    "notes": 15,
-    "images": 32,
-    "attachments": 2,
-    "diagrams": 21,
-    "links": 92,
-    "localLibraryLinks": 45
+    "notes": 14,
+    "images": 130,
+    "attachments": 0,
+    "diagrams": 19,
+    "links": 228,
+    "localLibraryLinks": 0
   }
 }
